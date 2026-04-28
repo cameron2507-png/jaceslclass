@@ -1,0 +1,21 @@
+---
+const path = Astro.url.pathname;
+function isActive(prefix: string) {
+  if (prefix === '/') return path === '/' ? 'active' : '';
+  return path.startsWith(prefix) ? 'active' : '';
+}
+---
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="/" class="brand" aria-label="JAC's Class home">
+      <span class="brand__mark">JAC</span>
+      <span class="brand__name">JAC's Class</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="/games" class={isActive('/games')}>Games</a>
+      <a href="/level/B1" class={isActive('/level')}>By level</a>
+      <a href="/type/Hangman" class={isActive('/type')}>By type</a>
+      <a href="/about" class={isActive('/about')}>About</a>
+    </nav>
+  </div>
+</header>

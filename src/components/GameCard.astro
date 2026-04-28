@@ -1,0 +1,41 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
+  type: string;
+  topic: string;
+  duration: number;
+}
+
+const { slug, title, level, type, topic, duration } = Astro.props;
+
+// type → background color (CSS variable name)
+const typeColors: Record<string, string> = {
+  Hangman: 'var(--type-hangman)',
+  Jeopardy: 'var(--type-jeopardy)',
+  Blockbusters: 'var(--type-blockbusters)',
+  Taboo: 'var(--type-taboo)',
+  Codenames: 'var(--type-codenames)',
+  Typhoon: 'var(--type-typhoon)',
+  'Gap-fills': 'var(--type-gapfills)',
+  Quizzes: 'var(--type-quizzes)',
+};
+
+const thumbColor = typeColors[type] ?? 'var(--color-primary)';
+---
+<a href={`/games/${slug}`} class="game-card">
+  <div class="game-card__thumb" style={`background: ${thumbColor};`}>
+    {type}
+  </div>
+  <div class="game-card__body">
+    <h3 class="game-card__title">{title}</h3>
+    <div class="game-card__meta">
+      <span class={`pill pill--level level-${level}`}>{level}</span>
+      <span>·</span>
+      <span>{topic}</span>
+      <span>·</span>
+      <span>{duration} min</span>
+    </div>
+  </div>
+</a>

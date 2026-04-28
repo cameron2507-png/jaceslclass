@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GameCard from '../../components/GameCard.astro';
+
+export async function getStaticPaths() {
+  const levels = ['A1', 'A2', 'B1', 'B2', 'C1'] as const;
+  const all = await getCollection('games');
+  return levels.map(level => ({
+    params: { level },
+    props: { level, games: all.filter(g => g.data.level === level) },
+  }));
+}
+
+const { level, games } = Astro.props;
+
+const labels: Record<string, string> = {
+  A1: 'Beginner',
+  A2: 'Elementary',
+  B1: 'Intermediate',
+  B2: 'Upper Intermediate',
+  C1: 'Advanced',
+};
+
+games.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+<BaseLayout
+  title={`${level} (${labels[level]}) games — JAC's Class`}
+  description={`Free interactive ESL games for ${level} ${labels[level]} learners. Hangman, Jeopardy, Taboo and more.`}
+>
+  <section class="section">
+    <div class="container">
+      <nav class="breadcrumbs">
+        <a href="/">Home</a> › <a href="/games">Games</a> › {level}
+      </nav>
+      <h1>
+        <span class={`pill pill--level level-${level}`} style="font-size: 1.5rem; padding: 0.3rem 0.9rem; vertical-align: middle; margin-right: 0.5rem;">{level}</span>
+        {labels[level]} games
+      </h1>
+      <p style="margin-bottom: 2rem; color: var(--color-ink-soft);">
+        {games.length} {games.length === 1 ? 'game' : 'games'} for {level} learners.
+      </p>
+
+      {games.length > 0 ? (
+        <div class="games-grid">
+          {games.map(game => (
+            <GameCard
+              slug={game.id}
+              title={game.data.title}
+              level={game.data.level}
+              type={game.data.type}
+              topic={game.data.topic}
+              duration={game.data.duration}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>No {level} games yet — coming soon!</p>
+          <a href="/games" class="btn btn--ghost" style="margin-top: 1rem;">Browse all games</a>
+        </div>
+      )}
+
+      <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border);">
+        <p style="font-size: 0.9rem; color: var(--color-muted); margin-bottom: 0.5rem;">Other levels:</p>
+        <div class="type-row">
+          {(['A1','A2','B1','B2','C1'] as const).filter(l => l !== level).map(l => (
+            <a href={`/level/${l}`} class={`pill pill--level level-${l}`}>{l} {labels[l]}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

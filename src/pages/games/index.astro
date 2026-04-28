@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GameCard from '../../components/GameCard.astro';
+
+const games = await getCollection('games');
+games.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+<BaseLayout
+  title="All games — JAC's Class"
+  description="Every interactive ESL game on JAC's Class. Filter by level, topic or game type."
+>
+  <section class="section">
+    <div class="container">
+      <h1>All games</h1>
+      <p style="margin-bottom: 1.5rem; color: var(--color-ink-soft);">
+        {games.length} {games.length === 1 ? 'game' : 'games'}. Use the filter or search to narrow down.
+      </p>
+
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search title, topic, type…"
+          style="flex: 1; min-width: 200px; padding: 0.6rem 0.9rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius); font-family: var(--font-body); font-size: 0.95rem; background: var(--color-surface);"
+        />
+        <select id="levelFilter" style="padding: 0.6rem 0.9rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius); font-family: var(--font-body); font-size: 0.95rem; background: var(--color-surface);">
+          <option value="">All levels</option>
+          <option value="A1">A1</option>
+          <option value="A2">A2</option>
+          <option value="B1">B1</option>
+          <option value="B2">B2</option>
+          <option value="C1">C1</option>
+        </select>
+        <select id="typeFilter" style="padding: 0.6rem 0.9rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius); font-family: var(--font-body); font-size: 0.95rem; background: var(--color-surface);">
+          <option value="">All types</option>
+          <option>Hangman</option>
+          <option>Jeopardy</option>
+          <option>Blockbusters</option>
+          <option>Taboo</option>
+          <option>Codenames</option>
+          <option>Typhoon</option>
+          <option>Gap-fills</option>
+          <option>Quizzes</option>
+        </select>
+      </div>
+
+      <div id="gamesGrid" class="games-grid">
+        {games.map(game => (
+          <div
+            class="game-card-wrap"
+            data-title={game.data.title.toLowerCase()}
+            data-topic={game.data.topic.toLowerCase()}
+            data-type={game.data.type}
+            data-level={game.data.level}
+          >
+            <GameCard
+              slug={game.id}
+              title={game.data.title}
+              level={game.data.level}
+              type={game.data.type}
+              topic={game.data.topic}
+              duration={game.data.duration}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div id="noResults" class="empty-state" style="display: none;">
+        <p>No games match those filters yet. Try clearing one of them.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const initialQ = params.get('q') ?? '';
+
+  const search = document.getElementById('searchInput') as HTMLInputElement;
+  const levelF = document.getElementById('levelFilter') as HTMLSelectElement;
+  const typeF = document.getElementById('typeFilter') as HTMLSelectElement;
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.game-card-wrap'));
+  const noResults = document.getElementById('noResults') as HTMLElement;
+
+  if (initialQ) search.value = initialQ;
+
+  function applyFilters() {
+    const q = search.value.trim().toLowerCase();
+    const lvl = levelF.value;
+    const tp = typeF.value;
+    let visible = 0;
+    for (const c of cards) {
+      const matches =
+        (!q || c.dataset.title!.includes(q) || c.dataset.topic!.includes(q) || c.dataset.type!.toLowerCase().includes(q)) &&
+        (!lvl || c.dataset.level === lvl) &&
+        (!tp || c.dataset.type === tp);
+      c.style.display = matches ? '' : 'none';
+      if (matches) visible++;
+    }
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  search.addEventListener('input', applyFilters);
+  levelF.addEventListener('change', applyFilters);
+  typeF.addEventListener('change', applyFilters);
+  applyFilters();
+</script>

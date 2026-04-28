@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hotel vocabulary — Hangman</title>
+<style>
+  :root {
+    --primary: #1a3a52;
+    --accent: #c84a2c;
+    --bg: #faf6ec;
+    --surface: #ffffff;
+    --ink: #15263a;
+    --muted: #6b7785;
+    --border: #e3dccc;
+    --good: #2d8f7a;
+    --bad: #c84a2c;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink);
+  }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 1.5rem 1rem; }
+  h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; margin: 0 0 0.25rem; font-size: 1.5rem; color: var(--primary); }
+  .hint { color: var(--muted); margin: 0 0 1rem; font-size: 0.95rem; }
+  .game {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.5rem; max-width: 540px; width: 100%; text-align: center;
+  }
+  .gallows { display: flex; justify-content: center; margin-bottom: 1rem; }
+  .gallows svg { max-width: 180px; height: 180px; }
+  .word {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 2rem;
+    letter-spacing: 0.4rem;
+    margin: 1rem 0;
+    color: var(--primary);
+    min-height: 2.5rem;
+  }
+  .keyboard {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.4rem;
+    margin: 1rem 0;
+  }
+  .keyboard button {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.55rem 0.3rem;
+    font-family: inherit; font-size: 1rem; font-weight: 500;
+    cursor: pointer; color: var(--ink);
+    transition: all 0.1s;
+  }
+  .keyboard button:hover:not(:disabled) {
+    background: var(--primary); color: white; border-color: var(--primary);
+  }
+  .keyboard button.correct { background: #d4ebe2; color: var(--good); border-color: #d4ebe2; cursor: default; }
+  .keyboard button.wrong { background: #fce5db; color: var(--bad); border-color: #fce5db; cursor: default; text-decoration: line-through; }
+  .keyboard button:disabled { opacity: 0.6; }
+  .status { font-size: 0.95rem; color: var(--muted); margin: 0.5rem 0; }
+  .status .lives { color: var(--bad); font-weight: 500; }
+  .message { font-family: 'Fraunces', Georgia, serif; font-size: 1.3rem; margin: 1rem 0 0.5rem; min-height: 1.6rem; }
+  .message.win { color: var(--good); }
+  .message.lose { color: var(--bad); }
+  .controls { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
+  button.action {
+    background: var(--primary); color: white; border: none;
+    border-radius: 8px; padding: 0.6rem 1.1rem; font-family: inherit;
+    font-size: 0.95rem; font-weight: 500; cursor: pointer;
+  }
+  button.action:hover { background: #14304a; }
+  button.action.ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+  button.action.ghost:hover { background: var(--bg); }
+  .clue { font-style: italic; color: var(--muted); margin: 0.25rem 0 0.75rem; font-size: 0.9rem; }
+  @media (max-width: 480px) {
+    .keyboard { grid-template-columns: repeat(6, 1fr); }
+    .word { font-size: 1.5rem; letter-spacing: 0.25rem; }
+  }
+</style>
+</head>
+<body>
+<h1>Hotel vocabulary hangman</h1>
+<p class="hint">A2 · Guess the hotel-related word before the figure is complete.</p>
+
+<div class="game">
+  <div class="gallows">
+    <svg viewBox="0 0 100 100" id="gallows" stroke="#15263a" stroke-width="3" fill="none" stroke-linecap="round">
+      <line x1="10" y1="95" x2="90" y2="95"/> <!-- ground -->
+      <line id="g-pole" x1="25" y1="95" x2="25" y2="10" style="display:none"/>
+      <line id="g-top" x1="25" y1="10" x2="65" y2="10" style="display:none"/>
+      <line id="g-rope" x1="65" y1="10" x2="65" y2="22" style="display:none"/>
+      <circle id="g-head" cx="65" cy="30" r="8" style="display:none"/>
+      <line id="g-body" x1="65" y1="38" x2="65" y2="62" style="display:none"/>
+      <line id="g-arm-l" x1="65" y1="45" x2="55" y2="55" style="display:none"/>
+      <line id="g-arm-r" x1="65" y1="45" x2="75" y2="55" style="display:none"/>
+      <line id="g-leg-l" x1="65" y1="62" x2="55" y2="78" style="display:none"/>
+      <line id="g-leg-r" x1="65" y1="62" x2="75" y2="78" style="display:none"/>
+    </svg>
+  </div>
+
+  <div class="clue" id="clue"></div>
+  <div class="word" id="word"></div>
+  <div class="status">Lives left: <span class="lives" id="lives">10</span></div>
+  <div class="keyboard" id="keyboard"></div>
+  <div class="message" id="message"></div>
+  <div class="controls">
+    <button class="action" id="newWord">New word</button>
+    <button class="action ghost" id="reveal">Show answer</button>
+  </div>
+</div>
+
+<script>
+  const WORDS = [
+    { word: 'RECEPTION', clue: 'The first place you go when you arrive at a hotel.' },
+    { word: 'CHECKOUT', clue: 'You do this when you leave the hotel.' },
+    { word: 'BREAKFAST', clue: 'The first meal of the day, often included in the room price.' },
+    { word: 'CORRIDOR', clue: 'A long passage with rooms on either side.' },
+    { word: 'BALCONY', clue: 'An outdoor area outside your room, often with a view.' },
+    { word: 'LOBBY', clue: 'The main entrance area of a hotel.' },
+    { word: 'CONCIERGE', clue: 'The staff member who helps you with bookings and information.' },
+    { word: 'SUITCASE', clue: 'You pack your clothes in this for travel.' },
+    { word: 'ELEVATOR', clue: 'Takes you between floors. Also called a lift.' },
+    { word: 'KEYCARD', clue: 'A plastic card that opens your hotel room door.' },
+    { word: 'WAKEUP', clue: 'A ___ call helps you get up in the morning.' },
+    { word: 'MINIBAR', clue: 'A small fridge in your room with drinks and snacks.' },
+    { word: 'LAUNDRY', clue: 'The hotel service that washes your clothes.' },
+    { word: 'BOOKING', clue: 'You make one of these to reserve a room.' },
+    { word: 'VACANCY', clue: 'A sign that says rooms are available.' },
+  ];
+
+  const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const PARTS = ['g-pole','g-top','g-rope','g-head','g-body','g-arm-l','g-arm-r','g-leg-l','g-leg-r'];
+  const MAX_WRONG = 9; // matches gallows parts
+
+  let answer = '';
+  let clueText = '';
+  let guessed = new Set();
+  let wrong = 0;
+  let gameOver = false;
+
+  function pickWord() {
+    const choice = WORDS[Math.floor(Math.random() * WORDS.length)];
+    answer = choice.word;
+    clueText = choice.clue;
+  }
+
+  function renderWord() {
+    const wordEl = document.getElementById('word');
+    wordEl.textContent = answer.split('').map(l => guessed.has(l) ? l : '_').join(' ');
+  }
+
+  function renderKeyboard() {
+    const kb = document.getElementById('keyboard');
+    kb.innerHTML = '';
+    for (const letter of ALPHA) {
+      const btn = document.createElement('button');
+      btn.textContent = letter;
+      btn.disabled = gameOver;
+      if (guessed.has(letter)) {
+        btn.disabled = true;
+        btn.classList.add(answer.includes(letter) ? 'correct' : 'wrong');
+      }
+      btn.onclick = () => guess(letter);
+      kb.appendChild(btn);
+    }
+  }
+
+  function renderGallows() {
+    PARTS.forEach((id, i) => {
+      const el = document.getElementById(id);
+      el.style.display = i < wrong ? '' : 'none';
+    });
+  }
+
+  function guess(letter) {
+    if (guessed.has(letter) || gameOver) return;
+    guessed.add(letter);
+    if (!answer.includes(letter)) wrong++;
+    document.getElementById('lives').textContent = MAX_WRONG - wrong;
+    renderWord();
+    renderKeyboard();
+    renderGallows();
+    checkEnd();
+  }
+
+  function checkEnd() {
+    const won = answer.split('').every(l => guessed.has(l));
+    const lost = wrong >= MAX_WRONG;
+    if (won) {
+      gameOver = true;
+      document.getElementById('message').className = 'message win';
+      document.getElementById('message').textContent = '🎉 Well done!';
+    } else if (lost) {
+      gameOver = true;
+      document.getElementById('message').className = 'message lose';
+      document.getElementById('message').textContent = `Bad luck — the word was ${answer}`;
+      document.getElementById('word').textContent = answer.split('').join(' ');
+    }
+  }
+
+  function newGame() {
+    pickWord();
+    guessed = new Set();
+    wrong = 0;
+    gameOver = false;
+    document.getElementById('lives').textContent = MAX_WRONG;
+    document.getElementById('message').textContent = '';
+    document.getElementById('message').className = 'message';
+    document.getElementById('clue').textContent = `Clue: ${clueText}`;
+    renderWord();
+    renderKeyboard();
+    renderGallows();
+  }
+
+  document.getElementById('newWord').onclick = newGame;
+  document.getElementById('reveal').onclick = () => {
+    gameOver = true;
+    document.getElementById('word').textContent = answer.split('').join(' ');
+    document.getElementById('message').textContent = `The word was ${answer}`;
+    renderKeyboard();
+  };
+
+  document.addEventListener('keydown', (e) => {
+    const key = e.key.toUpperCase();
+    if (ALPHA.includes(key)) guess(key);
+  });
+
+  newGame();
+</script>
+</body>
+</html>

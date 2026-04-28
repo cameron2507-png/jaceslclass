@@ -1,0 +1,96 @@
+{
+  "$ref": "#/definitions/games",
+  "definitions": {
+    "games": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string",
+          "enum": [
+            "A1",
+            "A2",
+            "B1",
+            "B2",
+            "C1"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Hangman",
+            "Jeopardy",
+            "Blockbusters",
+            "Taboo",
+            "Codenames",
+            "Typhoon",
+            "Gap-fills",
+            "Quizzes"
+          ]
+        },
+        "topic": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "ageGroup": {
+          "type": "string",
+          "enum": [
+            "Young learners",
+            "Teens",
+            "Adults",
+            "All ages"
+          ],
+          "default": "All ages"
+        },
+        "gameFile": {
+          "type": "string"
+        },
+        "featured": {
+          "type": "boolean",
+          "default": false
+        },
+        "publishDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "integer",
+              "format": "unix-time"
+            }
+          ]
+        },
+        "instructions": {
+          "type": "string"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "level",
+        "type",
+        "topic",
+        "duration",
+        "gameFile",
+        "publishDate"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

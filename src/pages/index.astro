@@ -1,0 +1,131 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GameCard from '../components/GameCard.astro';
+
+const allGames = await getCollection('games');
+
+// sort by publishDate desc
+allGames.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+
+const featured = allGames.filter(g => g.data.featured).slice(0, 4);
+const recent = allGames.slice(0, 8);
+
+const levels = [
+  { code: 'A1', label: 'Beginner' },
+  { code: 'A2', label: 'Elementary' },
+  { code: 'B1', label: 'Intermediate' },
+  { code: 'B2', label: 'Upper int.' },
+  { code: 'C1', label: 'Advanced' },
+];
+
+const gameTypes = [
+  'Hangman',
+  'Jeopardy',
+  'Blockbusters',
+  'Taboo',
+  'Codenames',
+  'Typhoon',
+  'Gap-fills',
+  'Quizzes',
+];
+---
+<BaseLayout
+  title="JAC's Class — Free interactive ESL games for teachers"
+  description="Free, ready-to-play classroom games for English teachers. Hangman, Jeopardy, Taboo, Codenames and more — sorted by CEFR level and topic."
+>
+  <section class="hero">
+    <div class="container">
+      <span class="hero__eyebrow">Free for teachers, forever</span>
+      <h1>Drop-in classroom games for English teachers.</h1>
+      <p class="hero__lede">
+        No login. No prep. Built in a real classroom by a teacher who needed them.
+        Sorted by CEFR level, topic and game type.
+      </p>
+      <form class="search-wrap" action="/games" method="get" role="search">
+        <input
+          type="search"
+          name="q"
+          placeholder="Try “past simple”, “hotels”, “B1 vocabulary”…"
+          aria-label="Search games"
+        />
+        <button type="submit" class="btn btn--primary">Browse all</button>
+      </form>
+    </div>
+  </section>
+
+  {featured.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Featured games</h2>
+          <a href="/games">View all →</a>
+        </div>
+        <div class="games-grid">
+          {featured.map(game => (
+            <GameCard
+              slug={game.id}
+              title={game.data.title}
+              level={game.data.level}
+              type={game.data.type}
+              topic={game.data.topic}
+              duration={game.data.duration}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="section-head">
+        <h2>Browse by level</h2>
+      </div>
+      <div class="level-row">
+        {levels.map(({ code, label }) => (
+          <a href={`/level/${code}`} class="level-tile">
+            <span class={`level-tile__code level-${code}`} style="background: transparent; border: none; padding: 0;">{code}</span>
+            <span class="level-tile__label">{label}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="section-head">
+        <h2>Browse by game type</h2>
+      </div>
+      <div class="type-row">
+        {gameTypes.map(t => (
+          <a href={`/type/${t}`} class="pill">{t}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {recent.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Recently added</h2>
+          <a href="/games">View all →</a>
+        </div>
+        <div class="games-grid">
+          {recent.map(game => (
+            <GameCard
+              slug={game.id}
+              title={game.data.title}
+              level={game.data.level}
+              type={game.data.type}
+              topic={game.data.topic}
+              duration={game.data.duration}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

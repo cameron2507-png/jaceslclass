@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Past tenses — Jeopardy</title>
+<style>
+  :root {
+    --primary: #1a3a52;
+    --accent: #c84a2c;
+    --bg: #faf6ec;
+    --surface: #ffffff;
+    --ink: #15263a;
+    --muted: #6b7785;
+    --border: #e3dccc;
+    --teal: #0e7c66;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink); min-height: 100%;
+  }
+  body { padding: 1rem; max-width: 900px; margin: 0 auto; }
+  h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; margin: 0 0 0.25rem; font-size: 1.5rem; color: var(--primary); }
+  .hint { color: var(--muted); margin: 0 0 1rem; font-size: 0.95rem; }
+
+  .scoreboard {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .team {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between;
+  }
+  .team.active { border-color: var(--accent); background: #fce5db; }
+  .team-name { font-weight: 500; font-size: 0.95rem; }
+  .team-score { font-family: 'Fraunces', Georgia, serif; font-size: 1.6rem; color: var(--primary); }
+  .team-controls button {
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.2rem 0.5rem; cursor: pointer;
+    margin-left: 0.25rem; font-family: inherit; font-size: 0.85rem;
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .cat-header {
+    background: var(--primary); color: white;
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    text-align: center; padding: 0.6rem 0.4rem;
+    border-radius: 6px; font-size: 0.85rem; line-height: 1.2;
+  }
+  .cell {
+    background: var(--teal); color: white;
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    text-align: center; padding: 1rem 0.4rem;
+    border-radius: 6px; font-size: 1.4rem;
+    cursor: pointer; border: none;
+    transition: all 0.15s;
+  }
+  .cell:hover { background: #0a5d4d; transform: translateY(-1px); }
+  .cell.used { background: var(--bg); color: var(--border); cursor: default; box-shadow: inset 0 0 0 1px var(--border); }
+  .cell.used:hover { transform: none; }
+
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(21,38,58,0.7);
+    display: none; align-items: center; justify-content: center;
+    padding: 1rem; z-index: 100;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: var(--surface); border-radius: 14px;
+    padding: 2rem; max-width: 540px; width: 100%;
+    text-align: center;
+  }
+  .modal .value {
+    font-family: 'Fraunces', Georgia, serif; color: var(--accent); font-size: 1.1rem; margin-bottom: 0.5rem;
+  }
+  .modal .question {
+    font-size: 1.25rem; line-height: 1.4; margin-bottom: 1.5rem;
+    color: var(--ink); font-weight: 500;
+  }
+  .modal .answer {
+    font-family: 'Fraunces', Georgia, serif; font-size: 1.5rem;
+    color: var(--teal); margin: 1rem 0;
+    padding: 1rem; background: #d4ebe2; border-radius: 8px;
+    display: none;
+  }
+  .modal .answer.show { display: block; }
+  .modal-controls {
+    display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;
+  }
+  .modal-controls button {
+    padding: 0.6rem 1.1rem; border-radius: 8px; cursor: pointer;
+    font-family: inherit; font-size: 0.95rem; font-weight: 500; border: none;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-correct { background: var(--teal); color: white; }
+  .btn-wrong { background: var(--accent); color: white; }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border) !important; }
+
+  .controls { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+  .controls button.action {
+    background: transparent; color: var(--ink); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 1rem;
+    font-family: inherit; cursor: pointer;
+  }
+
+  @media (max-width: 600px) {
+    .board { grid-template-columns: repeat(4, 1fr); gap: 0.25rem; }
+    .cat-header { font-size: 0.7rem; padding: 0.4rem 0.2rem; }
+    .cell { font-size: 1rem; padding: 0.7rem 0.2rem; }
+  }
+</style>
+</head>
+<body>
+<h1>Past tenses jeopardy</h1>
+<p class="hint">B1 · Two teams take turns. Pick a category and value, answer correctly to score the points.</p>
+
+<div class="scoreboard">
+  <div class="team active" id="team1">
+    <div>
+      <div class="team-name">Team A</div>
+      <div class="team-score" id="score1">0</div>
+    </div>
+    <div class="team-controls">
+      <button onclick="adjustScore(0, 100)">+100</button>
+      <button onclick="adjustScore(0, -100)">−100</button>
+    </div>
+  </div>
+  <div class="team" id="team2">
+    <div>
+      <div class="team-name">Team B</div>
+      <div class="team-score" id="score2">0</div>
+    </div>
+    <div class="team-controls">
+      <button onclick="adjustScore(1, 100)">+100</button>
+      <button onclick="adjustScore(1, -100)">−100</button>
+    </div>
+  </div>
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="controls">
+  <button class="action" onclick="resetGame()">New game</button>
+  <button class="action" onclick="switchTeam()">Switch turn</button>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="value" id="modalValue"></div>
+    <div class="question" id="modalQuestion"></div>
+    <div class="answer" id="modalAnswer"></div>
+    <div class="modal-controls" id="modalControls">
+      <button class="btn-primary" onclick="showAnswer()">Show answer</button>
+      <button class="btn-ghost" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CATEGORIES = [
+    {
+      name: 'Past simple',
+      questions: [
+        { value: 100, q: 'Conjugate: "I ___ (go) to school yesterday."', a: 'went' },
+        { value: 200, q: 'Make negative: "She visited her grandma."', a: "She didn't visit her grandma." },
+        { value: 300, q: 'Make a question: "They had dinner at 8."', a: 'Did they have dinner at 8?' },
+        { value: 400, q: 'Conjugate: "We ___ (buy) a new car last week."', a: 'bought' },
+      ],
+    },
+    {
+      name: 'Past continuous',
+      questions: [
+        { value: 100, q: 'Conjugate: "I ___ (read) when you called."', a: 'was reading' },
+        { value: 200, q: 'When do we use the past continuous?', a: 'For an action in progress at a moment in the past.' },
+        { value: 300, q: 'Conjugate: "They ___ (not / listen) to the teacher."', a: "weren't listening / were not listening" },
+        { value: 400, q: 'Make a question: "She was working at 6 PM."', a: 'Was she working at 6 PM?' },
+      ],
+    },
+    {
+      name: 'Present perfect',
+      questions: [
+        { value: 100, q: 'Conjugate: "I ___ (visit) Paris three times."', a: 'have visited' },
+        { value: 200, q: '"For" or "since"? "I have lived here ___ 2010."', a: 'since' },
+        { value: 300, q: 'Past simple or present perfect? "I ___ to London in 2019."', a: 'went (past simple — finished time)' },
+        { value: 400, q: 'Make a question: "She has finished her homework."', a: 'Has she finished her homework?' },
+      ],
+    },
+    {
+      name: 'Mixed',
+      questions: [
+        { value: 100, q: 'Past form of: "to take"', a: 'took' },
+        { value: 200, q: 'Past participle of: "to write"', a: 'written' },
+        { value: 300, q: 'Correct? "I have seen him yesterday."', a: 'No — "I saw him yesterday." (Past simple with finished time)' },
+        { value: 400, q: 'Translate: "Quand il est arrivé, je dormais."', a: 'When he arrived, I was sleeping.' },
+      ],
+    },
+  ];
+
+  let scores = [0, 0];
+  let currentTeam = 0;
+  let used = new Set();
+  let currentCell = null;
+
+  function buildBoard() {
+    const board = document.getElementById('board');
+    board.innerHTML = '';
+    // category headers
+    CATEGORIES.forEach(c => {
+      const h = document.createElement('div');
+      h.className = 'cat-header';
+      h.textContent = c.name;
+      board.appendChild(h);
+    });
+    // value cells
+    for (let row = 0; row < 4; row++) {
+      CATEGORIES.forEach((c, col) => {
+        const q = c.questions[row];
+        const btn = document.createElement('button');
+        btn.className = 'cell';
+        btn.textContent = q.value;
+        btn.dataset.id = `${col}-${row}`;
+        btn.onclick = () => openCell(col, row, btn);
+        board.appendChild(btn);
+      });
+    }
+  }
+
+  function openCell(col, row, btn) {
+    if (used.has(btn.dataset.id)) return;
+    const q = CATEGORIES[col].questions[row];
+    currentCell = { col, row, value: q.value, btn };
+    document.getElementById('modalValue').textContent = `${CATEGORIES[col].name} — ${q.value} pts`;
+    document.getElementById('modalQuestion').textContent = q.q;
+    document.getElementById('modalAnswer').textContent = q.a;
+    document.getElementById('modalAnswer').classList.remove('show');
+    document.getElementById('modalControls').innerHTML = `
+      <button class="btn-primary" onclick="showAnswer()">Show answer</button>
+      <button class="btn-ghost" onclick="closeModal()">Close</button>
+    `;
+    document.getElementById('modalBg').classList.add('show');
+  }
+
+  function showAnswer() {
+    document.getElementById('modalAnswer').classList.add('show');
+    document.getElementById('modalControls').innerHTML = `
+      <button class="btn-correct" onclick="markResult(true)">Correct (+${currentCell.value})</button>
+      <button class="btn-wrong" onclick="markResult(false)">Wrong</button>
+      <button class="btn-ghost" onclick="closeModal()">Close</button>
+    `;
+  }
+
+  function markResult(correct) {
+    if (correct) {
+      scores[currentTeam] += currentCell.value;
+    }
+    currentCell.btn.classList.add('used');
+    used.add(currentCell.btn.dataset.id);
+    updateScores();
+    closeModal();
+    switchTeam();
+  }
+
+  function closeModal() {
+    document.getElementById('modalBg').classList.remove('show');
+    currentCell = null;
+  }
+
+  function updateScores() {
+    document.getElementById('score1').textContent = scores[0];
+    document.getElementById('score2').textContent = scores[1];
+  }
+
+  function adjustScore(team, delta) {
+    scores[team] += delta;
+    updateScores();
+  }
+
+  function switchTeam() {
+    currentTeam = currentTeam === 0 ? 1 : 0;
+    document.getElementById('team1').classList.toggle('active', currentTeam === 0);
+    document.getElementById('team2').classList.toggle('active', currentTeam === 1);
+  }
+
+  function resetGame() {
+    if (used.size > 0 && !confirm('Start a new game? Scores will reset.')) return;
+    scores = [0, 0];
+    used = new Set();
+    currentTeam = 0;
+    document.getElementById('team1').classList.add('active');
+    document.getElementById('team2').classList.remove('active');
+    updateScores();
+    buildBoard();
+  }
+
+  buildBoard();
+</script>
+</body>
+</html>

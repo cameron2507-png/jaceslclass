@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GameCard from '../../components/GameCard.astro';
+
+const TYPES = [
+  'Hangman', 'Jeopardy', 'Blockbusters', 'Taboo',
+  'Codenames', 'Typhoon', 'Gap-fills', 'Quizzes',
+] as const;
+
+export async function getStaticPaths() {
+  const types = ['Hangman', 'Jeopardy', 'Blockbusters', 'Taboo', 'Codenames', 'Typhoon', 'Gap-fills', 'Quizzes'] as const;
+  const all = await getCollection('games');
+  return types.map(type => ({
+    params: { type },
+    props: { type, games: all.filter(g => g.data.type === type) },
+  }));
+}
+
+const { type, games } = Astro.props;
+
+const descriptions: Record<string, string> = {
+  Hangman: 'Word-guessing classic. Great as a quick warm-up or vocabulary recap.',
+  Jeopardy: 'Team quiz across categories. Works brilliantly for review lessons.',
+  Blockbusters: 'Hexagon grid quiz inspired by the British TV show. Great for revision.',
+  Taboo: 'Describe the word without using the forbidden words. Pushes paraphrasing skills.',
+  Codenames: 'One-word clue, multiple targets. Excellent for advanced vocabulary work.',
+  Typhoon: 'Team-based grid game with bonus and penalty squares. Fun and chaotic.',
+  'Gap-fills': 'Classic fill-in-the-blank exercises, interactive and self-marking.',
+  Quizzes: 'Multiple choice and short-answer quizzes for any topic.',
+};
+
+games.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+<BaseLayout
+  title={`${type} games — JAC's Class`}
+  description={`Free ${type} games for English teachers. ${descriptions[type] ?? ''}`}
+>
+  <section class="section">
+    <div class="container">
+      <nav class="breadcrumbs">
+        <a href="/">Home</a> › <a href="/games">Games</a> › {type}
+      </nav>
+      <h1>{type} games</h1>
+      <p style="margin-bottom: 2rem; color: var(--color-ink-soft); max-width: 600px;">
+        {descriptions[type]}
+      </p>
+
+      {games.length > 0 ? (
+        <div class="games-grid">
+          {games.map(game => (
+            <GameCard
+              slug={game.id}
+              title={game.data.title}
+              level={game.data.level}
+              type={game.data.type}
+              topic={game.data.topic}
+              duration={game.data.duration}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>No {type} games yet — coming soon!</p>
+          <a href="/games" class="btn btn--ghost" style="margin-top: 1rem;">Browse all games</a>
+        </div>
+      )}
+
+      <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border);">
+        <p style="font-size: 0.9rem; color: var(--color-muted); margin-bottom: 0.5rem;">Other game types:</p>
+        <div class="type-row">
+          {TYPES.filter(t => t !== type).map(t => (
+            <a href={`/type/${t}`} class="pill">{t}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

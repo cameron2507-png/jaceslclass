@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business meetings — Taboo</title>
+<style>
+  :root {
+    --primary: #1a3a52;
+    --accent: #c84a2c;
+    --bg: #faf6ec;
+    --surface: #ffffff;
+    --ink: #15263a;
+    --muted: #6b7785;
+    --border: #e3dccc;
+    --good: #2d8f7a;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink);
+  }
+  body { display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; }
+  h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; margin: 0 0 0.25rem; font-size: 1.5rem; color: var(--primary); }
+  .hint { color: var(--muted); margin: 0 0 1.25rem; font-size: 0.95rem; max-width: 540px; text-align: center; }
+
+  .timer-bar {
+    display: flex; align-items: center; justify-content: center; gap: 1rem;
+    margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .timer {
+    font-family: 'Fraunces', Georgia, serif; font-size: 2rem; color: var(--primary);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.4rem 1.25rem; min-width: 100px; text-align: center;
+  }
+  .timer.warn { color: var(--accent); }
+  .scores {
+    display: flex; gap: 1rem;
+  }
+  .score {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 0.4rem 0.9rem; border-radius: 8px;
+    font-size: 0.9rem;
+  }
+  .score strong { font-family: 'Fraunces', Georgia, serif; font-size: 1.2rem; color: var(--primary); margin-left: 0.4rem; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.5rem 1.25rem; max-width: 420px; width: 100%; text-align: center;
+    margin-bottom: 1rem;
+  }
+  .target {
+    font-family: 'Fraunces', Georgia, serif; font-size: 2.25rem; font-weight: 500;
+    color: var(--primary); margin: 0.5rem 0 1rem;
+    padding-bottom: 1rem; border-bottom: 2px dashed var(--border);
+  }
+  .taboo-label {
+    font-size: 0.85rem; color: var(--accent); text-transform: uppercase;
+    letter-spacing: 0.1em; font-weight: 500; margin-bottom: 0.5rem;
+  }
+  .taboo-list {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .taboo-list li {
+    font-size: 1.1rem; padding: 0.4rem 0;
+    color: var(--ink);
+  }
+
+  .start-screen {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 2rem; max-width: 420px; width: 100%; text-align: center;
+  }
+  .start-screen p { color: var(--muted); margin-bottom: 1.5rem; }
+
+  .controls { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+  .controls button {
+    padding: 0.7rem 1.2rem; border-radius: 8px; cursor: pointer;
+    font-family: inherit; font-size: 0.95rem; font-weight: 500; border: none;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: #14304a; }
+  .btn-correct { background: var(--good); color: white; }
+  .btn-skip { background: transparent; color: var(--ink); border: 1px solid var(--border) !important; }
+  .btn-taboo { background: var(--accent); color: white; }
+
+  .turn-indicator {
+    background: var(--accent); color: white;
+    padding: 0.4rem 1rem; border-radius: 999px;
+    font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem;
+    display: inline-block;
+  }
+
+  .summary {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 2rem; max-width: 420px; width: 100%; text-align: center;
+  }
+  .summary h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; color: var(--primary); margin: 0 0 1rem; }
+</style>
+</head>
+<body>
+<h1>Business meetings taboo</h1>
+<p class="hint">B2 · Describe the word at the top to your team — without using any of the forbidden words underneath.</p>
+
+<div id="game"></div>
+
+<script>
+  const CARDS = [
+    { target: 'AGENDA',     taboo: ['list', 'plan', 'meeting', 'topics', 'schedule'] },
+    { target: 'DEADLINE',   taboo: ['date', 'finish', 'time', 'project', 'late'] },
+    { target: 'BRAINSTORM', taboo: ['ideas', 'think', 'group', 'creative', 'meeting'] },
+    { target: 'BUDGET',     taboo: ['money', 'plan', 'spend', 'cost', 'finance'] },
+    { target: 'STAKEHOLDER',taboo: ['person', 'company', 'invest', 'shares', 'project'] },
+    { target: 'FEEDBACK',   taboo: ['comment', 'opinion', 'response', 'review', 'tell'] },
+    { target: 'DELEGATE',   taboo: ['give', 'task', 'work', 'assign', 'team'] },
+    { target: 'MILESTONE',  taboo: ['goal', 'progress', 'project', 'achievement', 'point'] },
+    { target: 'CONFERENCE CALL', taboo: ['phone', 'meeting', 'remote', 'group', 'talk'] },
+    { target: 'CHAIRPERSON',taboo: ['lead', 'meeting', 'person', 'head', 'boss'] },
+    { target: 'MINUTES',    taboo: ['notes', 'meeting', 'time', 'write', 'record'] },
+    { target: 'OUTSOURCE',  taboo: ['hire', 'company', 'external', 'work', 'cheap'] },
+    { target: 'PITCH',      taboo: ['present', 'sell', 'idea', 'investor', 'business'] },
+    { target: 'KPI',        taboo: ['metric', 'measure', 'performance', 'target', 'success'] },
+    { target: 'NEGOTIATE',  taboo: ['deal', 'agree', 'price', 'discuss', 'contract'] },
+    { target: 'ROADMAP',    taboo: ['plan', 'future', 'path', 'goal', 'steps'] },
+    { target: 'BENCHMARK',  taboo: ['compare', 'standard', 'measure', 'reference', 'best'] },
+    { target: 'PIVOT',      taboo: ['change', 'direction', 'strategy', 'turn', 'business'] },
+  ];
+
+  const ROUND_DURATION = 60; // seconds
+
+  let scores = [0, 0];
+  let currentTeam = 0;
+  let timerId = null;
+  let timeLeft = ROUND_DURATION;
+  let deck = [];
+  let currentCard = null;
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function renderStart() {
+    document.getElementById('game').innerHTML = `
+      <div class="start-screen">
+        <h2 style="font-family: 'Fraunces', Georgia, serif; font-weight: 500; color: var(--primary); margin: 0 0 0.5rem;">Ready to play?</h2>
+        <p>One player describes the word; their teammates guess. 60 seconds per round. Correct = +1, taboo = −1, skip = 0.</p>
+        <div class="controls">
+          <button class="btn-primary" onclick="startRound()">Start round</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderRound() {
+    const warn = timeLeft <= 10 ? 'warn' : '';
+    document.getElementById('game').innerHTML = `
+      <div class="turn-indicator">Team ${currentTeam + 1}'s turn</div>
+      <div class="timer-bar">
+        <div class="timer ${warn}" id="timerDisplay">${timeLeft}s</div>
+        <div class="scores">
+          <div class="score">Team A <strong id="s0">${scores[0]}</strong></div>
+          <div class="score">Team B <strong id="s1">${scores[1]}</strong></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="target">${currentCard.target}</div>
+        <div class="taboo-label">Forbidden words</div>
+        <ul class="taboo-list">
+          ${currentCard.taboo.map(w => `<li>${w}</li>`).join('')}
+        </ul>
+      </div>
+      <div class="controls">
+        <button class="btn-correct" onclick="mark('correct')">✓ Correct</button>
+        <button class="btn-skip" onclick="mark('skip')">→ Skip</button>
+        <button class="btn-taboo" onclick="mark('taboo')">✗ Taboo!</button>
+      </div>
+      <div style="margin-top: 1rem;">
+        <button class="btn-skip" style="border: 1px solid var(--border);" onclick="endRound()">End round early</button>
+      </div>
+    `;
+  }
+
+  function renderSummary() {
+    const winner = scores[0] === scores[1] ? "It's a tie!" : `Team ${scores[0] > scores[1] ? 'A' : 'B'} leads`;
+    document.getElementById('game').innerHTML = `
+      <div class="summary">
+        <h2>${winner}</h2>
+        <div class="scores" style="justify-content: center; margin: 1rem 0 1.5rem;">
+          <div class="score">Team A <strong>${scores[0]}</strong></div>
+          <div class="score">Team B <strong>${scores[1]}</strong></div>
+        </div>
+        <div class="controls">
+          <button class="btn-primary" onclick="nextTurn()">${currentTeam === 0 ? 'Pass to Team B' : 'Pass to Team A'}</button>
+          <button class="btn-skip" style="border: 1px solid var(--border);" onclick="resetGame()">New game</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function startRound() {
+    if (deck.length === 0) deck = shuffle(CARDS);
+    currentCard = deck.pop();
+    timeLeft = ROUND_DURATION;
+    renderRound();
+    timerId = setInterval(tick, 1000);
+  }
+
+  function tick() {
+    timeLeft--;
+    const display = document.getElementById('timerDisplay');
+    if (display) {
+      display.textContent = `${timeLeft}s`;
+      display.classList.toggle('warn', timeLeft <= 10);
+    }
+    if (timeLeft <= 0) {
+      endRound();
+    }
+  }
+
+  function nextCard() {
+    if (deck.length === 0) deck = shuffle(CARDS);
+    currentCard = deck.pop();
+    renderRound();
+  }
+
+  function mark(result) {
+    if (result === 'correct') scores[currentTeam]++;
+    if (result === 'taboo') scores[currentTeam] = Math.max(0, scores[currentTeam] - 1);
+    nextCard();
+  }
+
+  function endRound() {
+    if (timerId) clearInterval(timerId);
+    timerId = null;
+    renderSummary();
+  }
+
+  function nextTurn() {
+    currentTeam = currentTeam === 0 ? 1 : 0;
+    renderStart();
+  }
+
+  function resetGame() {
+    if (timerId) clearInterval(timerId);
+    scores = [0, 0];
+    currentTeam = 0;
+    deck = [];
+    renderStart();
+  }
+
+  renderStart();
+</script>
+</body>
+</html>

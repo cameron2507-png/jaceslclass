@@ -1,0 +1,72 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const games = await getCollection('games');
+  return games.map(game => ({
+    params: { slug: game.id },
+    props: { game },
+  }));
+}
+
+const { game } = Astro.props;
+const { Content } = await render(game);
+const data = game.data;
+---
+<BaseLayout
+  title={`${data.title} — JAC's Class`}
+  description={data.description}
+>
+  <section class="container">
+    <div class="game-page-header">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> ›
+        <a href="/games">Games</a> ›
+        <a href={`/level/${data.level}`}>{data.level}</a>
+      </nav>
+
+      <div class="game-page-meta">
+        <span class={`pill pill--level level-${data.level}`}>{data.level}</span>
+        <a href={`/type/${data.type}`} class="pill">{data.type}</a>
+        <span class="pill">{data.topic}</span>
+        <span class="pill">{data.duration} min</span>
+        <span class="pill">{data.ageGroup}</span>
+      </div>
+
+      <h1>{data.title}</h1>
+      <p style="font-size: 1.05rem; color: var(--color-ink-soft); max-width: 680px; margin: 0.5rem 0 0;">
+        {data.description}
+      </p>
+    </div>
+
+    <div class="game-frame-wrap">
+      <iframe
+        src={`/games/${data.gameFile}`}
+        class="game-frame"
+        title={data.title}
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin"
+      ></iframe>
+    </div>
+
+    <div class="game-actions">
+      <a href={`/games/${data.gameFile}`} target="_blank" rel="noopener" class="btn btn--primary">
+        Open in full screen ↗
+      </a>
+      <a href={`/level/${data.level}`} class="btn btn--ghost">More {data.level} games</a>
+      <a href={`/type/${data.type}`} class="btn btn--ghost">More {data.type} games</a>
+    </div>
+
+    {data.instructions && (
+      <div class="classroom-tip">
+        <h3>How to use this in class</h3>
+        <p>{data.instructions}</p>
+      </div>
+    )}
+
+    <div class="prose" style="margin-top: 2rem;">
+      <Content />
+    </div>
+  </section>
+</BaseLayout>
