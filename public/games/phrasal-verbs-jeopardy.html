@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phrasal Verbs Jeopardy — B1/B2 | JAC's Class</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #faf6ec;
+    --bg-soft: #f4eed8;
+    --surface: #ffffff;
+    --board: #15263a;
+    --board-cell: #1f3654;
+    --board-cell-hover: #2c4870;
+    --board-used: #0c1828;
+    --gold: #d4a017;
+    --gold-bright: #e8b932;
+    --accent: #c84a2c;
+    --accent-soft: #e07a5f;
+    --teal: #0e7c66;
+    --ink: #15263a;
+    --ink-soft: #4a5a6f;
+    --muted: #6b7785;
+    --border: #d5cfb8;
+    --border-soft: #e8e3cf;
+    --shadow-sm: 0 2px 8px rgba(20, 38, 58, 0.06);
+    --shadow-md: 0 4px 20px rgba(20, 38, 58, 0.1);
+    --shadow-lg: 0 12px 40px rgba(20, 38, 58, 0.18);
+  }
+
+  html, body {
+    font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Subtle paper texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(212, 160, 23, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(200, 74, 44, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 48px;
+  }
+
+  /* ─── HEADER ──────────────────────────────────────── */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .title-block .eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin-top: 8px;
+    max-width: 480px;
+  }
+
+  .reset-btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1.5px solid var(--border);
+    padding: 10px 18px;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .reset-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+
+  /* ─── SCOREBOARD ──────────────────────────────────── */
+  .scoreboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .team {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+
+  .team-1 { border-left: 6px solid var(--accent); }
+  .team-2 { border-left: 6px solid var(--teal); }
+
+  .team-name {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 4px 0;
+    border-bottom: 1.5px dashed transparent;
+    transition: border-color 0.2s ease;
+  }
+
+  .team-name:hover, .team-name:focus {
+    border-bottom-color: var(--border);
+  }
+
+  .team-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .team-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  .team-score-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .score-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg-soft);
+    border: none;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-btn:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .team-score {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--ink);
+    min-width: 60px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ─── BOARD ──────────────────────────────────────── */
+  .board {
+    background: var(--board);
+    border-radius: 14px;
+    padding: 6px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .category-cell {
+    background: var(--accent);
+    color: white;
+    padding: 18px 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
+  }
+
+  .clue-cell {
+    background: var(--board-cell);
+    color: var(--gold-bright);
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .clue-cell::before {
+    content: '$';
+    font-size: 1rem;
+    margin-right: 1px;
+    opacity: 0.85;
+    font-weight: 600;
+  }
+
+  .clue-cell:hover:not(.used) {
+    background: var(--board-cell-hover);
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .clue-cell.used {
+    background: var(--board-used);
+    color: transparent;
+    cursor: default;
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+
+  .clue-cell.used::before {
+    content: '✓';
+    font-size: 1.4rem;
+    color: rgba(255,255,255,0.15);
+    margin: 0;
+  }
+
+  /* ─── MODAL ──────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 28, 45, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 18px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1.5px solid var(--border);
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modal-header {
+    background: var(--board);
+    color: white;
+    padding: 22px 28px;
+    border-radius: 18px 18px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .modal-category {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .modal-value {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold-bright);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .modal-body {
+    padding: 36px 28px 24px;
+    text-align: center;
+  }
+
+  .clue-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .clue-text {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  .reveal-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(200, 74, 44, 0.3);
+  }
+
+  .reveal-btn:hover {
+    background: var(--ink);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(20, 38, 58, 0.3);
+  }
+
+  .answer-block {
+    display: none;
+    margin-top: 8px;
+  }
+
+  .answer-block.visible {
+    display: block;
+    animation: revealFade 0.4s ease;
+  }
+
+  @keyframes revealFade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .answer-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+
+  .answer-text {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 2.6rem);
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .answer-example {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 14px 18px;
+    background: var(--bg-soft);
+    border-radius: 10px;
+    border-left: 3px solid var(--gold);
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .answer-example::before {
+    content: '"';
+    font-family: 'Fraunces', Georgia, serif;
+    color: var(--gold);
+    font-size: 1.4rem;
+    margin-right: 2px;
+    font-style: normal;
+  }
+
+  .answer-example::after {
+    content: '"';
+    font-family: 'Fraunces', Georgia, serif;
+    color: var(--gold);
+    font-size: 1.4rem;
+    margin-left: 2px;
+    font-style: normal;
+  }
+
+  .award-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .award-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .award-btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+    line-height: 1.3;
+  }
+
+  .award-btn-1 {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .award-btn-1:hover {
+    background: var(--accent);
+    color: white;
+  }
+
+  .award-btn-2 {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  .award-btn-2:hover {
+    background: var(--teal);
+    color: white;
+  }
+
+  .skip-btn {
+    width: 100%;
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .skip-btn:hover {
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+
+  /* ─── RESPONSIVE ─────────────────────────────────── */
+  @media (max-width: 640px) {
+    .wrap { padding: 16px 12px 32px; }
+    header { padding-bottom: 14px; margin-bottom: 16px; }
+    .scoreboard { grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
+    .team { padding: 14px 16px; }
+    .team-score { font-size: 1.4rem; }
+    .board { padding: 4px; gap: 4px; }
+    .category-cell {
+      padding: 10px 6px;
+      min-height: 60px;
+      font-size: 0.7rem;
+      letter-spacing: 0;
+      line-height: 1.1;
+    }
+    .clue-cell {
+      min-height: 64px;
+      font-size: 1rem;
+      padding: 8px;
+    }
+    .clue-cell::before {
+      font-size: 0.7rem;
+    }
+    .modal-header { padding: 16px 20px; }
+    .modal-body { padding: 24px 20px 20px; }
+    .modal-category { font-size: 0.85rem; }
+    .modal-value { font-size: 1.3rem; }
+    .award-buttons { grid-template-columns: 1fr; }
+  }
+
+  /* ─── PRINT ─────────────────────────────────────── */
+  @media print {
+    .modal-overlay, .reset-btn { display: none !important; }
+    body { background: white; }
+    .clue-cell { color: var(--gold) !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="title-block">
+      <span class="eyebrow">B1 / B2 — Two teams</span>
+      <h1>Phrasal Verbs <em>Jeopardy</em></h1>
+      <p class="subtitle">Twenty-five clues across five categories. Click a value, read the clue, reveal the answer, award the points.</p>
+    </div>
+    <button class="reset-btn" onclick="resetGame()">↺ New game</button>
+  </header>
+
+  <div class="scoreboard">
+    <div class="team team-1">
+      <div class="team-info">
+        <div class="team-label">Team 1</div>
+        <input class="team-name" type="text" value="Red Team" maxlength="20" aria-label="Team 1 name">
+      </div>
+      <div class="team-score-box">
+        <button class="score-btn" onclick="adjustScore(0, -100)" aria-label="Subtract 100 from Team 1">−</button>
+        <div class="team-score" id="score-1">0</div>
+        <button class="score-btn" onclick="adjustScore(0, 100)" aria-label="Add 100 to Team 1">+</button>
+      </div>
+    </div>
+    <div class="team team-2">
+      <div class="team-info">
+        <div class="team-label">Team 2</div>
+        <input class="team-name" type="text" value="Green Team" maxlength="20" aria-label="Team 2 name">
+      </div>
+      <div class="team-score-box">
+        <button class="score-btn" onclick="adjustScore(1, -100)" aria-label="Subtract 100 from Team 2">−</button>
+        <div class="team-score" id="score-2">0</div>
+        <button class="score-btn" onclick="adjustScore(1, 100)" aria-label="Add 100 to Team 2">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="board" id="board"></div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="if(event.target === this) closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-category" id="modal-category">Category</div>
+      <div class="modal-value" id="modal-value">$100</div>
+    </div>
+    <div class="modal-body">
+      <div class="clue-label">Clue</div>
+      <div class="clue-text" id="modal-clue">—</div>
+
+      <button class="reveal-btn" id="reveal-btn" onclick="revealAnswer()">Reveal answer</button>
+
+      <div class="answer-block" id="answer-block">
+        <div class="answer-label">Phrasal verb</div>
+        <div class="answer-text" id="modal-answer">—</div>
+        <div class="answer-example" id="modal-example">—</div>
+
+        <div class="award-label">Who got it right?</div>
+        <div class="award-buttons">
+          <button class="award-btn award-btn-1" onclick="award(0)" id="award-btn-1">— team</button>
+          <button class="award-btn award-btn-2" onclick="award(1)" id="award-btn-2">— team</button>
+        </div>
+        <button class="skip-btn" onclick="closeModal(true)">No team got it — skip</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const data = {
+    categories: [
+      {
+        name: 'Work & Business',
+        clues: [
+          { value: 100, clue: 'To perform or complete a task or instruction.', answer: 'CARRY OUT', example: 'We need to carry out a survey before the launch.' },
+          { value: 200, clue: 'To delay or postpone something to a later time.', answer: 'PUT OFF', example: 'Can we put off the meeting until next week?' },
+          { value: 300, clue: 'To submit work to a teacher, manager or authority.', answer: 'HAND IN', example: 'Please hand in your reports by Friday.' },
+          { value: 400, clue: 'To think of or invent a new idea, plan or solution.', answer: 'COME UP WITH', example: 'She came up with a brilliant solution to the problem.' },
+          { value: 500, clue: 'To investigate or examine something carefully.', answer: 'LOOK INTO', example: 'We are looking into the customer\u2019s complaint.' }
+        ]
+      },
+      {
+        name: 'Relationships',
+        clues: [
+          { value: 100, clue: 'To end a romantic relationship.', answer: 'BREAK UP', example: 'They broke up after three years together.' },
+          { value: 200, clue: 'To have a friendly relationship with someone.', answer: 'GET ALONG', example: 'I get along well with most of my colleagues.' },
+          { value: 300, clue: 'To meet someone unexpectedly.', answer: 'RUN INTO', example: 'I ran into an old friend at the supermarket yesterday.' },
+          { value: 400, clue: 'To support someone, especially during a difficult time.', answer: 'STAND BY', example: 'His family stood by him through the whole ordeal.' },
+          { value: 500, clue: 'To admire and respect someone, often someone older or more experienced.', answer: 'LOOK UP TO', example: 'She really looks up to her older sister.' }
+        ]
+      },
+      {
+        name: 'Travel & Movement',
+        clues: [
+          { value: 100, clue: 'When a plane leaves the ground.', answer: 'TAKE OFF', example: 'Our flight takes off at 8 a.m.' },
+          { value: 200, clue: 'To register your arrival at a hotel or airport.', answer: 'CHECK IN', example: 'We checked in at the hotel just before three.' },
+          { value: 300, clue: 'To visit somewhere briefly, often without arrangement.', answer: 'DROP BY', example: 'I\u2019ll drop by your office on my way home.' },
+          { value: 400, clue: 'To arrive somewhere, often unexpectedly or late.', answer: 'TURN UP', example: 'He turned up an hour late, with no apology.' },
+          { value: 500, clue: 'To accept a difficult past event and continue with life.', answer: 'MOVE ON', example: 'It\u2019s time to move on from that mistake.' }
+        ]
+      },
+      {
+        name: 'Daily Life',
+        clues: [
+          { value: 100, clue: 'To leave your bed in the morning.', answer: 'GET UP', example: 'I get up at seven every day.' },
+          { value: 200, clue: 'To put clothes on briefly to test if they fit.', answer: 'TRY ON', example: 'Can I try on these jeans, please?' },
+          { value: 300, clue: 'To find or discover something or someone by chance.', answer: 'COME ACROSS', example: 'I came across an old photo album in the attic.' },
+          { value: 400, clue: 'To stop trying or stop doing something.', answer: 'GIVE UP', example: 'Don\u2019t give up — you\u2019re almost there.' },
+          { value: 500, clue: 'To clean and organise a room or space.', answer: 'TIDY UP', example: 'Please tidy up the kitchen before our guests arrive.' }
+        ]
+      },
+      {
+        name: 'Emotions',
+        clues: [
+          { value: 100, clue: 'To become happier or more cheerful.', answer: 'CHEER UP', example: 'Cheer up — it\u2019s not the end of the world.' },
+          { value: 200, clue: 'To suddenly become very angry.', answer: 'BLOW UP', example: 'She blew up when she heard what he had done.' },
+          { value: 300, clue: 'To recover from a difficult experience or illness.', answer: 'GET OVER', example: 'It took him months to get over the breakup.' },
+          { value: 400, clue: 'To feel pleased and excited about something in the future.', answer: 'LOOK FORWARD TO', example: 'I\u2019m really looking forward to the holidays.' },
+          { value: 500, clue: 'To suppress or hide your emotions instead of expressing them.', answer: 'BOTTLE UP', example: 'Don\u2019t bottle up your feelings — talk to someone.' }
+        ]
+      }
+    ],
+    teams: [{ name: 'Red Team', score: 0 }, { name: 'Green Team', score: 0 }],
+    used: new Set(),
+    currentClue: null
+  };
+
+  // ─── Build the board ─────────────────────────────────
+  function buildBoard() {
+    const board = document.getElementById('board');
+    board.innerHTML = '';
+
+    // Category headers
+    data.categories.forEach(cat => {
+      const cell = document.createElement('div');
+      cell.className = 'category-cell';
+      cell.textContent = cat.name;
+      board.appendChild(cell);
+    });
+
+    // Clue cells (5 rows of values)
+    for (let row = 0; row < 5; row++) {
+      data.categories.forEach((cat, catIdx) => {
+        const clue = cat.clues[row];
+        const cellId = `${catIdx}-${row}`;
+        const cell = document.createElement('button');
+        cell.className = 'clue-cell';
+        cell.textContent = clue.value;
+        cell.dataset.id = cellId;
+        if (data.used.has(cellId)) cell.classList.add('used');
+        cell.addEventListener('click', () => {
+          if (!data.used.has(cellId)) openClue(catIdx, row);
+        });
+        board.appendChild(cell);
+      });
+    }
+  }
+
+  // ─── Open a clue ─────────────────────────────────────
+  function openClue(catIdx, clueIdx) {
+    const cat = data.categories[catIdx];
+    const clue = cat.clues[clueIdx];
+    data.currentClue = { catIdx, clueIdx, value: clue.value };
+
+    document.getElementById('modal-category').textContent = cat.name;
+    document.getElementById('modal-value').textContent = '$' + clue.value;
+    document.getElementById('modal-clue').textContent = clue.clue;
+    document.getElementById('modal-answer').textContent = clue.answer;
+    document.getElementById('modal-example').textContent = clue.example;
+
+    // Reset reveal state
+    document.getElementById('reveal-btn').style.display = 'inline-block';
+    document.getElementById('answer-block').classList.remove('visible');
+
+    // Update team button labels with current names
+    document.getElementById('award-btn-1').textContent = data.teams[0].name;
+    document.getElementById('award-btn-2').textContent = data.teams[1].name;
+
+    document.getElementById('modal').classList.add('active');
+  }
+
+  function revealAnswer() {
+    document.getElementById('reveal-btn').style.display = 'none';
+    document.getElementById('answer-block').classList.add('visible');
+  }
+
+  function award(teamIdx) {
+    if (!data.currentClue) return;
+    data.teams[teamIdx].score += data.currentClue.value;
+    updateScores();
+    markUsed();
+    closeModal();
+  }
+
+  function closeModal(skipAndMark) {
+    if (skipAndMark) markUsed();
+    document.getElementById('modal').classList.remove('active');
+    data.currentClue = null;
+  }
+
+  function markUsed() {
+    if (!data.currentClue) return;
+    const cellId = `${data.currentClue.catIdx}-${data.currentClue.clueIdx}`;
+    data.used.add(cellId);
+    const cell = document.querySelector(`[data-id="${cellId}"]`);
+    if (cell) cell.classList.add('used');
+  }
+
+  function updateScores() {
+    document.getElementById('score-1').textContent = data.teams[0].score;
+    document.getElementById('score-2').textContent = data.teams[1].score;
+  }
+
+  function adjustScore(teamIdx, delta) {
+    data.teams[teamIdx].score += delta;
+    updateScores();
+  }
+
+  function resetGame() {
+    if (data.used.size > 0 && !confirm('Start a new game? All scores and used clues will be reset.')) return;
+    data.teams[0].score = 0;
+    data.teams[1].score = 0;
+    data.used.clear();
+    updateScores();
+    buildBoard();
+  }
+
+  // Sync team name inputs into data
+  document.querySelectorAll('.team-name').forEach((input, idx) => {
+    input.addEventListener('input', e => {
+      data.teams[idx].name = e.target.value || `Team ${idx + 1}`;
+    });
+  });
+
+  // ESC closes modal
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // Init
+  buildBoard();
+  updateScores();
+</script>
+
+</body>
+</html>
