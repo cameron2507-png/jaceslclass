@@ -3,34 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phrasal Verbs Jeopardy — B1/B2 | JAC's Class</title>
+<title>Phrasal verbs jeopardy — JAC's Class</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --bg: #faf6ec;
-    --bg-soft: #f4eed8;
+    --bg-tint: #f4eed8;
     --surface: #ffffff;
-    --board: #15263a;
-    --board-cell: #1f3654;
-    --board-cell-hover: #2c4870;
-    --board-used: #0c1828;
-    --gold: #d4a017;
-    --gold-bright: #e8b932;
-    --accent: #c84a2c;
-    --accent-soft: #e07a5f;
-    --teal: #0e7c66;
     --ink: #15263a;
     --ink-soft: #4a5a6f;
-    --muted: #6b7785;
+    --muted: #8a8676;
     --border: #d5cfb8;
-    --border-soft: #e8e3cf;
-    --shadow-sm: 0 2px 8px rgba(20, 38, 58, 0.06);
-    --shadow-md: 0 4px 20px rgba(20, 38, 58, 0.1);
-    --shadow-lg: 0 12px 40px rgba(20, 38, 58, 0.18);
+    --border-soft: #ece6d0;
+    --accent: #c84a2c;
+    --teal: #0e7c66;
   }
 
   html, body {
@@ -41,282 +31,238 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Subtle paper texture */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(212, 160, 23, 0.04) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(200, 74, 44, 0.03) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
   .wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 1100px;
+    max-width: 920px;
     margin: 0 auto;
-    padding: 28px 20px 48px;
+    padding: 36px 20px 56px;
   }
 
-  /* ─── HEADER ──────────────────────────────────────── */
+  /* HEADER */
   header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid var(--border);
-  }
-
-  .title-block .eyebrow {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 6px;
+    text-align: center;
+    margin-bottom: 32px;
   }
 
   h1 {
     font-family: 'Fraunces', Georgia, serif;
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 600;
-    line-height: 1;
+    font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.15;
     color: var(--ink);
-    letter-spacing: -0.02em;
-  }
-
-  h1 em {
-    font-style: italic;
-    color: var(--accent);
-    font-weight: 400;
   }
 
   .subtitle {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--ink-soft);
     margin-top: 8px;
-    max-width: 480px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
   }
 
-  .reset-btn {
-    font-family: 'Hanken Grotesk', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    background: transparent;
-    border: 1.5px solid var(--border);
-    padding: 10px 18px;
-    border-radius: 24px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .reset-btn:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-    background: var(--surface);
-  }
-
-  /* ─── SCOREBOARD ──────────────────────────────────── */
+  /* SCOREBOARD */
   .scoreboard {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 14px;
     margin-bottom: 24px;
   }
 
   .team {
     background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 18px 22px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.2s ease;
   }
 
-  .team-1 { border-left: 6px solid var(--accent); }
-  .team-2 { border-left: 6px solid var(--teal); }
+  .team-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .team-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .team-1 .team-dot { background: var(--accent); }
+  .team-2 .team-dot { background: var(--teal); }
 
   .team-name {
     font-family: 'Hanken Grotesk', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 500;
     color: var(--ink);
     background: transparent;
     border: none;
     outline: none;
     width: 100%;
-    padding: 4px 0;
-    border-bottom: 1.5px dashed transparent;
-    transition: border-color 0.2s ease;
+    padding: 2px 0;
+    border-bottom: 1px dashed transparent;
   }
 
-  .team-name:hover, .team-name:focus {
+  .team-name:focus, .team-name:hover {
     border-bottom-color: var(--border);
-  }
-
-  .team-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .team-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 2px;
   }
 
   .team-score-box {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .score-btn {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
-    background: var(--bg-soft);
-    border: none;
+    background: transparent;
+    border: 1px solid var(--border);
     color: var(--ink-soft);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.15s ease;
+    line-height: 1;
   }
 
   .score-btn:hover {
     background: var(--ink);
+    border-color: var(--ink);
     color: var(--bg);
   }
 
   .team-score {
     font-family: 'Fraunces', Georgia, serif;
-    font-size: 1.6rem;
-    font-weight: 600;
+    font-size: 1.4rem;
+    font-weight: 500;
     color: var(--ink);
-    min-width: 60px;
+    min-width: 50px;
     text-align: center;
     font-variant-numeric: tabular-nums;
   }
 
-  /* ─── BOARD ──────────────────────────────────────── */
+  /* BOARD */
   .board {
-    background: var(--board);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 6px;
+    overflow: hidden;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
   }
 
   .category-cell {
-    background: var(--accent);
-    color: white;
-    padding: 18px 12px;
-    border-radius: 8px;
+    padding: 18px 10px;
     text-align: center;
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 1rem;
-    font-weight: 600;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--bg-tint);
+    border-bottom: 1px solid var(--border);
     line-height: 1.2;
-    min-height: 80px;
+    min-height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
+  }
+
+  .category-cell:not(:nth-child(5)) {
+    border-right: 1px solid var(--border);
   }
 
   .clue-cell {
-    background: var(--board-cell);
-    color: var(--gold-bright);
-    border-radius: 8px;
-    padding: 12px;
-    min-height: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    background: var(--surface);
     border: none;
-    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.25);
-    position: relative;
-    overflow: hidden;
+    border-bottom: 1px solid var(--border-soft);
+    padding: 22px 10px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-height: 72px;
+    font-variant-numeric: tabular-nums;
   }
 
-  .clue-cell::before {
-    content: '$';
-    font-size: 1rem;
-    margin-right: 1px;
-    opacity: 0.85;
-    font-weight: 600;
+  .clue-cell:not(:nth-child(5n)) {
+    border-right: 1px solid var(--border-soft);
   }
 
-  .clue-cell:hover:not(.used) {
-    background: var(--board-cell-hover);
-    transform: translateY(-2px);
-    color: white;
-    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.2);
+  .clue-cell:nth-last-child(-n+5) {
+    border-bottom: none;
+  }
+
+  .clue-cell:not(.used):hover {
+    background: var(--bg);
+    color: var(--accent);
   }
 
   .clue-cell.used {
-    background: var(--board-used);
-    color: transparent;
+    color: var(--border);
     cursor: default;
-    box-shadow: inset 0 0 0 0 transparent;
+    background: var(--bg);
+    text-decoration: line-through;
+    text-decoration-color: var(--border);
   }
 
-  .clue-cell.used::before {
-    content: '✓';
-    font-size: 1.4rem;
-    color: rgba(255,255,255,0.15);
-    margin: 0;
+  /* ACTIONS */
+  .actions {
+    text-align: center;
+    margin-top: 20px;
   }
 
-  /* ─── MODAL ──────────────────────────────────────── */
+  .reset-btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 4px;
+    transition: color 0.15s ease;
+  }
+
+  .reset-btn:hover {
+    color: var(--ink);
+    text-decoration-color: var(--ink);
+  }
+
+  /* MODAL */
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 28, 45, 0.72);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: rgba(20, 38, 58, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 100;
     padding: 20px;
+    z-index: 100;
     animation: fadeIn 0.2s ease;
   }
 
-  .modal-overlay.active {
-    display: flex;
-  }
+  .modal-overlay.active { display: flex; }
 
   @keyframes fadeIn {
     from { opacity: 0; }
@@ -325,264 +271,226 @@
 
   .modal {
     background: var(--surface);
-    border-radius: 18px;
-    max-width: 640px;
+    border-radius: 16px;
+    max-width: 580px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg);
-    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border: 1.5px solid var(--border);
+    padding: 36px 28px 28px;
+    border: 1px solid var(--border);
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
   }
 
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  .modal-header {
-    background: var(--board);
-    color: white;
-    padding: 22px 28px;
-    border-radius: 18px 18px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .modal-category {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .modal-value {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--gold-bright);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .modal-body {
-    padding: 36px 28px 24px;
-    text-align: center;
-  }
-
-  .clue-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-
-  .clue-text {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: clamp(1.4rem, 3.5vw, 1.9rem);
-    font-weight: 500;
-    line-height: 1.3;
-    color: var(--ink);
-    margin-bottom: 32px;
-    font-style: italic;
-  }
-
-  .reveal-btn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    font-family: 'Hanken Grotesk', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 14px 32px;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(200, 74, 44, 0.3);
-  }
-
-  .reveal-btn:hover {
-    background: var(--ink);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(20, 38, 58, 0.3);
-  }
-
-  .answer-block {
-    display: none;
-    margin-top: 8px;
-  }
-
-  .answer-block.visible {
-    display: block;
-    animation: revealFade 0.4s ease;
-  }
-
-  @keyframes revealFade {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .answer-label {
-    font-size: 0.75rem;
+  .modal-meta {
+    text-align: center;
+    margin-bottom: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--teal);
-    margin-bottom: 8px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+
+  .modal-meta .dot-sep {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .modal-value { color: var(--accent); }
+
+  .clue-text {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(1.3rem, 3.5vw, 1.7rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink);
+    text-align: center;
+    margin-bottom: 32px;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .reveal-wrapper { text-align: center; }
+
+  .btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 12px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 1px solid;
+    line-height: 1.3;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ANSWER */
+  .answer-block { display: none; text-align: center; }
+  .answer-block.visible {
+    display: block;
+    animation: revealFade 0.3s ease;
+  }
+
+  @keyframes revealFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .answer-text {
     font-family: 'Fraunces', Georgia, serif;
-    font-size: clamp(2rem, 5vw, 2.6rem);
-    font-weight: 700;
+    font-size: clamp(1.7rem, 4.5vw, 2.1rem);
+    font-weight: 600;
     color: var(--ink);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     letter-spacing: -0.01em;
   }
 
   .answer-example {
     font-family: 'Fraunces', Georgia, serif;
     font-style: italic;
-    font-size: 1.05rem;
+    font-size: 1rem;
     color: var(--ink-soft);
-    line-height: 1.5;
-    padding: 14px 18px;
-    background: var(--bg-soft);
+    line-height: 1.55;
+    padding: 14px 16px;
+    background: var(--bg);
     border-radius: 10px;
-    border-left: 3px solid var(--gold);
-    margin-bottom: 28px;
+    margin-bottom: 26px;
+    border: 1px solid var(--border-soft);
     text-align: left;
   }
 
   .answer-example::before {
-    content: '"';
-    font-family: 'Fraunces', Georgia, serif;
-    color: var(--gold);
-    font-size: 1.4rem;
-    margin-right: 2px;
-    font-style: normal;
+    content: '\201C';
+    color: var(--muted);
+    margin-right: 1px;
   }
 
   .answer-example::after {
-    content: '"';
-    font-family: 'Fraunces', Georgia, serif;
-    color: var(--gold);
-    font-size: 1.4rem;
-    margin-left: 2px;
-    font-style: normal;
+    content: '\201D';
+    color: var(--muted);
+    margin-left: 1px;
   }
 
   .award-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .award-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
   }
 
   .award-btn {
     font-family: 'Hanken Grotesk', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 12px 14px;
     border-radius: 10px;
-    border: 2px solid;
+    border: 1px solid var(--border);
     cursor: pointer;
-    transition: all 0.2s ease;
-    background: white;
-    line-height: 1.3;
+    transition: all 0.15s ease;
+    background: var(--surface);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
 
-  .award-btn-1 {
-    border-color: var(--accent);
-    color: var(--accent);
+  .award-btn:hover {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
   }
 
-  .award-btn-1:hover {
-    background: var(--accent);
-    color: white;
+  .award-btn::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
 
-  .award-btn-2 {
-    border-color: var(--teal);
-    color: var(--teal);
-  }
-
-  .award-btn-2:hover {
-    background: var(--teal);
-    color: white;
-  }
+  .award-btn-1::before { background: var(--accent); }
+  .award-btn-2::before { background: var(--teal); }
 
   .skip-btn {
-    width: 100%;
-    background: transparent;
-    color: var(--muted);
-    border: 1.5px solid var(--border);
+    display: block;
+    margin: 8px auto 0;
     font-family: 'Hanken Grotesk', sans-serif;
     font-size: 0.8rem;
-    font-weight: 500;
-    padding: 10px;
-    border-radius: 10px;
+    color: var(--muted);
+    background: transparent;
+    border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    padding: 6px 12px;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 3px;
   }
 
   .skip-btn:hover {
     color: var(--ink);
-    border-color: var(--ink-soft);
+    text-decoration-color: var(--ink);
   }
 
-  /* ─── RESPONSIVE ─────────────────────────────────── */
+  /* MOBILE */
   @media (max-width: 640px) {
-    .wrap { padding: 16px 12px 32px; }
-    header { padding-bottom: 14px; margin-bottom: 16px; }
-    .scoreboard { grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
-    .team { padding: 14px 16px; }
-    .team-score { font-size: 1.4rem; }
-    .board { padding: 4px; gap: 4px; }
+    .wrap { padding: 24px 14px 40px; }
+    header { margin-bottom: 22px; }
+    .scoreboard { grid-template-columns: 1fr; gap: 8px; margin-bottom: 18px; }
+    .team { padding: 12px 14px; }
+    .team-score { font-size: 1.2rem; min-width: 40px; }
     .category-cell {
-      padding: 10px 6px;
-      min-height: 60px;
-      font-size: 0.7rem;
-      letter-spacing: 0;
-      line-height: 1.1;
+      padding: 10px 4px;
+      min-height: 50px;
+      font-size: 0.55rem;
+      letter-spacing: 0.6px;
     }
     .clue-cell {
-      min-height: 64px;
-      font-size: 1rem;
-      padding: 8px;
+      padding: 14px 4px;
+      font-size: 0.95rem;
+      min-height: 56px;
     }
-    .clue-cell::before {
-      font-size: 0.7rem;
-    }
-    .modal-header { padding: 16px 20px; }
-    .modal-body { padding: 24px 20px 20px; }
-    .modal-category { font-size: 0.85rem; }
-    .modal-value { font-size: 1.3rem; }
+    .modal { padding: 26px 20px 22px; }
     .award-buttons { grid-template-columns: 1fr; }
   }
 
-  /* ─── PRINT ─────────────────────────────────────── */
   @media print {
-    .modal-overlay, .reset-btn { display: none !important; }
+    .modal-overlay, .reset-btn, .actions { display: none !important; }
     body { background: white; }
-    .clue-cell { color: var(--gold) !important; }
   }
 </style>
 </head>
@@ -591,33 +499,29 @@
 <div class="wrap">
 
   <header>
-    <div class="title-block">
-      <span class="eyebrow">B1 / B2 — Two teams</span>
-      <h1>Phrasal Verbs <em>Jeopardy</em></h1>
-      <p class="subtitle">Twenty-five clues across five categories. Click a value, read the clue, reveal the answer, award the points.</p>
-    </div>
-    <button class="reset-btn" onclick="resetGame()">↺ New game</button>
+    <h1>Phrasal verbs jeopardy</h1>
+    <p class="subtitle">B1 / B2 · Two teams. Twenty-five clues across five categories. Click a value, read the clue, reveal the answer, award the points.</p>
   </header>
 
   <div class="scoreboard">
     <div class="team team-1">
       <div class="team-info">
-        <div class="team-label">Team 1</div>
+        <span class="team-dot" aria-hidden="true"></span>
         <input class="team-name" type="text" value="Red Team" maxlength="20" aria-label="Team 1 name">
       </div>
       <div class="team-score-box">
-        <button class="score-btn" onclick="adjustScore(0, -100)" aria-label="Subtract 100 from Team 1">−</button>
+        <button class="score-btn" onclick="adjustScore(0, -100)" aria-label="Subtract 100 from Team 1">&minus;</button>
         <div class="team-score" id="score-1">0</div>
         <button class="score-btn" onclick="adjustScore(0, 100)" aria-label="Add 100 to Team 1">+</button>
       </div>
     </div>
     <div class="team team-2">
       <div class="team-info">
-        <div class="team-label">Team 2</div>
+        <span class="team-dot" aria-hidden="true"></span>
         <input class="team-name" type="text" value="Green Team" maxlength="20" aria-label="Team 2 name">
       </div>
       <div class="team-score-box">
-        <button class="score-btn" onclick="adjustScore(1, -100)" aria-label="Subtract 100 from Team 2">−</button>
+        <button class="score-btn" onclick="adjustScore(1, -100)" aria-label="Subtract 100 from Team 2">&minus;</button>
         <div class="team-score" id="score-2">0</div>
         <button class="score-btn" onclick="adjustScore(1, 100)" aria-label="Add 100 to Team 2">+</button>
       </div>
@@ -626,33 +530,37 @@
 
   <div class="board" id="board"></div>
 
+  <div class="actions">
+    <button class="reset-btn" onclick="resetGame()">Start a new game</button>
+  </div>
+
 </div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal" onclick="if(event.target === this) closeModal()">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-category" id="modal-category">Category</div>
-      <div class="modal-value" id="modal-value">$100</div>
+    <div class="modal-meta">
+      <span id="modal-category">Category</span>
+      <span class="dot-sep" aria-hidden="true"></span>
+      <span class="modal-value" id="modal-value">100</span>
     </div>
-    <div class="modal-body">
-      <div class="clue-label">Clue</div>
-      <div class="clue-text" id="modal-clue">—</div>
 
-      <button class="reveal-btn" id="reveal-btn" onclick="revealAnswer()">Reveal answer</button>
+    <div class="clue-text" id="modal-clue">&mdash;</div>
 
-      <div class="answer-block" id="answer-block">
-        <div class="answer-label">Phrasal verb</div>
-        <div class="answer-text" id="modal-answer">—</div>
-        <div class="answer-example" id="modal-example">—</div>
+    <div class="reveal-wrapper" id="reveal-wrapper">
+      <button class="btn btn-primary" id="reveal-btn" onclick="revealAnswer()">Reveal answer</button>
+    </div>
 
-        <div class="award-label">Who got it right?</div>
-        <div class="award-buttons">
-          <button class="award-btn award-btn-1" onclick="award(0)" id="award-btn-1">— team</button>
-          <button class="award-btn award-btn-2" onclick="award(1)" id="award-btn-2">— team</button>
-        </div>
-        <button class="skip-btn" onclick="closeModal(true)">No team got it — skip</button>
+    <div class="answer-block" id="answer-block">
+      <div class="answer-text" id="modal-answer">&mdash;</div>
+      <div class="answer-example" id="modal-example">&mdash;</div>
+
+      <div class="award-label">Who got it?</div>
+      <div class="award-buttons">
+        <button class="award-btn award-btn-1" onclick="award(0)" id="award-btn-1">Red Team</button>
+        <button class="award-btn award-btn-2" onclick="award(1)" id="award-btn-2">Green Team</button>
       </div>
+      <button class="skip-btn" onclick="closeModal(true)">No team got it</button>
     </div>
   </div>
 </div>
@@ -696,18 +604,18 @@
           { value: 100, clue: 'To leave your bed in the morning.', answer: 'GET UP', example: 'I get up at seven every day.' },
           { value: 200, clue: 'To put clothes on briefly to test if they fit.', answer: 'TRY ON', example: 'Can I try on these jeans, please?' },
           { value: 300, clue: 'To find or discover something or someone by chance.', answer: 'COME ACROSS', example: 'I came across an old photo album in the attic.' },
-          { value: 400, clue: 'To stop trying or stop doing something.', answer: 'GIVE UP', example: 'Don\u2019t give up — you\u2019re almost there.' },
+          { value: 400, clue: 'To stop trying or stop doing something.', answer: 'GIVE UP', example: 'Don\u2019t give up \u2014 you\u2019re almost there.' },
           { value: 500, clue: 'To clean and organise a room or space.', answer: 'TIDY UP', example: 'Please tidy up the kitchen before our guests arrive.' }
         ]
       },
       {
         name: 'Emotions',
         clues: [
-          { value: 100, clue: 'To become happier or more cheerful.', answer: 'CHEER UP', example: 'Cheer up — it\u2019s not the end of the world.' },
+          { value: 100, clue: 'To become happier or more cheerful.', answer: 'CHEER UP', example: 'Cheer up \u2014 it\u2019s not the end of the world.' },
           { value: 200, clue: 'To suddenly become very angry.', answer: 'BLOW UP', example: 'She blew up when she heard what he had done.' },
           { value: 300, clue: 'To recover from a difficult experience or illness.', answer: 'GET OVER', example: 'It took him months to get over the breakup.' },
           { value: 400, clue: 'To feel pleased and excited about something in the future.', answer: 'LOOK FORWARD TO', example: 'I\u2019m really looking forward to the holidays.' },
-          { value: 500, clue: 'To suppress or hide your emotions instead of expressing them.', answer: 'BOTTLE UP', example: 'Don\u2019t bottle up your feelings — talk to someone.' }
+          { value: 500, clue: 'To suppress or hide your emotions instead of expressing them.', answer: 'BOTTLE UP', example: 'Don\u2019t bottle up your feelings \u2014 talk to someone.' }
         ]
       }
     ],
@@ -716,24 +624,19 @@
     currentClue: null
   };
 
-  // ─── Build the board ─────────────────────────────────
   function buildBoard() {
     const board = document.getElementById('board');
     board.innerHTML = '';
-
-    // Category headers
     data.categories.forEach(cat => {
       const cell = document.createElement('div');
       cell.className = 'category-cell';
       cell.textContent = cat.name;
       board.appendChild(cell);
     });
-
-    // Clue cells (5 rows of values)
     for (let row = 0; row < 5; row++) {
       data.categories.forEach((cat, catIdx) => {
         const clue = cat.clues[row];
-        const cellId = `${catIdx}-${row}`;
+        const cellId = catIdx + '-' + row;
         const cell = document.createElement('button');
         cell.className = 'clue-cell';
         cell.textContent = clue.value;
@@ -747,31 +650,24 @@
     }
   }
 
-  // ─── Open a clue ─────────────────────────────────────
   function openClue(catIdx, clueIdx) {
     const cat = data.categories[catIdx];
     const clue = cat.clues[clueIdx];
     data.currentClue = { catIdx, clueIdx, value: clue.value };
-
     document.getElementById('modal-category').textContent = cat.name;
-    document.getElementById('modal-value').textContent = '$' + clue.value;
+    document.getElementById('modal-value').textContent = clue.value;
     document.getElementById('modal-clue').textContent = clue.clue;
     document.getElementById('modal-answer').textContent = clue.answer;
     document.getElementById('modal-example').textContent = clue.example;
-
-    // Reset reveal state
-    document.getElementById('reveal-btn').style.display = 'inline-block';
+    document.getElementById('reveal-wrapper').style.display = 'block';
     document.getElementById('answer-block').classList.remove('visible');
-
-    // Update team button labels with current names
-    document.getElementById('award-btn-1').textContent = data.teams[0].name;
-    document.getElementById('award-btn-2').textContent = data.teams[1].name;
-
+    document.getElementById('award-btn-1').lastChild.textContent = ' ' + data.teams[0].name;
+    document.getElementById('award-btn-2').lastChild.textContent = ' ' + data.teams[1].name;
     document.getElementById('modal').classList.add('active');
   }
 
   function revealAnswer() {
-    document.getElementById('reveal-btn').style.display = 'none';
+    document.getElementById('reveal-wrapper').style.display = 'none';
     document.getElementById('answer-block').classList.add('visible');
   }
 
@@ -791,9 +687,9 @@
 
   function markUsed() {
     if (!data.currentClue) return;
-    const cellId = `${data.currentClue.catIdx}-${data.currentClue.clueIdx}`;
+    const cellId = data.currentClue.catIdx + '-' + data.currentClue.clueIdx;
     data.used.add(cellId);
-    const cell = document.querySelector(`[data-id="${cellId}"]`);
+    const cell = document.querySelector('[data-id="' + cellId + '"]');
     if (cell) cell.classList.add('used');
   }
 
@@ -816,19 +712,16 @@
     buildBoard();
   }
 
-  // Sync team name inputs into data
   document.querySelectorAll('.team-name').forEach((input, idx) => {
     input.addEventListener('input', e => {
-      data.teams[idx].name = e.target.value || `Team ${idx + 1}`;
+      data.teams[idx].name = e.target.value || ('Team ' + (idx + 1));
     });
   });
 
-  // ESC closes modal
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeModal();
   });
 
-  // Init
   buildBoard();
   updateScores();
 </script>
