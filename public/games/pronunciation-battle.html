@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Pronunciation Battle — ESL Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf6ec;
+  --card: #ffffff;
+  --border: #d5cfb8;
+  --border-soft: #e7e1cc;
+  --navy: #15263a;
+  --navy-soft: #2b3a4f;
+  --muted: #6b7384;
+  --terracotta: #c84a2c;
+  --terracotta-soft: #e89478;
+  --teal: #0e7c66;
+  --teal-soft: #7fb6a5;
+  --shadow: 0 1px 2px rgba(21,38,58,0.04), 0 4px 16px rgba(21,38,58,0.06);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--cream);
+  color: var(--navy);
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  padding: 24px 16px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 560px;
+}
+
+/* ---- HEADER ---- */
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.header h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.header .subtitle {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---- CARD ---- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+/* ---- SETUP ---- */
+.setup-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.setup-row label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.setup-row input {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 1rem;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--navy);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.setup-row input:focus {
+  border-color: var(--navy);
+}
+
+/* ---- DIFFICULTY PILLS ---- */
+.diff-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--cream);
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pill:hover { border-color: var(--navy); }
+
+.pill.selected {
+  background: var(--navy);
+  color: var(--cream);
+  border-color: var(--navy);
+}
+
+/* ---- BUTTONS ---- */
+.btn {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn-primary {
+  background: var(--navy);
+  color: var(--cream);
+}
+.btn-primary:hover { background: var(--terracotta); }
+
+.btn-reveal {
+  background: var(--cream);
+  color: var(--navy);
+  border: 2px solid var(--navy);
+}
+.btn-reveal:hover { background: var(--navy); color: var(--cream); }
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.btn-row .btn { flex: 1; padding: 12px 8px; font-size: 0.85rem; }
+
+.btn-p1 { background: var(--teal); color: #fff; }
+.btn-p1:hover { opacity: 0.85; }
+
+.btn-p2 { background: var(--terracotta); color: #fff; }
+.btn-p2:hover { opacity: 0.85; }
+
+.btn-both { background: var(--navy); color: var(--cream); }
+.btn-both:hover { opacity: 0.85; }
+
+.btn-neither {
+  background: var(--cream);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-neither:hover { border-color: var(--navy); color: var(--navy); }
+
+.btn-skip {
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-top: 8px;
+  border: none;
+  cursor: pointer;
+}
+.btn-skip:hover { color: var(--navy); }
+
+/* ---- SCOREBOARD ---- */
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.player-card {
+  text-align: center;
+  padding: 12px;
+  background: var(--cream);
+  border-radius: 10px;
+}
+
+.player-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.player-score {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.p1-color { color: var(--teal); }
+.p2-color { color: var(--terracotta); }
+
+.vs-label {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---- PROGRESS ---- */
+.progress-wrap {
+  background: var(--border-soft);
+  border-radius: 100px;
+  height: 6px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--navy);
+  border-radius: 100px;
+  transition: width 0.4s ease;
+}
+
+.round-label {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+/* ---- WORD DISPLAY ---- */
+.diff-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 12px;
+}
+
+.diff-badge.medium { background: #e8f5e9; color: var(--teal); }
+.diff-badge.hard { background: #fff3e0; color: #bf6c00; }
+.diff-badge.evil { background: #fce4ec; color: var(--terracotta); }
+
+.the-word {
+  font-family: 'Fraunces', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--navy);
+  text-align: center;
+  margin-bottom: 8px;
+  animation: wordIn 0.35s ease-out;
+}
+
+@keyframes wordIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hint-text {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+/* ---- IPA REVEAL ---- */
+.ipa-box {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  margin-top: 12px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ipa-text {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--teal);
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+
+.note-text {
+  font-size: 0.85rem;
+  color: var(--navy-soft);
+  line-height: 1.4;
+}
+
+/* ---- GAME OVER ---- */
+.game-over {
+  text-align: center;
+}
+
+.game-over h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.winner-text {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.final-scores {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.final-item { text-align: center; }
+
+.final-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.final-num {
+  font-family: 'Fraunces', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 400px) {
+  .the-word { font-size: 1.7rem; }
+  .btn-row .btn { font-size: 0.78rem; padding: 10px 4px; }
+  .setup-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="container" id="app"></div>
+
+<script>
+const WORDS = {
+  medium: [
+    { word: "comfortable", ipa: "/ˈkʌmf.tə.bəl/", note: "Three syllables in natural speech, not four. KUMF-tuh-bul.", hint: "How many syllables does this really have?" },
+    { word: "vegetable", ipa: "/ˈvedʒ.tə.bəl/", note: "Three syllables: VEJ-tuh-bul. The middle 'e' disappears.", hint: "A syllable vanishes" },
+    { word: "Wednesday", ipa: "/ˈwenz.deɪ/", note: "The first 'd' is silent — WENZ-day.", hint: "A day with a silent letter" },
+    { word: "iron", ipa: "/ˈaɪ.ən/", note: "Two syllables — EYE-un. The 'r' isn't pronounced.", hint: "The 'r' plays tricks" },
+    { word: "receipt", ipa: "/rɪˈsiːt/", note: "The 'p' is silent.", hint: "A letter is hiding" },
+    { word: "determine", ipa: "/dɪˈtɜː.mɪn/", note: "Stress on second syllable. The final 'e' is NOT /eɪ/.", hint: "Watch the stress" },
+    { word: "develop", ipa: "/dɪˈvel.əp/", note: "Stress on the second syllable. No French 'é' at the start.", hint: "Not a French word!" },
+    { word: "breakfast", ipa: "/ˈbrek.fəst/", note: "Two syllables. Short 'e' as in 'bed', not 'ee'.", hint: "Think about what this word is made of" },
+    { word: "foreign", ipa: "/ˈfɒr.ən/", note: "Two syllables. The 'g' is silent.", hint: "A consonant disappears" },
+    { word: "mortgage", ipa: "/ˈmɔː.ɡɪdʒ/", note: "The 't' is silent — MOR-gij.", hint: "A silent letter lurks" },
+    { word: "temperature", ipa: "/ˈtem.prə.tʃər/", note: "Three syllables in natural speech, not four.", hint: "How do natives actually say it?" },
+    { word: "clothes", ipa: "/kləʊðz/", note: "One syllable! Rhymes with 'close' (the verb). Not 'cloth-ez'.", hint: "How many syllables?" },
+  ],
+  hard: [
+    { word: "entrepreneur", ipa: "/ˌɒn.trə.prəˈnɜːr/", note: "English stress is on the LAST syllable, unlike French.", hint: "Same word, different stress" },
+    { word: "thoroughly", ipa: "/ˈθʌr.ə.li/", note: "Starts with 'th' /θ/, has the 'uh' vowel, and 'ough' = /ə/.", hint: "Three tricky sounds in one word" },
+    { word: "colonel", ipa: "/ˈkɜː.nəl/", note: "Pronounced KER-nul — nothing like how it's spelled!", hint: "The spelling is a total lie" },
+    { word: "subtle", ipa: "/ˈsʌt.əl/", note: "The 'b' is completely silent.", hint: "A consonant is hiding" },
+    { word: "queue", ipa: "/kjuː/", note: "Only the first letter is actually pronounced! Four silent letters.", hint: "Most of this word is silent" },
+    { word: "particularly", ipa: "/pəˈtɪk.jə.lə.li/", note: "Five syllables. Don't drop the middle ones!", hint: "Count carefully" },
+    { word: "eighth", ipa: "/eɪtθ/", note: "One syllable! ATE + th. The consonant cluster at the end is brutal.", hint: "A one-syllable nightmare" },
+    { word: "aisle", ipa: "/aɪl/", note: "The 's' is silent — rhymes with 'I'll'.", hint: "Sounds nothing like it looks" },
+    { word: "draught", ipa: "/drɑːft/", note: "Sounds like 'draft'. The 'aught' = /ɑːft/.", hint: "Think of a cold breeze" },
+    { word: "psychological", ipa: "/ˌsaɪ.kəˈlɒdʒ.ɪ.kəl/", note: "The 'p' is silent. Stress on the third syllable.", hint: "Starts with a silent letter" },
+    { word: "architecture", ipa: "/ˈɑː.kɪ.tek.tʃər/", note: "Hard 'k' sound, not 'sh'. And four syllables.", hint: "The 'ch' isn't French" },
+    { word: "prerequisite", ipa: "/priːˈrek.wɪ.zɪt/", note: "Stress on second syllable. Five syllables total.", hint: "A long word with tricky stress" },
+    { word: "throughout", ipa: "/θruːˈaʊt/", note: "'th' + 'roo' + 'OWT'. The 'ough' changes sound again!", hint: "'ough' is unpredictable" },
+  ],
+  evil: [
+    { word: "Worcestershire", ipa: "/ˈwʊs.tə.ʃər/", note: "Only three syllables! WUSS-tuh-shur. Most of the letters are decorative.", hint: "A famous sauce" },
+    { word: "squirrel", ipa: "/ˈskwɪr.əl/", note: "Two syllables with that tricky 'skw' cluster + the dark 'r'.", hint: "A French person's nemesis" },
+    { word: "lieutenant", ipa: "/lefˈten.ənt/", note: "In British English: lef-TEN-unt. The 'ieu' = /ef/!", hint: "British vs American — two different words" },
+    { word: "isthmus", ipa: "/ˈɪs.məs/", note: "The 'th' is silent! Just IS-mus.", hint: "Geography vocab with a silent cluster" },
+    { word: "antidisestablishmentarianism", ipa: "/ˌæn.ti.dɪs.ɪˌstæb.lɪʃ.mənˈteə.ri.ə.nɪ.zəm/", note: "Twelve syllables. Stress on the ninth. Good luck!", hint: "The classic 'long word' challenge" },
+    { word: "otorhinolaryngologist", ipa: "/ˌɒt.əʊ.raɪ.nəʊ.læ.rɪŋˈɡɒl.ə.dʒɪst/", note: "An ear, nose & throat doctor. Ten syllables.", hint: "A medical specialist" },
+    { word: "synecdoche", ipa: "/sɪˈnek.də.ki/", note: "Ends in 'kee', not 'coach'. A figure of speech.", hint: "A literary term — the ending is Greek" },
+    { word: "onomatopoeia", ipa: "/ˌɒn.ə.mæt.əˈpiː.ə/", note: "Six syllables. The ending is PEE-uh, not po-AY-a.", hint: "Buzz, hiss, splash…" },
+    { word: "chthonic", ipa: "/ˈθɒn.ɪk/", note: "Both 'c' and 'h' are silent! Starts with 'th'. Means 'of the underworld'.", hint: "Two silent letters at the start" },
+    { word: "phlegm", ipa: "/flem/", note: "The 'g' is silent. One syllable.", hint: "When you have a cold…" },
+    { word: "quinquennial", ipa: "/kwɪnˈkwen.i.əl/", note: "Every five years. The two 'qu' combos make different sounds!", hint: "Both 'qu' combos sound different" },
+    { word: "ecclesiastical", ipa: "/ɪˌkliː.ziˈæs.tɪ.kəl/", note: "Six syllables, stress on the fourth. All those vowels!", hint: "A church-related tongue-twister" },
+  ]
+};
+
+let state = { screen: 'setup', p1Name: 'Player 1', p2Name: 'Player 2', difficulty: 'mixed' };
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getWords(diff) {
+  if (diff === 'mixed') return shuffle([...WORDS.medium, ...WORDS.hard, ...WORDS.evil]);
+  return shuffle([...WORDS[diff]]);
+}
+
+function getDiff(word) {
+  if (WORDS.medium.some(w => w.word === word)) return 'medium';
+  if (WORDS.hard.some(w => w.word === word)) return 'hard';
+  return 'evil';
+}
+
+function startGame() {
+  const p1 = document.getElementById('p1').value.trim() || 'Player 1';
+  const p2 = document.getElementById('p2').value.trim() || 'Player 2';
+  const words = getWords(state.difficulty);
+  Object.assign(state, {
+    screen: 'play', p1Name: p1, p2Name: p2,
+    p1Score: 0, p2Score: 0,
+    words, round: 0, revealed: false,
+    currentWord: words[0]
+  });
+  render();
+}
+
+function reveal() { state.revealed = true; render(); }
+
+function awardPoint(who) {
+  if (who === 'p1') state.p1Score++;
+  else if (who === 'p2') state.p2Score++;
+  else if (who === 'both') { state.p1Score++; state.p2Score++; }
+  state.round++;
+  if (state.round >= state.words.length) { state.screen = 'gameover'; }
+  else { state.currentWord = state.words[state.round]; state.revealed = false; }
+  render();
+}
+
+function resetGame() { state = { screen: 'setup', p1Name: state.p1Name, p2Name: state.p2Name, difficulty: 'mixed' }; render(); }
+
+function setDiff(d) { state.difficulty = d; render(); }
+
+function render() {
+  const app = document.getElementById('app');
+
+  if (state.screen === 'setup') {
+    app.innerHTML = `
+      <div class="header">
+        <h1>Pronunciation Battle</h1>
+        <div class="subtitle">Say it right… or face the shame</div>
+      </div>
+      <div class="card">
+        <div class="setup-row">
+          <label>Player 1 <input id="p1" type="text" value="${state.p1Name}" placeholder="Name"></label>
+          <label>Player 2 <input id="p2" type="text" value="${state.p2Name}" placeholder="Name"></label>
+        </div>
+        <div style="font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Difficulty</div>
+        <div class="diff-row">
+          <button class="pill ${state.difficulty==='medium'?'selected':''}" onclick="setDiff('medium')">Medium</button>
+          <button class="pill ${state.difficulty==='hard'?'selected':''}" onclick="setDiff('hard')">Hard</button>
+          <button class="pill ${state.difficulty==='evil'?'selected':''}" onclick="setDiff('evil')">Evil</button>
+          <button class="pill ${state.difficulty==='mixed'?'selected':''}" onclick="setDiff('mixed')">Mixed</button>
+        </div>
+        <button class="btn btn-primary" onclick="startGame()">Start Game</button>
+      </div>`;
+    return;
+  }
+
+  if (state.screen === 'gameover') {
+    let winner = '';
+    if (state.p1Score > state.p2Score) winner = `${state.p1Name} wins!`;
+    else if (state.p2Score > state.p1Score) winner = `${state.p2Name} wins!`;
+    else winner = "It's a draw!";
+    app.innerHTML = `
+      <div class="header"><h1>Pronunciation Battle</h1></div>
+      <div class="card game-over">
+        <h2>Game Over</h2>
+        <div class="winner-text">${winner}</div>
+        <div class="final-scores">
+          <div class="final-item">
+            <div class="final-name p1-color">${state.p1Name}</div>
+            <div class="final-num p1-color">${state.p1Score}</div>
+          </div>
+          <div class="final-item">
+            <div class="final-name p2-color">${state.p2Name}</div>
+            <div class="final-num p2-color">${state.p2Score}</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="resetGame()">Play Again</button>
+      </div>`;
+    return;
+  }
+
+  const w = state.currentWord;
+  const diff = getDiff(w.word);
+  const progress = (state.round / state.words.length) * 100;
+
+  app.innerHTML = `
+    <div class="header"><h1>Pronunciation Battle</h1></div>
+    <div class="card">
+      <div class="scoreboard">
+        <div class="player-card">
+          <div class="player-name p1-color">${state.p1Name}</div>
+          <div class="player-score p1-color">${state.p1Score}</div>
+        </div>
+        <div class="vs-label">vs</div>
+        <div class="player-card">
+          <div class="player-name p2-color">${state.p2Name}</div>
+          <div class="player-score p2-color">${state.p2Score}</div>
+        </div>
+      </div>
+      <div class="progress-wrap"><div class="progress-fill" style="width:${progress}%"></div></div>
+      <div class="round-label">Round ${state.round + 1} of ${state.words.length}</div>
+      <div style="text-align:center;">
+        <span class="diff-badge ${diff}">${diff}</span>
+      </div>
+      <div class="the-word">${w.word}</div>
+      <div class="hint-text">${w.hint}</div>
+      ${state.revealed ? `
+        <div class="ipa-box">
+          <div class="ipa-text">${w.ipa}</div>
+          <div class="note-text">${w.note}</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-p1" onclick="awardPoint('p1')">${state.p1Name} ✓</button>
+          <button class="btn btn-p2" onclick="awardPoint('p2')">${state.p2Name} ✓</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-both" onclick="awardPoint('both')">Both ✓</button>
+          <button class="btn btn-neither" onclick="awardPoint('neither')">Neither</button>
+        </div>
+      ` : `
+        <button class="btn btn-reveal" onclick="reveal()">Reveal Pronunciation</button>
+      `}
+    </div>`;
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Past Simple Battleships — A2/B1 ESL Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf6ec;
+  --card: #ffffff;
+  --border: #d5cfb8;
+  --border-soft: #e7e1cc;
+  --navy: #15263a;
+  --navy-soft: #2b3a4f;
+  --muted: #6b7384;
+  --terracotta: #c84a2c;
+  --terracotta-soft: #e89478;
+  --teal: #0e7c66;
+  --teal-soft: #7fb6a5;
+  --shadow: 0 1px 2px rgba(21,38,58,0.04), 0 4px 16px rgba(21,38,58,0.06);
+  --sea: #e3edf5;
+  --sea-hover: #d0e0ed;
+  --hit: #c84a2c;
+  --miss: #b8c5d0;
+  --sunk: #8b2010;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--cream);
+  color: var(--navy);
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  padding: 24px 16px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container { width: 100%; max-width: 560px; }
+
+.header { text-align: center; margin-bottom: 8px; }
+
+.header h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  margin-bottom: 2px;
+}
+
+.header .subtitle {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.level-badge {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.lang-toggle {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--card);
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-toggle:hover { border-color: var(--navy); }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+/* ---- STATS BAR ---- */
+.stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.stat-item { text-align: center; }
+
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.stat-num.teal { color: var(--teal); }
+.stat-num.terra { color: var(--terracotta); }
+.stat-num.navy { color: var(--navy); }
+
+/* ---- GRID ---- */
+.grid-wrap { margin-bottom: 16px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: auto repeat(6, 1fr);
+  gap: 3px;
+}
+
+.grid-header {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.grid-cell {
+  aspect-ratio: 1;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  background: var(--sea);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.grid-cell:hover:not(.fired) { background: var(--sea-hover); transform: scale(1.05); }
+
+.grid-cell.fired { cursor: default; }
+
+.grid-cell.hit {
+  background: var(--terracotta);
+  border-color: var(--terracotta);
+  color: #fff;
+  animation: hitPulse 0.4s ease;
+}
+
+.grid-cell.miss {
+  background: var(--miss);
+  border-color: #a8b5c0;
+  color: #fff;
+}
+
+.grid-cell.sunk {
+  background: var(--sunk);
+  border-color: var(--sunk);
+  color: #fff;
+}
+
+@keyframes hitPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* ---- QUESTION MODAL ---- */
+.question-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(21,38,58,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.question-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(21,38,58,0.15);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.q-category {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+
+.q-text {
+  font-family: 'Fraunces', serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--navy);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.q-options { display: flex; flex-direction: column; gap: 8px; }
+
+.q-opt {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 0.95rem;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--navy);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.q-opt:hover:not(.disabled) { border-color: var(--navy); background: var(--card); }
+
+.q-opt.correct { background: #e8f5e9; border-color: var(--teal); color: var(--teal); font-weight: 600; }
+.q-opt.wrong { background: #fce4ec; border-color: var(--terracotta); color: var(--terracotta); }
+.q-opt.disabled { cursor: default; opacity: 0.7; }
+
+.q-explanation {
+  margin-top: 14px;
+  padding: 12px;
+  background: var(--cream);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--navy-soft);
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease;
+}
+
+.q-continue {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--navy);
+  color: var(--cream);
+  cursor: pointer;
+  margin-top: 14px;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.q-continue:hover { background: var(--terracotta); }
+
+/* ---- FLEET STATUS ---- */
+.fleet { margin-bottom: 16px; }
+
+.fleet-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.fleet-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.fleet-dots { display: flex; gap: 3px; }
+
+.fleet-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--sea);
+  border: 1px solid var(--border);
+}
+
+.fleet-dot.damaged { background: var(--terracotta); border-color: var(--terracotta); }
+.fleet-dot.sunk-dot { background: var(--sunk); border-color: var(--sunk); }
+
+.fleet-name { color: var(--navy); font-weight: 500; }
+.fleet-name.sunk-name { text-decoration: line-through; color: var(--muted); }
+
+/* ---- GAME OVER ---- */
+.game-over { text-align: center; }
+
+.game-over h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.verdict-stamp {
+  font-family: 'Fraunces', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+
+.final-stats {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.btn {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn-primary { background: var(--navy); color: var(--cream); }
+.btn-primary:hover { background: var(--terracotta); }
+
+.btn-secondary {
+  background: var(--cream);
+  color: var(--navy);
+  border: 1px solid var(--border);
+  margin-top: 8px;
+}
+.btn-secondary:hover { border-color: var(--navy); }
+
+/* ---- REVIEW ---- */
+.review-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.review-item:last-child { border-bottom: none; }
+
+.review-q { font-weight: 500; margin-bottom: 4px; }
+
+.review-result {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.review-correct { color: var(--teal); }
+.review-wrong { color: var(--terracotta); }
+
+@media (max-width: 400px) {
+  .grid { gap: 2px; }
+  .grid-cell { font-size: 0.9rem; border-radius: 4px; }
+  .stats { gap: 4px; }
+}
+</style>
+</head>
+<body>
+<div class="container" id="app"></div>
+
+<script>
+const QUESTIONS = [
+  // Regular verbs
+  { category: "Regular Verbs", categoryFr: "Verbes réguliers",
+    q: "I _____ (work) in a factory last year.", qFr: "J'ai _____ (travailler) dans une usine l'année dernière.",
+    options: ["work", "worked", "working", "works"], answer: 1,
+    explanation: "'Worked' is the past simple of 'work'. Add -ed for regular verbs.",
+    explanationFr: "'Worked' est le passé simple de 'work'. On ajoute -ed pour les verbes réguliers." },
+  { category: "Regular Verbs", categoryFr: "Verbes réguliers",
+    q: "She _____ (visit) her grandmother every Sunday when she was young.", qFr: "Elle _____ (rendre visite à) sa grand-mère tous les dimanches quand elle était jeune.",
+    options: ["visits", "visiting", "visited", "visit"], answer: 2,
+    explanation: "'Visited' — past habit described with past simple.",
+    explanationFr: "'Visited' — une habitude passée décrite au passé simple." },
+  { category: "Regular Verbs", categoryFr: "Verbes réguliers",
+    q: "They _____ (play) football after school yesterday.", qFr: "Ils _____ (jouer) au football après l'école hier.",
+    options: ["played", "plays", "playing", "play"], answer: 0,
+    explanation: "'Played' — 'yesterday' tells us it's past simple.",
+    explanationFr: "'Played' — 'hier' nous indique que c'est le passé simple." },
+  { category: "Regular Verbs", categoryFr: "Verbes réguliers",
+    q: "We _____ (arrive) at the airport two hours early.", qFr: "Nous _____ (arriver) à l'aéroport deux heures en avance.",
+    options: ["arrives", "arriving", "arrive", "arrived"], answer: 3,
+    explanation: "'Arrived' — a completed action in the past.",
+    explanationFr: "'Arrived' — une action terminée dans le passé." },
+  // Irregular verbs
+  { category: "Irregular Verbs", categoryFr: "Verbes irréguliers",
+    q: "He _____ (go) to London last month.", qFr: "Il _____ (aller) à Londres le mois dernier.",
+    options: ["goed", "went", "gone", "going"], answer: 1,
+    explanation: "'Went' is the irregular past simple of 'go'. Not 'goed'!",
+    explanationFr: "'Went' est le passé irrégulier de 'go'. Pas 'goed' !" },
+  { category: "Irregular Verbs", categoryFr: "Verbes irréguliers",
+    q: "I _____ (buy) a new car in January.", qFr: "J'ai _____ (acheter) une nouvelle voiture en janvier.",
+    options: ["buyed", "buying", "bought", "buy"], answer: 2,
+    explanation: "'Bought' — buy/bought/bought. A common irregular verb.",
+    explanationFr: "'Bought' — buy/bought/bought. Un verbe irrégulier courant." },
+  { category: "Irregular Verbs", categoryFr: "Verbes irréguliers",
+    q: "She _____ (write) three emails before lunch.", qFr: "Elle _____ (écrire) trois e-mails avant le déjeuner.",
+    options: ["writed", "wrote", "written", "writing"], answer: 1,
+    explanation: "'Wrote' — write/wrote/written.",
+    explanationFr: "'Wrote' — write/wrote/written." },
+  { category: "Irregular Verbs", categoryFr: "Verbes irréguliers",
+    q: "The children _____ (drink) all the juice.", qFr: "Les enfants _____ (boire) tout le jus.",
+    options: ["drinked", "drunk", "drank", "drinking"], answer: 2,
+    explanation: "'Drank' is the past simple. 'Drunk' is the past participle.",
+    explanationFr: "'Drank' est le passé simple. 'Drunk' est le participe passé." },
+  // Negatives
+  { category: "Negatives", categoryFr: "Phrases négatives",
+    q: "I _____ like the film. It was boring.", qFr: "Je _____ le film. C'était ennuyeux.",
+    options: ["don't", "not", "didn't", "wasn't"], answer: 2,
+    explanation: "Past simple negative: didn't + base form. 'Didn't like'.",
+    explanationFr: "Négatif au passé simple : didn't + verbe de base. 'Didn't like'." },
+  { category: "Negatives", categoryFr: "Phrases négatives",
+    q: "She _____ come to the party last night.", qFr: "Elle _____ venue à la fête hier soir.",
+    options: ["doesn't", "didn't", "don't", "isn't"], answer: 1,
+    explanation: "'Didn't come' — didn't + infinitive, not 'didn't came'.",
+    explanationFr: "'Didn't come' — didn't + infinitif, pas 'didn't came'." },
+  { category: "Negatives", categoryFr: "Phrases négatives",
+    q: "We didn't _____ any problems with the machine.", qFr: "Nous n'avons pas _____ de problèmes avec la machine.",
+    options: ["had", "have", "has", "having"], answer: 1,
+    explanation: "After 'didn't', always use the base form: 'have', not 'had'.",
+    explanationFr: "Après 'didn't', on utilise toujours la base verbale : 'have', pas 'had'." },
+  { category: "Negatives", categoryFr: "Phrases négatives",
+    q: "They didn't _____ to the meeting on time.", qFr: "Ils n'_____ pas à la réunion à l'heure.",
+    options: ["came", "comes", "come", "coming"], answer: 2,
+    explanation: "'Didn't come' — the verb stays in base form after 'didn't'.",
+    explanationFr: "'Didn't come' — le verbe reste à la base après 'didn't'." },
+  // Questions
+  { category: "Questions", categoryFr: "Poser des questions",
+    q: "_____ you go to the cinema last weekend?", qFr: "_____ tu allé(e) au cinéma le week-end dernier ?",
+    options: ["Do", "Does", "Did", "Are"], answer: 2,
+    explanation: "Past simple questions use 'Did' + subject + base form.",
+    explanationFr: "Les questions au passé simple utilisent 'Did' + sujet + verbe de base." },
+  { category: "Questions", categoryFr: "Poser des questions",
+    q: "What time did the train _____?", qFr: "À quelle heure le train _____ ?",
+    options: ["arrived", "arrives", "arriving", "arrive"], answer: 3,
+    explanation: "After 'did', the verb stays in the base form: 'arrive'.",
+    explanationFr: "Après 'did', le verbe reste à la base : 'arrive'." },
+  { category: "Questions", categoryFr: "Poser des questions",
+    q: "Where _____ you live before you moved here?", qFr: "Où _____ tu avant de déménager ici ?",
+    options: ["do", "did", "does", "are"], answer: 1,
+    explanation: "'Did' for past simple questions about completed situations.",
+    explanationFr: "'Did' pour les questions au passé sur des situations terminées." },
+  { category: "Questions", categoryFr: "Poser des questions",
+    q: "How much _____ that jacket cost?", qFr: "Combien _____ cette veste ?",
+    options: ["does", "do", "did", "is"], answer: 2,
+    explanation: "'Did' + base form: 'How much did it cost?'",
+    explanationFr: "'Did' + base verbale : 'How much did it cost ?'" },
+  // Time expressions
+  { category: "Time Expressions", categoryFr: "Expressions de temps",
+    q: "I saw that film _____ .", qFr: "J'ai vu ce film _____ .",
+    options: ["tomorrow", "next week", "two days ago", "every day"], answer: 2,
+    explanation: "'Two days ago' — 'ago' is a key past simple time marker.",
+    explanationFr: "'Two days ago' — 'ago' est un marqueur temporel clé du passé simple." },
+  { category: "Time Expressions", categoryFr: "Expressions de temps",
+    q: "We moved to this city _____ 2019.", qFr: "Nous avons déménagé dans cette ville _____ 2019.",
+    options: ["since", "for", "in", "during"], answer: 2,
+    explanation: "'In 2019' — use 'in' with years for past simple.",
+    explanationFr: "'In 2019' — on utilise 'in' avec les années pour le passé simple." },
+  { category: "Time Expressions", categoryFr: "Expressions de temps",
+    q: "_____, I had a long meeting with my boss.", qFr: "_____, j'ai eu une longue réunion avec mon chef.",
+    options: ["Tomorrow", "Next Monday", "Last Tuesday", "Usually"], answer: 2,
+    explanation: "'Last Tuesday' — 'last' + day/week/month = past simple.",
+    explanationFr: "'Last Tuesday' — 'last' + jour/semaine/mois = passé simple." },
+  { category: "Time Expressions", categoryFr: "Expressions de temps",
+    q: "She finished the report at 5pm _____.", qFr: "Elle a terminé le rapport à 17h _____.",
+    options: ["today", "yesterday", "now", "soon"], answer: 1,
+    explanation: "'Yesterday' signals a completed past action.",
+    explanationFr: "'Yesterday' signale une action passée terminée." },
+];
+
+const SHIPS = [
+  { name: "Battleship", nameFr: "Cuirassé", size: 4, symbol: "🚢" },
+  { name: "Cruiser", nameFr: "Croiseur", size: 3, symbol: "⛵" },
+  { name: "Destroyer", nameFr: "Destroyer", size: 2, symbol: "🛥️" },
+  { name: "Patrol Boat", nameFr: "Patrouilleur", size: 1, symbol: "🚤" },
+];
+
+let lang = 'en';
+let state = {};
+
+function shuffle(a) { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
+
+function placeShips() {
+  const grid = Array(6).fill(null).map(() => Array(6).fill(null));
+  for (const ship of SHIPS) {
+    let placed = false;
+    let attempts = 0;
+    while (!placed && attempts < 200) {
+      attempts++;
+      const dir = Math.random() < 0.5 ? 'h' : 'v';
+      const r = Math.floor(Math.random() * (dir === 'v' ? 6 - ship.size + 1 : 6));
+      const c = Math.floor(Math.random() * (dir === 'h' ? 6 - ship.size + 1 : 6));
+      let fits = true;
+      for (let s = 0; s < ship.size; s++) {
+        const cr = dir === 'v' ? r + s : r;
+        const cc = dir === 'h' ? c + s : c;
+        if (grid[cr][cc]) { fits = false; break; }
+      }
+      if (fits) {
+        for (let s = 0; s < ship.size; s++) {
+          const cr = dir === 'v' ? r + s : r;
+          const cc = dir === 'h' ? c + s : c;
+          grid[cr][cc] = ship.name;
+        }
+        placed = true;
+      }
+    }
+  }
+  return grid;
+}
+
+function initGame() {
+  const shipGrid = placeShips();
+  const questions = shuffle([...QUESTIONS]);
+  state = {
+    screen: 'play',
+    shipGrid,
+    cellStates: Array(6).fill(null).map(() => Array(6).fill('unknown')),
+    questions,
+    qIndex: 0,
+    hits: 0,
+    misses: 0,
+    correct: 0,
+    wrong: 0,
+    totalShipCells: SHIPS.reduce((s, sh) => s + sh.size, 0),
+    selectedCell: null,
+    showQuestion: false,
+    answered: false,
+    answerCorrect: false,
+    chosenOption: -1,
+    shipDamage: {},
+    history: [],
+    allSunk: false,
+  };
+  SHIPS.forEach(s => { state.shipDamage[s.name] = 0; });
+  render();
+}
+
+function selectCell(r, c) {
+  if (state.cellStates[r][c] !== 'unknown') return;
+  if (state.qIndex >= state.questions.length) return;
+  state.selectedCell = { r, c };
+  state.showQuestion = true;
+  state.answered = false;
+  state.chosenOption = -1;
+  render();
+}
+
+function answerQ(idx) {
+  if (state.answered) return;
+  const q = state.questions[state.qIndex];
+  state.answered = true;
+  state.chosenOption = idx;
+  state.answerCorrect = idx === q.answer;
+
+  const { r, c } = state.selectedCell;
+  const shipName = state.shipGrid[r][c];
+
+  if (state.answerCorrect) {
+    state.correct++;
+    if (shipName) {
+      state.cellStates[r][c] = 'hit';
+      state.hits++;
+      state.shipDamage[shipName]++;
+      const ship = SHIPS.find(s => s.name === shipName);
+      if (state.shipDamage[shipName] >= ship.size) {
+        // Mark all cells of this ship as sunk
+        for (let rr = 0; rr < 6; rr++)
+          for (let cc = 0; cc < 6; cc++)
+            if (state.shipGrid[rr][cc] === shipName) state.cellStates[rr][cc] = 'sunk';
+      }
+    } else {
+      state.cellStates[r][c] = 'miss';
+      state.misses++;
+    }
+  } else {
+    state.wrong++;
+    state.cellStates[r][c] = 'miss';
+    state.misses++;
+  }
+
+  state.history.push({
+    q: q.q,
+    correct: state.answerCorrect,
+    chosen: q.options[idx],
+    answer: q.options[q.answer]
+  });
+
+  // Check if all ships sunk
+  if (state.hits >= state.totalShipCells) state.allSunk = true;
+
+  render();
+}
+
+function continueAfterQ() {
+  state.showQuestion = false;
+  state.qIndex++;
+  if (state.allSunk || state.qIndex >= state.questions.length) {
+    state.screen = 'gameover';
+  }
+  render();
+}
+
+function toggleLang() {
+  lang = lang === 'en' ? 'fr' : 'en';
+  render();
+}
+
+function showReview() { state.screen = 'review'; render(); }
+
+function getVerdict() {
+  const pct = state.correct / (state.correct + state.wrong) * 100;
+  if (state.allSunk && pct >= 90) return { rank: lang === 'en' ? 'Admiral' : 'Amiral', note: lang === 'en' ? 'Fleet destroyed with surgical precision!' : 'Flotte détruite avec une précision chirurgicale !' };
+  if (state.allSunk && pct >= 70) return { rank: lang === 'en' ? 'Captain' : 'Capitaine', note: lang === 'en' ? 'Mission accomplished — well done, Captain.' : 'Mission accomplie — bien joué, Capitaine.' };
+  if (pct >= 50) return { rank: lang === 'en' ? 'Lieutenant' : 'Lieutenant', note: lang === 'en' ? 'Solid effort — keep practising those verbs.' : 'Bon effort — continuez à pratiquer ces verbes.' };
+  return { rank: lang === 'en' ? 'Cadet' : 'Cadet', note: lang === 'en' ? 'Back to training! Review the past simple rules.' : 'Retour à l\'entraînement ! Révisez les règles du passé simple.' };
+}
+
+function render() {
+  const app = document.getElementById('app');
+  const cols = ['A','B','C','D','E','F'];
+
+  if (state.screen === 'review') {
+    let items = state.history.map((h, i) => `
+      <div class="review-item">
+        <div class="review-q">${i + 1}. ${h.q}</div>
+        <div class="review-result ${h.correct ? 'review-correct' : 'review-wrong'}">
+          ${h.correct ? '✓' : '✗'} ${h.correct ? h.answer : `${h.chosen} → ${h.answer}`}
+        </div>
+      </div>`).join('');
+    app.innerHTML = `
+      <div class="header"><h1>Past Simple Battleships</h1></div>
+      <div class="card">
+        <h3 style="font-family:'Fraunces',serif;margin-bottom:12px;">${lang === 'en' ? 'Answer Review' : 'Révision des réponses'}</h3>
+        ${items}
+        <button class="btn btn-primary" style="margin-top:16px;" onclick="initGame()">${lang === 'en' ? 'Play Again' : 'Rejouer'}</button>
+      </div>`;
+    return;
+  }
+
+  if (state.screen === 'gameover') {
+    const v = getVerdict();
+    app.innerHTML = `
+      <div class="header"><h1>Past Simple Battleships</h1></div>
+      <div class="card game-over">
+        <h2>${lang === 'en' ? 'Mission Complete' : 'Mission terminée'}</h2>
+        <div class="verdict-stamp">${v.rank}</div>
+        <div style="font-family:'Fraunces',serif;font-style:italic;color:var(--muted);margin-bottom:16px;">${v.note}</div>
+        <div class="final-stats">
+          ${lang === 'en' ? 'Correct answers' : 'Bonnes réponses'}: ${state.correct}/${state.correct + state.wrong}<br>
+          ${lang === 'en' ? 'Ships hit' : 'Navires touchés'}: ${state.hits}/${state.totalShipCells}<br>
+          ${state.allSunk ? (lang === 'en' ? '🎉 All ships destroyed!' : '🎉 Tous les navires détruits !') : (lang === 'en' ? 'Some ships survived…' : 'Certains navires ont survécu…')}
+        </div>
+        <button class="btn btn-primary" onclick="initGame()">${lang === 'en' ? 'Play Again' : 'Rejouer'}</button>
+        <button class="btn btn-secondary" onclick="showReview()">${lang === 'en' ? 'Review Answers' : 'Réviser les réponses'}</button>
+      </div>`;
+    return;
+  }
+
+  // Play screen
+  let gridHtml = '<div class="grid">';
+  gridHtml += '<div class="grid-header"></div>';
+  cols.forEach(c => { gridHtml += `<div class="grid-header">${c}</div>`; });
+  for (let r = 0; r < 6; r++) {
+    gridHtml += `<div class="grid-header">${r + 1}</div>`;
+    for (let c = 0; c < 6; c++) {
+      const cs = state.cellStates[r][c];
+      let cls = 'grid-cell';
+      let content = '';
+      if (cs === 'hit') { cls += ' fired hit'; content = '🔥'; }
+      else if (cs === 'sunk') { cls += ' fired sunk'; content = '💀'; }
+      else if (cs === 'miss') { cls += ' fired miss'; content = '•'; }
+      gridHtml += `<div class="${cls}" onclick="selectCell(${r},${c})">${content}</div>`;
+    }
+  }
+  gridHtml += '</div>';
+
+  // Fleet status
+  let fleetHtml = '<div class="fleet"><div class="fleet-title">' + (lang === 'en' ? 'Fleet Status' : 'État de la flotte') + '</div>';
+  SHIPS.forEach(ship => {
+    const dmg = state.shipDamage[ship.name] || 0;
+    const sunk = dmg >= ship.size;
+    const nm = lang === 'en' ? ship.name : ship.nameFr;
+    let dots = '';
+    for (let i = 0; i < ship.size; i++) {
+      if (sunk) dots += '<div class="fleet-dot sunk-dot"></div>';
+      else if (i < dmg) dots += '<div class="fleet-dot damaged"></div>';
+      else dots += '<div class="fleet-dot"></div>';
+    }
+    fleetHtml += `<div class="fleet-row">
+      <span>${ship.symbol}</span>
+      <span class="fleet-name ${sunk ? 'sunk-name' : ''}">${nm}</span>
+      <div class="fleet-dots">${dots}</div>
+    </div>`;
+  });
+  fleetHtml += '</div>';
+
+  // Question overlay
+  let questionHtml = '';
+  if (state.showQuestion && state.qIndex < state.questions.length) {
+    const q = state.questions[state.qIndex];
+    const qText = lang === 'en' ? q.q : q.qFr;
+    const cat = lang === 'en' ? q.category : q.categoryFr;
+    let opts = q.options.map((o, i) => {
+      let cls = 'q-opt';
+      if (state.answered) {
+        cls += ' disabled';
+        if (i === q.answer) cls += ' correct';
+        else if (i === state.chosenOption && !state.answerCorrect) cls += ' wrong';
+      }
+      return `<button class="${cls}" onclick="answerQ(${i})">${o}</button>`;
+    }).join('');
+
+    const expl = state.answered ? `<div class="q-explanation">${lang === 'en' ? q.explanation : q.explanationFr}</div>` : '';
+    const cont = state.answered ? `<button class="q-continue" onclick="continueAfterQ()">${state.answerCorrect ? (lang === 'en' ? 'Fire! 💥' : 'Feu ! 💥') : (lang === 'en' ? 'Continue' : 'Continuer')}</button>` : '';
+
+    questionHtml = `
+      <div class="question-overlay">
+        <div class="question-card">
+          <div class="q-category">${cat}</div>
+          <div class="q-text">${qText}</div>
+          <div class="q-options">${opts}</div>
+          ${expl}
+          ${cont}
+        </div>
+      </div>`;
+  }
+
+  const remaining = state.questions.length - state.qIndex;
+
+  app.innerHTML = `
+    <div class="header">
+      <h1>Past Simple Battleships</h1>
+      <div class="subtitle">${lang === 'en' ? 'Answer correctly to fire — sink the fleet!' : 'Répondez correctement pour tirer — coulez la flotte !'}</div>
+    </div>
+    <div class="top-bar">
+      <span class="level-badge">A2 / B1</span>
+      <button class="lang-toggle" onclick="toggleLang()">${lang === 'en' ? '🇫🇷 Français' : '🇬🇧 English'}</button>
+    </div>
+    <div class="card">
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-label">${lang === 'en' ? 'Correct' : 'Correct'}</div>
+          <div class="stat-num teal">${state.correct}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">${lang === 'en' ? 'Wrong' : 'Faux'}</div>
+          <div class="stat-num terra">${state.wrong}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">${lang === 'en' ? 'Hits' : 'Touchés'}</div>
+          <div class="stat-num navy">${state.hits}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">${lang === 'en' ? 'Shots left' : 'Tirs restants'}</div>
+          <div class="stat-num navy">${remaining}</div>
+        </div>
+      </div>
+      <div class="grid-wrap">${gridHtml}</div>
+      ${fleetHtml}
+    </div>
+    ${questionHtml}`;
+}
+
+initGame();
+</script>
+</body>
+</html>
