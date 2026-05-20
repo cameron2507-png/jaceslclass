@@ -1,13 +1,14 @@
 ---
 title: "Future Tense Battleships"
+description: "A solo battleships game where learners answer future tense questions to fire at a hidden fleet on a 6×6 grid."
 type: "Quizzes"
 level: "A2"
 topic: "Future tenses"
 duration: 15
+ageGroup: "Adults"
 gameFile: "future-tense-battleships.html"
 featured: true
 publishDate: 2026-05-20
-thumbColor: "#15263a"
 ---
 
 A solo battleships game where learners answer future tense grammar questions to fire at a hidden fleet on a 6×6 grid. Twenty questions across five categories — will/won't, going to, present continuous for future, first conditional, and timetables — with a bilingual English/French toggle throughout.
