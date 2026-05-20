@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Future Tense Battleships — JAC's Class</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#faf6ec;--white:#ffffff;--tan:#d5cfb8;
+  --navy:#15263a;--terra:#c84a2c;--teal:#0e7c66;
+  --font-display:'Fraunces',serif;--font-body:'Hanken Grotesk',sans-serif;
+}
+body{font-family:var(--font-body);background:var(--cream);color:var(--navy);min-height:100vh;padding:1rem}
+h1,h2,h3{font-family:var(--font-display);font-weight:700}
+.card{background:var(--white);border:1.5px solid var(--tan);border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+
+/* Setup */
+.setup{max-width:480px;margin:2rem auto;text-align:center}
+.setup h1{font-size:1.8rem;margin-bottom:.25rem}
+.setup .sub{font-family:var(--font-display);font-style:italic;color:#6b6352;margin-bottom:1.5rem}
+.lang-toggle{display:flex;justify-content:center;gap:.5rem;margin-bottom:1.25rem}
+.lang-btn{padding:.4rem 1rem;border:1.5px solid var(--navy);border-radius:8px;background:var(--white);font-family:var(--font-body);font-size:.85rem;font-weight:600;color:var(--navy);cursor:pointer;transition:all .2s}
+.lang-btn.active{background:var(--navy);color:var(--white)}
+.lang-btn:hover{background:var(--navy);color:var(--white)}
+
+.btn{display:inline-block;padding:.65rem 1.5rem;border:none;border-radius:8px;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--navy);color:var(--white)}
+.btn-primary:hover{background:var(--terra)}
+.btn-outline{background:transparent;border:1.5px solid var(--navy);color:var(--navy)}
+.btn-outline:hover{background:var(--navy);color:var(--white)}
+.btn-sm{padding:.4rem .9rem;font-size:.85rem}
+
+/* Game */
+.game{max-width:540px;margin:0 auto;display:none}
+.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.game-header h2{font-size:1.3rem}
+
+.stats{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem}
+.stat{text-align:center;flex:1;min-width:55px;padding:.45rem .25rem;background:var(--white);border:1.5px solid var(--tan);border-radius:8px}
+.stat-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.03em;color:#6b6352}
+.stat-num{font-size:1.15rem;font-weight:700}
+.stat-teal{color:var(--teal)}
+.stat-terra{color:var(--terra)}
+.stat-navy{color:var(--navy)}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:auto repeat(6,1fr);gap:2px;margin-bottom:.75rem}
+.grid-header{font-family:var(--font-display);font-weight:700;font-size:.75rem;text-align:center;padding:.35rem;color:#6b6352}
+.grid-row-label{font-family:var(--font-display);font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center;padding:.35rem;color:#6b6352}
+.cell{aspect-ratio:1;border:1.5px solid var(--tan);border-radius:6px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .15s}
+.cell:hover:not(.revealed){background:#f0ece0;border-color:#c5bfa8}
+.cell.revealed{cursor:default}
+.cell.hit{background:var(--teal);border-color:var(--teal)}
+.cell.hit::after{content:'💥';font-size:.9rem}
+.cell.miss{background:#e8e4d8;border-color:var(--tan)}
+.cell.miss::after{content:'·';color:#999;font-size:1.4rem;line-height:1}
+.cell.sunk{background:var(--terra);border-color:var(--terra)}
+.cell.sunk::after{content:'🔥';font-size:.9rem}
+
+/* Fleet */
+.fleet{margin-bottom:.75rem}
+.fleet h3{font-size:.85rem;margin-bottom:.4rem;color:#6b6352;font-weight:600}
+.fleet-ships{display:flex;flex-wrap:wrap;gap:.4rem}
+.ship{display:flex;align-items:center;gap:.25rem;font-size:.78rem;padding:.25rem .5rem;border-radius:6px;background:var(--white);border:1.5px solid var(--tan)}
+.ship.sunk-ship{border-color:var(--terra);text-decoration:line-through;color:#999}
+.ship-dot{width:7px;height:7px;border-radius:50%;background:var(--navy)}
+.ship.sunk-ship .ship-dot{background:var(--terra)}
+
+/* Question panel */
+.question-panel{display:none}
+.question-panel .card{border-color:var(--navy)}
+.q-category{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#6b6352;margin-bottom:.4rem}
+.q-hint{font-family:var(--font-display);font-style:italic;font-size:.82rem;color:#8a8070;margin-bottom:.6rem}
+.q-text{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:.85rem;line-height:1.4}
+.q-options{display:flex;flex-direction:column;gap:.45rem}
+.q-option{padding:.55rem .75rem;border:1.5px solid var(--tan);border-radius:8px;background:var(--white);font-family:var(--font-body);font-size:.88rem;cursor:pointer;transition:all .15s;text-align:left}
+.q-option:hover{border-color:var(--navy)}
+.q-option.correct{background:#e8f5e9;border-color:var(--teal);color:var(--teal);font-weight:600}
+.q-option.wrong{background:#fce4ec;border-color:var(--terra);color:var(--terra)}
+.q-option.disabled{pointer-events:none;opacity:.55}
+.q-explanation{margin-top:.7rem;padding:.65rem;background:var(--cream);border-radius:8px;font-size:.83rem;line-height:1.5;display:none}
+
+/* Results */
+.results{max-width:540px;margin:0 auto;display:none;text-align:center}
+.results h1{font-size:1.8rem;margin-bottom:.25rem}
+.rank{font-family:var(--font-display);font-size:1.4rem;font-weight:700;margin-bottom:.4rem}
+.rank-cadet{color:#6b6352}.rank-lt{color:var(--navy)}.rank-capt{color:var(--teal)}.rank-adm{color:var(--terra)}
+.verdict{font-family:var(--font-display);font-style:italic;color:#6b6352;margin-bottom:1.5rem;font-size:.95rem}
+.result-stats{display:flex;justify-content:center;gap:1.25rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.result-stat{text-align:center}
+.result-stat .num{font-size:1.7rem;font-weight:700}
+.result-stat .label{font-size:.78rem;color:#6b6352}
+
+.review-list{text-align:left;margin-top:1rem}
+.review-item{padding:.65rem;border-bottom:1px solid var(--tan)}
+.review-q{font-family:var(--font-display);font-weight:700;font-size:.9rem;margin-bottom:.2rem}
+.review-a{font-size:.82rem;color:#6b6352}
+.review-result{font-size:.78rem;font-weight:600;margin-top:.15rem}
+
+.mt-1{margin-top:1rem}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div class="setup card" id="setup">
+  <h1>Future Tense Battleships</h1>
+  <p class="sub">Answer grammar questions to fire at hidden ships. Sink the fleet to win!</p>
+  <div class="lang-toggle">
+    <button class="lang-btn active" data-lang="en" onclick="setLang('en')">English</button>
+    <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">Français</button>
+  </div>
+  <button class="btn btn-primary" onclick="startGame()">Start</button>
+</div>
+
+<!-- GAME -->
+<div class="game" id="game">
+  <div class="game-header">
+    <h2 id="gameTitle">Future Tense Battleships</h2>
+    <button class="btn btn-outline btn-sm" id="langSwitch" onclick="toggleLang()">FR</button>
+  </div>
+  <div class="stats" id="statsBar"></div>
+  <div class="grid" id="grid"></div>
+  <div class="fleet" id="fleet"></div>
+  <div class="question-panel" id="questionPanel"></div>
+</div>
+
+<!-- RESULTS -->
+<div class="results" id="results">
+  <div class="card">
+    <h1 id="resultTitle"></h1>
+    <div class="rank" id="resultRank"></div>
+    <p class="verdict" id="resultVerdict"></p>
+    <div class="result-stats" id="resultStats"></div>
+    <button class="btn btn-outline" onclick="toggleReview()">Review answers</button>
+    <button class="btn btn-primary" onclick="location.reload()" style="margin-left:.5rem">Play again</button>
+    <div class="review-list" id="reviewList" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+/* ──────────────────────────────────────────────
+   QUESTIONS — 20 questions, 5 categories, 4 each
+   Every question has exactly ONE correct answer.
+   ────────────────────────────────────────────── */
+const QUESTIONS = [
+
+  // ── WILL / WON'T ──────────────────────────
+  { cat:'will / won\'t',
+    q:'"That bag looks heavy." — "I ___ carry it for you."',
+    hint:'a spontaneous offer, decided right now',
+    options:['am going to','will','am carrying','carry'], answer:1,
+    en:'"Will" is used for spontaneous offers and decisions made at the moment of speaking.',
+    fr:'On utilise « will » pour les offres spontanées et les décisions prises au moment où l\'on parle.' },
+
+  { cat:'will / won\'t',
+    q:'"I ___ tell anyone your secret. I promise."',
+    hint:'a promise',
+    options:['am not going to','don\'t','won\'t','am not telling'], answer:2,
+    en:'"Will / won\'t" is used for promises. "I promise" is the clue.',
+    fr:'On utilise « will / won\'t » pour les promesses. « I promise » est l\'indice.' },
+
+  { cat:'will / won\'t',
+    q:'"I think the economy ___ improve next year."',
+    hint:'a prediction based on opinion, not evidence',
+    options:['is going to','will','improves','is improving'], answer:1,
+    en:'"I think" + prediction = "will". There\'s no visible evidence, just an opinion.',
+    fr:'« I think » + prédiction = « will ». Il n\'y a pas de preuve visible, juste une opinion.' },
+
+  { cat:'will / won\'t',
+    q:'"It\'s really hot in here." — "I ___ open the window."',
+    hint:'deciding right now, in this moment',
+    options:['am going to','am opening','open','will'], answer:3,
+    en:'A spontaneous decision made in response to the situation = "will".',
+    fr:'Une décision spontanée prise en réponse à la situation = « will ».' },
+
+  // ── GOING TO ──────────────────────────────
+  { cat:'going to',
+    q:'"Look at those black clouds! It ___ rain."',
+    hint:'we can see evidence right now',
+    options:['will','is going to','rains','is raining'], answer:1,
+    en:'"Going to" is used for predictions based on present evidence we can see.',
+    fr:'On utilise « going to » pour les prédictions basées sur des preuves visibles.' },
+
+  { cat:'going to',
+    q:'"I\'ve made up my mind. I ___ apply for the job."',
+    hint:'the decision was made before this moment',
+    options:['will','am going to','apply','am applying'], answer:1,
+    en:'"I\'ve made up my mind" = a decision already taken → "going to".',
+    fr:'« I\'ve made up my mind » = une décision déjà prise → « going to ».' },
+
+  { cat:'going to',
+    q:'"He\'s been saving money all year. He ___ buy a new car."',
+    hint:'there is evidence of a plan already in progress',
+    options:['will','is going to','buys','is buying'], answer:1,
+    en:'Saving money = evidence of an intention/plan → "going to".',
+    fr:'Économiser de l\'argent = preuve d\'une intention/d\'un plan → « going to ».' },
+
+  { cat:'going to',
+    q:'"Watch out! That glass ___ fall off the table!"',
+    hint:'we can see it happening',
+    options:['will','is going to','falls','is falling'], answer:1,
+    en:'We can see the glass is about to fall → "going to" (evidence-based prediction).',
+    fr:'On voit que le verre va tomber → « going to » (prédiction basée sur l\'évidence).' },
+
+  // ── PRESENT CONTINUOUS FOR FUTURE ─────────
+  { cat:'present continuous (future)',
+    q:'"I ___ lunch with my boss tomorrow. The restaurant is booked."',
+    hint:'a fixed arrangement with another person',
+    options:['will have','am having','have','am going to have'], answer:1,
+    en:'A confirmed arrangement with another person (restaurant booked) → present continuous.',
+    fr:'Un arrangement confirmé avec une autre personne (restaurant réservé) → présent continu.' },
+
+  { cat:'present continuous (future)',
+    q:'"She ___ the doctor at 10 a.m. The appointment was made last week."',
+    hint:'an appointment already in the diary',
+    options:['will see','is seeing','sees','is going to see'], answer:1,
+    en:'An appointment (fixed arrangement) → present continuous for future.',
+    fr:'Un rendez-vous (arrangement fixe) → présent continu pour le futur.' },
+
+  { cat:'present continuous (future)',
+    q:'"They ___ married in June. The church and hotel are all arranged."',
+    hint:'everything is confirmed and organised',
+    options:['will get','are getting','get','are going to get'], answer:1,
+    en:'Everything is arranged and confirmed → present continuous for a fixed future event.',
+    fr:'Tout est arrangé et confirmé → présent continu pour un événement futur fixé.' },
+
+  { cat:'present continuous (future)',
+    q:'"We ___ to Rome next weekend. The flights are booked."',
+    hint:'travel already booked with a specific date',
+    options:['will fly','are flying','fly','are going to fly'], answer:1,
+    en:'Flights booked = confirmed arrangement → present continuous.',
+    fr:'Vols réservés = arrangement confirmé → présent continu.' },
+
+  // ── FIRST CONDITIONAL ────────────────────
+  { cat:'first conditional',
+    q:'"If it ___ tomorrow, we\'ll cancel the barbecue."',
+    hint:'if + ??? , … will + base verb',
+    options:['will rain','rains','is raining','is going to rain'], answer:1,
+    en:'First conditional: if + present simple, will + base verb. Never "if + will".',
+    fr:'Premier conditionnel : if + présent simple, will + base verbale. Jamais « if + will ».' },
+
+  { cat:'first conditional',
+    q:'"You\'ll miss the bus if you ___ now."',
+    hint:'the "if" clause needs present simple',
+    options:['won\'t leave','don\'t leave','aren\'t leaving','aren\'t going to leave'], answer:1,
+    en:'The "if" clause takes present simple (negative = don\'t + base verb).',
+    fr:'La proposition avec « if » prend le présent simple (négatif = don\'t + base verbale).' },
+
+  { cat:'first conditional',
+    q:'"If she ___ the exam, her parents will be very proud."',
+    hint:'if + present simple',
+    options:['will pass','passes','is passing','is going to pass'], answer:1,
+    en:'If clause = present simple. "Passes" (third person -s).',
+    fr:'Proposition avec if = présent simple. « Passes » (troisième personne + -s).' },
+
+  { cat:'first conditional',
+    q:'"We won\'t go to the beach if the weather ___ bad."',
+    hint:'if + present simple — what form of "be"?',
+    options:['will be','is','is being','is going to be'], answer:1,
+    en:'"If" clause = present simple. "Be" in present simple = "is".',
+    fr:'Proposition avec « if » = présent simple. « Be » au présent simple = « is ».' },
+
+  // ── TIMETABLES & TIME EXPRESSIONS ────────
+  { cat:'timetables & time expressions',
+    q:'"Which time expression refers to the FUTURE?"',
+    hint:'only one of these points forward in time',
+    options:['yesterday','last week','next month','two days ago'], answer:2,
+    en:'"Next" always points to the future. The others are all past.',
+    fr:'« Next » indique toujours le futur. Les autres sont tous du passé.' },
+
+  { cat:'timetables & time expressions',
+    q:'"The train ___ at 9:15. It\'s on the timetable."',
+    hint:'official schedule — which tense for timetables?',
+    options:['will leave','is leaving','leaves','is going to leave'], answer:2,
+    en:'Timetables and official schedules use the present simple for future events.',
+    fr:'Les horaires et programmes officiels utilisent le présent simple pour les événements futurs.' },
+
+  { cat:'timetables & time expressions',
+    q:'"The supermarket ___ at 9 p.m. on Sundays."',
+    hint:'a regular scheduled fact',
+    options:['will close','is closing','closes','is going to close'], answer:2,
+    en:'Regular scheduled facts (opening hours, timetables) use the present simple.',
+    fr:'Les faits programmés réguliers (horaires d\'ouverture, emplois du temps) utilisent le présent simple.' },
+
+  { cat:'timetables & time expressions',
+    q:'"I ___ you when I arrive. I promise."',
+    hint:'a promise about the future',
+    options:['am going to call','will call','am calling','call'], answer:1,
+    en:'"I promise" signals a promise → "will". The time expression "when I arrive" doesn\'t change this.',
+    fr:'« I promise » signale une promesse → « will ». L\'expression « when I arrive » ne change pas cela.' },
+];
+
+/* ──────────────────────────────────────────────
+   SHIPS
+   ────────────────────────────────────────────── */
+const SHIP_DEFS = [
+  {name:'Battleship',size:4},
+  {name:'Cruiser',size:3},
+  {name:'Destroyer',size:2},
+  {name:'Patrol Boat',size:1},
+];
+
+const LABELS = {
+  en:{correct:'Correct',wrong:'Wrong',hits:'Hits',shotsLeft:'Shots left',fleet:'Enemy fleet',
+      mission:'Mission Complete!',gameOver:'Game Over',sunk:'sunk',
+      ranks:['Cadet','Lieutenant','Captain','Admiral'],
+      verdicts:['Keep practising — the future tenses will click soon.','Good effort — you know the basics well.','Impressive command of the future tenses.','Flawless. You\'ve earned your stripes.'],
+      reviewCorrect:'Correct answer',youChose:'You chose'},
+  fr:{correct:'Correct',wrong:'Faux',hits:'Touchés',shotsLeft:'Tirs restants',fleet:'Flotte ennemie',
+      mission:'Mission accomplie !',gameOver:'Fin de partie',sunk:'coulé',
+      ranks:['Cadet','Lieutenant','Capitaine','Amiral'],
+      verdicts:['Continuez à vous entraîner — les futurs viendront.','Bon effort — vous connaissez les bases.','Maîtrise impressionnante des futurs.','Parfait. Vous avez gagné vos galons.'],
+      reviewCorrect:'Bonne réponse',youChose:'Vous avez choisi'}
+};
+
+let lang = 'en';
+let state = {};
+
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));
+}
+
+function toggleLang(){
+  lang = lang==='en'?'fr':'en';
+  document.getElementById('langSwitch').textContent = lang==='en'?'FR':'EN';
+  document.getElementById('gameTitle').textContent = lang==='en'?'Future Tense Battleships':'Futur — Bataille navale';
+  renderStats(); renderFleet();
+}
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function placeShips(){
+  const grid=Array.from({length:6},()=>Array(6).fill(null));
+  const ships=SHIP_DEFS.map(s=>({...s,cells:[],hits:0}));
+  for(const ship of ships){
+    let placed=false,att=0;
+    while(!placed&&att<300){
+      att++;
+      const h=Math.random()<.5;
+      const r=Math.floor(Math.random()*(h?6:6-ship.size+1));
+      const c=Math.floor(Math.random()*(h?6-ship.size+1:6));
+      const cells=[];let ok=true;
+      for(let i=0;i<ship.size;i++){
+        const nr=h?r:r+i,nc=h?c+i:c;
+        if(nr>=6||nc>=6||grid[nr][nc]!==null){ok=false;break}
+        cells.push([nr,nc]);
+      }
+      if(ok){cells.forEach(([rr,cc])=>grid[rr][cc]=ship.name);ship.cells=cells;placed=true}
+    }
+  }
+  return{grid,ships};
+}
+
+function startGame(){
+  const{grid,ships}=placeShips();
+  const questions=shuffle([...QUESTIONS]);
+  state={grid,ships,questions,qIdx:0,
+    cellStates:Array.from({length:6},()=>Array(6).fill(null)),
+    correct:0,wrong:0,hits:0,totalShots:questions.length,
+    selectedCell:null,history:[],allSunk:false,answering:false};
+  document.getElementById('setup').style.display='none';
+  document.getElementById('game').style.display='block';
+  if(lang==='fr')document.getElementById('gameTitle').textContent='Futur — Bataille navale';
+  renderGrid();renderStats();renderFleet();
+}
+
+function renderGrid(){
+  const cols=['A','B','C','D','E','F'];
+  let h='<div class="grid-header"></div>';
+  cols.forEach(c=>h+=`<div class="grid-header">${c}</div>`);
+  for(let r=0;r<6;r++){
+    h+=`<div class="grid-row-label">${r+1}</div>`;
+    for(let c=0;c<6;c++){
+      const cs=state.cellStates[r][c];
+      let cls='cell';
+      if(cs==='hit')cls+=' hit revealed';
+      else if(cs==='miss')cls+=' miss revealed';
+      else if(cs==='sunk')cls+=' sunk revealed';
+      h+=`<div class="${cls}" data-r="${r}" data-c="${c}" onclick="selectCell(${r},${c})"></div>`;
+    }
+  }
+  document.getElementById('grid').innerHTML=h;
+}
+
+function renderStats(){
+  const L=LABELS[lang];
+  const rem=state.totalShots-state.correct-state.wrong;
+  document.getElementById('statsBar').innerHTML=`
+    <div class="stat"><div class="stat-label">${L.correct}</div><div class="stat-num stat-teal">${state.correct}</div></div>
+    <div class="stat"><div class="stat-label">${L.wrong}</div><div class="stat-num stat-terra">${state.wrong}</div></div>
+    <div class="stat"><div class="stat-label">${L.hits}</div><div class="stat-num stat-navy">${state.hits}</div></div>
+    <div class="stat"><div class="stat-label">${L.shotsLeft}</div><div class="stat-num stat-navy">${rem}</div></div>`;
+}
+
+function renderFleet(){
+  const L=LABELS[lang];
+  let h=`<h3>${L.fleet}</h3><div class="fleet-ships">`;
+  state.ships.forEach(s=>{
+    const sunk=s.hits>=s.size;
+    h+=`<div class="ship ${sunk?'sunk-ship':''}">`;
+    for(let i=0;i<s.size;i++)h+='<span class="ship-dot"></span>';
+    h+=` ${s.name}${sunk?' — '+L.sunk:''}</div>`;
+  });
+  h+='</div>';
+  document.getElementById('fleet').innerHTML=h;
+}
+
+function selectCell(r,c){
+  if(state.cellStates[r][c]||state.allSunk||state.qIdx>=state.questions.length||state.answering)return;
+  state.selectedCell=[r,c];
+  showQuestion();
+}
+
+function showQuestion(){
+  if(state.qIdx>=state.questions.length)return;
+  state.answering=true;
+  const q=state.questions[state.qIdx];
+  const panel=document.getElementById('questionPanel');
+  let h=`<div class="card">
+    <div class="q-category">${q.cat}</div>
+    <div class="q-hint">${q.hint}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="q-options">`;
+  q.options.forEach((opt,i)=>{
+    h+=`<div class="q-option" data-idx="${i}" onclick="answerQ(${i})">${opt}</div>`;
+  });
+  h+=`</div><div class="q-explanation" id="qExpl"></div></div>`;
+  panel.innerHTML=h;
+  panel.style.display='block';
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function answerQ(idx){
+  const q=state.questions[state.qIdx];
+  const options=document.querySelectorAll('.q-option');
+  const isCorrect=idx===q.answer;
+
+  options.forEach((opt,i)=>{
+    opt.classList.add('disabled');
+    if(i===q.answer)opt.classList.add('correct');
+    if(i===idx&&!isCorrect)opt.classList.add('wrong');
+  });
+
+  const expl=document.getElementById('qExpl');
+  expl.textContent=lang==='en'?q.en:q.fr;
+  expl.style.display='block';
+
+  const[r,c]=state.selectedCell;
+
+  if(isCorrect){
+    state.correct++;
+    const shipName=state.grid[r][c];
+    if(shipName){
+      state.hits++;
+      const ship=state.ships.find(s=>s.name===shipName);
+      ship.hits++;
+      if(ship.hits>=ship.size){
+        ship.cells.forEach(([sr,sc])=>state.cellStates[sr][sc]='sunk');
+      }else{
+        state.cellStates[r][c]='hit';
+      }
+    }else{
+      state.cellStates[r][c]='miss';
+    }
+  }else{
+    state.wrong++;
+    state.cellStates[r][c]='miss';
+  }
+
+  state.history.push({q:q.q,answer:q.options[q.answer],chosen:q.options[idx],correct:isCorrect,cat:q.cat});
+  state.qIdx++;
+
+  renderGrid();renderStats();renderFleet();
+
+  state.allSunk=state.ships.every(s=>s.hits>=s.size);
+
+  setTimeout(()=>{
+    document.getElementById('questionPanel').style.display='none';
+    state.answering=false;
+    if(state.allSunk||state.qIdx>=state.questions.length){
+      setTimeout(showResults,350);
+    }
+  },2200);
+}
+
+function showResults(){
+  document.getElementById('game').style.display='none';
+  document.getElementById('results').style.display='block';
+  const L=LABELS[lang];
+
+  const total=state.correct+state.wrong;
+  const pct=total>0?state.correct/total:0;
+  let ri=0;
+  if(pct>=.9)ri=3;else if(pct>=.7)ri=2;else if(pct>=.5)ri=1;
+
+  const rankClasses=['rank-cadet','rank-lt','rank-capt','rank-adm'];
+
+  document.getElementById('resultTitle').textContent=state.allSunk?L.mission:L.gameOver;
+  const rankEl=document.getElementById('resultRank');
+  rankEl.textContent=L.ranks[ri];
+  rankEl.className='rank '+rankClasses[ri];
+  document.getElementById('resultVerdict').textContent=L.verdicts[ri];
+
+  const sunkCount=state.ships.filter(s=>s.hits>=s.size).length;
+  const cLabel=lang==='en'?'Correct':'Correct';
+  const wLabel=lang==='en'?'Wrong':'Faux';
+  const hLabel=lang==='en'?'Hits':'Touchés';
+  const sLabel=lang==='en'?'Ships sunk':'Navires coulés';
+
+  document.getElementById('resultStats').innerHTML=`
+    <div class="result-stat"><div class="num" style="color:var(--teal)">${state.correct}</div><div class="label">${cLabel}</div></div>
+    <div class="result-stat"><div class="num" style="color:var(--terra)">${state.wrong}</div><div class="label">${wLabel}</div></div>
+    <div class="result-stat"><div class="num" style="color:var(--navy)">${state.hits}</div><div class="label">${hLabel}</div></div>
+    <div class="result-stat"><div class="num" style="color:var(--navy)">${sunkCount}/4</div><div class="label">${sLabel}</div></div>`;
+
+  let h='';
+  state.history.forEach(item=>{
+    h+=`<div class="review-item">
+      <div class="review-q">${item.q}</div>
+      <div class="review-a">${L.reviewCorrect}: ${item.answer}</div>
+      <div class="review-result" style="color:${item.correct?'var(--teal)':'var(--terra)'}">${item.correct?'✓':'✗ '+L.youChose+': '+item.chosen}</div>
+    </div>`;
+  });
+  document.getElementById('reviewList').innerHTML=h;
+}
+
+function toggleReview(){
+  const el=document.getElementById('reviewList');
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+</script>
+</body>
+</html>
