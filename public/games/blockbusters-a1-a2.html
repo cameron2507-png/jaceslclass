@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business English Blockbusters – A1/A2</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #faf6ec;
+    --white: #ffffff;
+    --tan: #d5cfb8;
+    --navy: #15263a;
+    --terracotta: #c84a2c;
+    --teal: #0e7c66;
+    --team1: #0e7c66;
+    --team2: #c84a2c;
+    --hex-size: 52px;
+    --hex-gap: 4px;
+  }
+
+  body {
+    font-family: 'Hanken Grotesk', sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    min-height: 100vh;
+    padding: 1rem;
+  }
+
+  h1, h2, h3 { font-family: 'Fraunces', serif; }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  header p {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: #8a7e6b;
+    margin-top: 0.25rem;
+    font-size: 0.95rem;
+  }
+
+  /* Scoreboard */
+  .scoreboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .team-score {
+    background: var(--white);
+    border: 2px solid var(--tan);
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    text-align: center;
+    min-width: 140px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .team-score.active {
+    box-shadow: 0 0 0 3px rgba(21, 38, 58, 0.15);
+  }
+
+  .team-score.team1 { border-left: 5px solid var(--team1); }
+  .team-score.team2 { border-left: 5px solid var(--team2); }
+  .team-score.team1.active { border-color: var(--team1); }
+  .team-score.team2.active { border-color: var(--team2); }
+
+  .team-score .label {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .team-score.team1 .label { color: var(--team1); }
+  .team-score.team2 .label { color: var(--team2); }
+
+  .team-score .score {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .turn-indicator {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #8a7e6b;
+    text-align: center;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Direction labels */
+  .board-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .direction-label {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  .direction-label.top, .direction-label.bottom {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .direction-label.top { top: -18px; color: var(--team1); }
+  .direction-label.bottom { bottom: -18px; color: var(--team1); }
+  .direction-label.left, .direction-label.right {
+    top: 50%;
+  }
+  .direction-label.left { left: -10px; transform: translateY(-50%) rotate(-90deg); color: var(--team2); }
+  .direction-label.right { right: -10px; transform: translateY(-50%) rotate(90deg); color: var(--team2); }
+
+  /* Hex grid */
+  .hex-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 20px;
+  }
+
+  .hex-row {
+    display: flex;
+    gap: var(--hex-gap);
+    margin-top: calc(-1 * var(--hex-size) * 0.28);
+  }
+
+  .hex-row:first-child { margin-top: 0; }
+
+  .hex-row.offset {
+    margin-left: calc(var(--hex-size) * 0.9 + var(--hex-gap) / 2);
+  }
+
+  .hex {
+    width: calc(var(--hex-size) * 1.73);
+    height: calc(var(--hex-size) * 2);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.15s;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.08));
+  }
+
+  .hex:hover { transform: scale(1.08); }
+
+  .hex polygon {
+    fill: var(--white);
+    stroke: var(--tan);
+    stroke-width: 2;
+    transition: fill 0.3s, stroke 0.3s;
+  }
+
+  .hex.team1 polygon { fill: var(--team1); stroke: var(--team1); }
+  .hex.team2 polygon { fill: var(--team2); stroke: var(--team2); }
+  .hex.team1 text, .hex.team2 text { fill: var(--white); }
+
+  .hex text {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    fill: var(--navy);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hex.claimed { cursor: default; }
+  .hex.claimed:hover { transform: none; }
+
+  /* Question modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(21, 38, 58, 0.5);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.visible { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border: 2px solid var(--tan);
+    border-radius: 12px;
+    max-width: 480px;
+    width: 100%;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .modal .letter-badge {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.8rem;
+    color: var(--navy);
+    background: var(--cream);
+    border: 2px solid var(--tan);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+
+  .modal .category {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #8a7e6b;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal .question {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--navy);
+    text-align: center;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal .answer-section {
+    text-align: center;
+  }
+
+  .btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-reveal {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .btn-reveal:hover { background: #1e3a56; }
+
+  .answer-text {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: var(--navy);
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  .answer-text.visible { display: block; }
+
+  .team-buttons {
+    display: none;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .team-buttons.visible { display: flex; }
+
+  .btn-team1 {
+    background: var(--team1);
+    color: var(--white);
+  }
+  .btn-team1:hover { background: #0a6350; }
+
+  .btn-team2 {
+    background: var(--team2);
+    color: var(--white);
+  }
+  .btn-team2:hover { background: #a83d24; }
+
+  .btn-skip {
+    background: var(--tan);
+    color: var(--navy);
+  }
+  .btn-skip:hover { background: #c4bda5; }
+
+  /* Reset */
+  .reset-bar {
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  .btn-reset {
+    background: none;
+    border: 1.5px solid var(--tan);
+    color: #8a7e6b;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-reset:hover { border-color: var(--navy); color: var(--navy); }
+
+  /* Win banner */
+  .win-banner {
+    display: none;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .win-banner.visible { display: block; }
+  .win-banner.team1 { background: var(--team1); }
+  .win-banner.team2 { background: var(--team2); }
+
+  /* Instructions */
+  .instructions {
+    background: var(--white);
+    border: 1.5px solid var(--tan);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #5a5347;
+    line-height: 1.6;
+  }
+
+  .instructions summary {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--navy);
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .instructions p { margin-top: 0.5rem; }
+
+  @media (max-width: 600px) {
+    :root { --hex-size: 36px; }
+    header h1 { font-size: 1.25rem; }
+    .modal { padding: 1.5rem 1rem; }
+    .direction-label.left, .direction-label.right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Business English Blockbusters</h1>
+    <p>A1 / A2 – Elementary</p>
+  </header>
+
+  <div class="win-banner" id="winBanner"></div>
+
+  <div class="scoreboard">
+    <div class="team-score team1 active" id="team1Box" onclick="setTurn(1)">
+      <div class="label">Team 1 ↓</div>
+      <div class="score" id="score1">0</div>
+    </div>
+    <div class="team-score team2" id="team2Box" onclick="setTurn(2)">
+      <div class="label">Team 2 →</div>
+      <div class="score" id="score2">0</div>
+    </div>
+  </div>
+
+  <div class="turn-indicator" id="turnIndicator">Team 1's turn — connect top to bottom</div>
+
+  <div class="board-wrapper">
+    <div class="direction-label top">▼ TEAM 1 ▼</div>
+    <div class="direction-label bottom">▲ TEAM 1 ▲</div>
+    <div class="direction-label left">TEAM 2 ►</div>
+    <div class="direction-label right">◄ TEAM 2</div>
+    <div class="hex-grid" id="hexGrid"></div>
+  </div>
+
+  <div class="reset-bar">
+    <button class="btn-reset" onclick="resetGame()">Reset game</button>
+  </div>
+
+  <details class="instructions">
+    <summary>How to play</summary>
+    <p>Split the class into two teams. Team 1 tries to connect a path from <strong>top to bottom</strong>. Team 2 tries to connect <strong>left to right</strong>. Teams take turns choosing a hexagon — answer the question correctly to claim it. The first team to complete an unbroken path across the board wins. Click a team name above to switch turns manually.</p>
+  </details>
+</div>
+
+<!-- Question modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="letter-badge" id="modalLetter"></div>
+    <div class="category" id="modalCategory"></div>
+    <div class="question" id="modalQuestion"></div>
+    <div class="answer-section">
+      <button class="btn btn-reveal" id="btnReveal" onclick="revealAnswer()">Show answer</button>
+      <div class="answer-text" id="answerText"></div>
+      <div class="team-buttons" id="teamButtons">
+        <button class="btn btn-team1" onclick="awardHex(1)">Team 1</button>
+        <button class="btn btn-team2" onclick="awardHex(2)">Team 2</button>
+        <button class="btn btn-skip" onclick="closeModal()">No one</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// 5 columns × 5 rows — both teams need a minimum path of 5
+const ROWS = 5;
+const COLS = 5;
+
+const questions = [
+  { letter: "A", category: "Vocabulary", q: "This is where you work, with a desk and a computer. It starts with 'A' and ends with 'E'.", a: "An office" },
+  { letter: "B", category: "Grammar", q: "Complete: 'I ___ a meeting at 10 o'clock.' (have / has)", a: "Have" },
+  { letter: "C", category: "Vocabulary", q: "A person who buys things from your company. Starts with 'C'.", a: "Customer / Client" },
+  { letter: "D", category: "Grammar", q: "Complete: 'The report is ___ on Friday.' (meaning: it must arrive)", a: "Due" },
+  { letter: "E", category: "Vocabulary", q: "A person who works for a company. Starts with 'E'.", a: "Employee" },
+  { letter: "F", category: "Vocabulary", q: "A document you send to ask for payment. Starts with 'F' — it's not a bill.", a: "Invoice (accept) / Fax" },
+  { letter: "G", category: "Grammar", q: "Complete: 'Nice to meet you. ___ morning!' What word?", a: "Good" },
+  { letter: "H", category: "Vocabulary", q: "The department that manages people and recruitment. Two words, starts with 'H'.", a: "Human Resources (HR)" },
+  { letter: "I", category: "Grammar", q: "Complete: 'Could you send me the ___ for the order?' (a document asking for payment)", a: "Invoice" },
+  { letter: "J", category: "Vocabulary", q: "The work you do every day — your profession. Starts with 'J'.", a: "Job" },
+  { letter: "K", category: "Grammar", q: "Complete: 'Do you ___ how to use Excel?' (understand / be able to)", a: "Know" },
+  { letter: "L", category: "Vocabulary", q: "When you are not early and not on time, you are ___. Starts with 'L'.", a: "Late" },
+  { letter: "M", category: "Vocabulary", q: "When people sit together to talk about work. Starts with 'M'.", a: "Meeting" },
+  { letter: "N", category: "Grammar", q: "Complete: 'We ___ to finish this by Monday.' (it's important)", a: "Need" },
+  { letter: "O", category: "Vocabulary", q: "When you ask for something to be delivered — you place an ___.", a: "Order" },
+  { letter: "P", category: "Vocabulary", q: "The money you receive each month for your work. Starts with 'P'.", a: "Pay / Payslip" },
+  { letter: "R", category: "Grammar", q: "Complete: 'Can you ___ to my email, please?' (answer)", a: "Reply" },
+  { letter: "S", category: "Vocabulary", q: "A plan showing days and times — when things happen. Starts with 'S'.", a: "Schedule" },
+  { letter: "T", category: "Grammar", q: "Complete: 'I work in a ___. There are five people.' (a group at work)", a: "Team" },
+  { letter: "W", category: "Vocabulary", q: "The place where products are stored before being sent. Starts with 'W'.", a: "Warehouse" },
+  { letter: "U", category: "Grammar", q: "Complete: 'I ___ work at 8 a.m. every day.' (habitual action)", a: "Usually" },
+  { letter: "V", category: "Vocabulary", q: "A day when you don't work — you are on ___. Starts with 'V'.", a: "Vacation / Holiday" },
+  { letter: "Q", category: "Vocabulary", q: "The standard of something — good or bad. Starts with 'Q'.", a: "Quality" },
+  { letter: "X", category: "Grammar", q: "Complete: 'I have three years of ___.' (knowledge from doing a job)", a: "Experience" },
+  { letter: "Z", category: "Vocabulary", q: "An area in a warehouse or factory where certain rules apply. Starts with 'Z'.", a: "Zone" },
+];
+
+// Shuffle and assign to grid
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let gridData = []; // [{row, col, question, claimed: 0|1|2}]
+let currentHex = null;
+let currentTurn = 1;
+let scores = [0, 0];
+
+function buildGrid() {
+  const shuffled = shuffleArray(questions);
+  gridData = [];
+  let qi = 0;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      gridData.push({
+        row: r, col: c,
+        question: shuffled[qi % shuffled.length],
+        claimed: 0
+      });
+      qi++;
+    }
+  }
+}
+
+function renderGrid() {
+  const grid = document.getElementById('hexGrid');
+  grid.innerHTML = '';
+
+  for (let r = 0; r < ROWS; r++) {
+    const row = document.createElement('div');
+    row.className = 'hex-row' + (r % 2 === 1 ? ' offset' : '');
+    for (let c = 0; c < COLS; c++) {
+      const idx = r * COLS + c;
+      const cell = gridData[idx];
+      const hex = document.createElement('div');
+      hex.className = 'hex' + (cell.claimed ? ` team${cell.claimed} claimed` : '');
+      hex.dataset.idx = idx;
+
+      const w = 90;
+      const h = 104;
+      // pointy-top hexagon
+      const points = [
+        [w/2, 0],
+        [w, h*0.25],
+        [w, h*0.75],
+        [w/2, h],
+        [0, h*0.75],
+        [0, h*0.25]
+      ].map(p => p.join(',')).join(' ');
+
+      hex.innerHTML = `
+        <svg viewBox="0 0 ${w} ${h}" width="100%" height="100%">
+          <polygon points="${points}" />
+          <text x="${w/2}" y="${h/2 + 5}" text-anchor="middle">${cell.question.letter}</text>
+        </svg>`;
+
+      if (!cell.claimed) {
+        hex.addEventListener('click', () => openModal(idx));
+      }
+      row.appendChild(hex);
+    }
+    grid.appendChild(row);
+  }
+}
+
+function setTurn(team) {
+  currentTurn = team;
+  document.getElementById('team1Box').classList.toggle('active', team === 1);
+  document.getElementById('team2Box').classList.toggle('active', team === 2);
+  document.getElementById('turnIndicator').textContent =
+    team === 1 ? "Team 1's turn — connect top to bottom" : "Team 2's turn — connect left to right";
+}
+
+function openModal(idx) {
+  currentHex = idx;
+  const cell = gridData[idx];
+  document.getElementById('modalLetter').textContent = cell.question.letter;
+  document.getElementById('modalCategory').textContent = cell.question.category;
+  document.getElementById('modalQuestion').textContent = cell.question.q;
+  document.getElementById('answerText').textContent = cell.question.a;
+  document.getElementById('answerText').classList.remove('visible');
+  document.getElementById('teamButtons').classList.remove('visible');
+  document.getElementById('btnReveal').style.display = '';
+  document.getElementById('modalOverlay').classList.add('visible');
+}
+
+function revealAnswer() {
+  document.getElementById('answerText').classList.add('visible');
+  document.getElementById('teamButtons').classList.add('visible');
+  document.getElementById('btnReveal').style.display = 'none';
+}
+
+function awardHex(team) {
+  if (currentHex === null) return;
+  gridData[currentHex].claimed = team;
+  scores[team - 1]++;
+  document.getElementById(`score${team}`).textContent = scores[team - 1];
+  closeModal();
+  renderGrid();
+  setTurn(team === 1 ? 2 : 1);
+  checkWin();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('visible');
+  currentHex = null;
+}
+
+function checkWin() {
+  // Team 1: top to bottom (row 0 → row ROWS-1)
+  if (hasPath(1, 'row', 0, ROWS - 1)) showWin(1);
+  // Team 2: left to right (col 0 → col COLS-1)
+  if (hasPath(2, 'col', 0, COLS - 1)) showWin(2);
+}
+
+function hasPath(team, axis, startVal, endVal) {
+  // BFS from all cells at startVal edge
+  const visited = new Set();
+  const queue = [];
+
+  gridData.forEach((cell, idx) => {
+    if (cell.claimed === team && cell[axis] === startVal) {
+      queue.push(idx);
+      visited.add(idx);
+    }
+  });
+
+  while (queue.length) {
+    const idx = queue.shift();
+    const cell = gridData[idx];
+    if (cell[axis] === endVal) return true;
+
+    getNeighbors(cell.row, cell.col).forEach(nIdx => {
+      if (!visited.has(nIdx) && gridData[nIdx].claimed === team) {
+        visited.add(nIdx);
+        queue.push(nIdx);
+      }
+    });
+  }
+  return false;
+}
+
+function getNeighbors(row, col) {
+  const neighbors = [];
+  const isOffset = row % 2 === 1;
+
+  // hex neighbors for pointy-top with offset rows
+  const dirs = isOffset
+    ? [[-1,0],[-1,1],[0,-1],[0,1],[1,0],[1,1]]
+    : [[-1,-1],[-1,0],[0,-1],[0,1],[1,-1],[1,0]];
+
+  dirs.forEach(([dr, dc]) => {
+    const nr = row + dr;
+    const nc = col + dc;
+    if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+      neighbors.push(nr * COLS + nc);
+    }
+  });
+
+  return neighbors;
+}
+
+function showWin(team) {
+  const banner = document.getElementById('winBanner');
+  banner.className = `win-banner visible team${team}`;
+  banner.textContent = `🏆 Team ${team} wins!`;
+}
+
+function resetGame() {
+  scores = [0, 0];
+  document.getElementById('score1').textContent = '0';
+  document.getElementById('score2').textContent = '0';
+  document.getElementById('winBanner').className = 'win-banner';
+  setTurn(1);
+  buildGrid();
+  renderGrid();
+}
+
+// Init
+buildGrid();
+renderGrid();
+</script>
+</body>
+</html>
