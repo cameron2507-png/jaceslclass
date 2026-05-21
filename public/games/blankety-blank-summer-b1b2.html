@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blankety Blank — Summer Holidays (B1/B2)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+  :root {
+    --cream: #faf6ec;
+    --navy: #15263a;
+    --terracotta: #c84a2c;
+    --teal: #0e7c66;
+    --tan: #d5cfb8;
+    --gold: #e8a825;
+    --peach: #f4d6b0;
+    --light-teal: #b8e6da;
+    --light-terra: #f2c4b3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Hanken Grotesk', sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    right: -30%;
+    width: 80vw;
+    height: 80vw;
+    background: radial-gradient(circle, rgba(200,74,44,0.07) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -40%;
+    left: -20%;
+    width: 70vw;
+    height: 70vw;
+    background: radial-gradient(circle, rgba(14,124,102,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* --- INTRO SCREEN --- */
+  .intro {
+    text-align: center;
+    padding: 40px 20px;
+    animation: fadeUp 0.6s ease;
+  }
+
+  .intro .badge {
+    display: inline-block;
+    background: var(--terracotta);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .intro h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--terracotta) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .intro .subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--teal);
+    margin-bottom: 24px;
+  }
+
+  .intro .theme-banner {
+    background: linear-gradient(135deg, var(--teal) 0%, #0a6b58 100%);
+    color: white;
+    display: inline-block;
+    padding: 10px 28px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 15px rgba(14,124,102,0.3);
+  }
+
+  .intro .how-to {
+    background: white;
+    border: 2px solid var(--tan);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .intro .how-to h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: var(--terracotta);
+  }
+
+  .intro .how-to p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .intro .how-to p:last-child { margin-bottom: 0; }
+
+  .teams-setup {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .team-count-btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: 2px solid var(--tan);
+    background: white;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .team-count-btn:hover, .team-count-btn.active {
+    border-color: var(--terracotta);
+    background: var(--light-terra);
+    transform: translateY(-2px);
+  }
+
+  .start-btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--terracotta) 0%, #a53d24 100%);
+    color: white;
+    border: none;
+    padding: 16px 48px;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(200,74,44,0.35);
+    transition: all 0.25s;
+    letter-spacing: 0.5px;
+  }
+
+  .start-btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 30px rgba(200,74,44,0.4);
+  }
+
+  /* --- GAME SCREEN --- */
+  .game { display: none; animation: fadeUp 0.5s ease; }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .round-badge {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--terracotta);
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 8px;
+    background: var(--tan);
+    border-radius: 10px;
+    margin: 0 16px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--terracotta), var(--gold));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+  }
+
+  .scores {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .score-chip {
+    background: white;
+    border: 2px solid var(--tan);
+    border-radius: 12px;
+    padding: 8px 18px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+  }
+
+  .score-chip .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .score-chip.t0 .dot { background: var(--teal); }
+  .score-chip.t1 .dot { background: var(--terracotta); }
+  .score-chip.t2 .dot { background: var(--gold); }
+  .score-chip.t3 .dot { background: var(--navy); }
+
+  .score-chip.active {
+    transform: scale(1.08);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  }
+
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 4px 24px rgba(21,38,58,0.08);
+    border: 2px solid var(--tan);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--terracotta), var(--gold), var(--teal));
+  }
+
+  .sentence {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    margin: 24px 0;
+    color: var(--navy);
+  }
+
+  .blank-word {
+    display: inline-block;
+    min-width: 120px;
+    border-bottom: 4px solid var(--teal);
+    padding: 2px 8px;
+    margin: 0 4px;
+    color: transparent;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--light-teal) 0px,
+      var(--light-teal) 12px,
+      transparent 12px,
+      transparent 16px
+    );
+    border-radius: 4px;
+    transition: all 0.5s ease;
+    animation: pulse 2s infinite;
+  }
+
+  .blank-word.revealed {
+    color: var(--teal);
+    background: rgba(14,124,102,0.08);
+    border-bottom-color: var(--terracotta);
+    font-weight: 700;
+    animation: revealPop 0.5s ease;
+  }
+
+  .hint {
+    font-style: italic;
+    color: #8a8070;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 20px 0 8px;
+  }
+
+  .option {
+    background: white;
+    border: 2px solid var(--tan);
+    border-radius: 12px;
+    padding: 14px 12px;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+    position: relative;
+  }
+
+  .option .letter {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 50%;
+    background: var(--tan);
+    color: var(--navy);
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-right: 6px;
+    transition: all 0.25s;
+  }
+
+  .option:hover:not(.locked) {
+    border-color: var(--terracotta);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(200,74,44,0.15);
+  }
+
+  .option.correct {
+    background: linear-gradient(135deg, var(--terracotta), #a53d24);
+    color: white;
+    border-color: var(--terracotta);
+    box-shadow: 0 4px 20px rgba(200,74,44,0.35);
+    transform: scale(1.05);
+    animation: correctPulse 0.6s ease;
+  }
+
+  .option.correct .letter {
+    background: var(--gold);
+    color: white;
+  }
+
+  .option.wrong {
+    opacity: 0.4;
+    border-style: dashed;
+  }
+
+  .option.locked { cursor: default; }
+
+  @keyframes correctPulse {
+    0% { transform: scale(0.95); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1.05); }
+  }
+
+  .answer-section {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px dashed var(--tan);
+  }
+
+  .answer-section.show {
+    display: block;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .answer-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--terracotta);
+    margin-bottom: 8px;
+  }
+
+  .accepted-answers {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .answer-tag {
+    background: linear-gradient(135deg, var(--terracotta), #a53d24);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .also-ok {
+    font-size: 0.85rem;
+    color: #8a8070;
+    font-style: italic;
+  }
+
+  .example-sentence {
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: rgba(200,74,44,0.05);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--navy);
+  }
+
+  .fr-translation {
+    margin-top: 10px;
+    padding: 10px 16px;
+    background: rgba(14,124,102,0.06);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: var(--navy);
+  }
+
+  .fr-translation strong { color: var(--teal); }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-reveal {
+    background: linear-gradient(135deg, var(--gold), #d49520);
+    color: white;
+    box-shadow: 0 4px 15px rgba(232,168,37,0.35);
+    font-size: 1.1rem;
+    padding: 16px 36px;
+  }
+
+  .btn-reveal:hover { transform: translateY(-2px) scale(1.03); }
+
+  .btn-score {
+    flex: 1;
+    min-width: 80px;
+    color: white;
+  }
+
+  .btn-score.t0 { background: var(--teal); }
+  .btn-score.t1 { background: var(--terracotta); }
+  .btn-score.t2 { background: var(--gold); }
+  .btn-score.t3 { background: var(--navy); }
+  .btn-score.nobody { background: var(--tan); color: var(--navy); }
+  .btn-score:hover { transform: translateY(-2px); opacity: 0.9; }
+
+  .btn-next {
+    background: var(--navy);
+    color: white;
+    width: 100%;
+    margin-top: 8px;
+    font-size: 1.05rem;
+  }
+
+  .btn-next:hover {
+    background: #1e3550;
+    transform: translateY(-2px);
+  }
+
+  /* --- END --- */
+  .end { display: none; text-align: center; padding: 40px 20px; animation: fadeUp 0.6s ease; }
+
+  .end h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, var(--navy), var(--terracotta));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .final-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .final-score-row {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 2px solid var(--tan);
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    gap: 12px;
+  }
+
+  .final-score-row .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+  }
+
+  .final-score-row .points {
+    margin-left: auto;
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+  }
+
+  .winner-row {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(232,168,37,0.08), rgba(232,168,37,0.02));
+    box-shadow: 0 2px 12px rgba(232,168,37,0.2);
+  }
+
+  .trophy { font-size: 1.5rem; }
+
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    z-index: 100;
+    pointer-events: none;
+    animation: confettiFall 3s ease-in forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  @keyframes revealPop {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .watermark {
+    text-align: center;
+    margin-top: 32px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--tan);
+  }
+
+  .watermark a {
+    color: var(--tan);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .watermark a:hover { color: var(--terracotta); }
+
+  @media (max-width: 500px) {
+    .intro h1 { font-size: 2rem; }
+    .sentence { font-size: 1.25rem; }
+    .card { padding: 24px 18px; }
+    .scores { gap: 6px; }
+    .score-chip { padding: 6px 12px; font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="intro" id="intro">
+    <div class="badge">B1 / B2</div>
+    <h1>Blankety Blank</h1>
+    <div class="subtitle">Fill the gap!</div>
+    <div class="theme-banner">☀️ Summer Holidays</div>
+
+    <div class="how-to">
+      <h3>How to play</h3>
+      <p>A sentence appears with a missing word. Teams discuss and decide their answer.</p>
+      <p>Click <strong>Reveal</strong> to show the answer. Award the point to whichever team matched — or got close enough!</p>
+      <p>These are collocations, expressions, and natural phrasing — not just vocabulary. Think about what sounds right!</p>
+    </div>
+
+    <p style="font-weight:600; margin-bottom:12px;">How many teams?</p>
+    <div class="teams-setup" id="teamSetup">
+      <button class="team-count-btn active" data-teams="2">2 Teams</button>
+      <button class="team-count-btn" data-teams="3">3 Teams</button>
+      <button class="team-count-btn" data-teams="4">4 Teams</button>
+    </div>
+
+    <button class="start-btn" id="startBtn">Let's Play!</button>
+  </div>
+
+  <!-- GAME -->
+  <div class="game" id="game">
+    <div class="top-bar">
+      <span class="round-badge" id="roundLabel">Round 1 / 14</span>
+      <div class="progress-track"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+    </div>
+
+    <div class="scores" id="scoresBar"></div>
+
+    <div class="card" id="card">
+      <div class="hint" id="hint"></div>
+      <div class="sentence" id="sentence"></div>
+
+      <div class="options" id="optionsGrid"></div>
+
+      <div class="btn-row" id="revealRow">
+        <button class="btn btn-reveal" id="revealBtn">Reveal Answer</button>
+      </div>
+
+      <div class="answer-section" id="answerSection">
+        <div class="answer-label">Answer</div>
+        <div class="accepted-answers" id="acceptedAnswers"></div>
+        <div class="also-ok" id="alsoOk"></div>
+        <div class="example-sentence" id="exampleSentence"></div>
+        <div class="fr-translation" id="frTranslation"></div>
+
+        <div class="btn-row" id="scoreRow"></div>
+        <div class="btn-row">
+          <button class="btn btn-next" id="nextBtn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- END -->
+  <div class="end" id="end">
+    <h2>Game Over!</h2>
+    <div class="final-scores" id="finalScores"></div>
+    <button class="start-btn" onclick="location.reload()">Play Again</button>
+  </div>
+
+  <div class="watermark"><a href="https://jaceslclass.com">jaceslclass.com</a></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    sentence: "The flight was delayed so we had to kill _____ at the airport for three hours.",
+    hint: "An expression meaning 'to wait with nothing to do'.",
+    options: ["hours", "time", "the wait", "boredom"],
+    correct: 1,
+    answers: ["time"],
+    fr: "tuer le temps",
+    example: "\"To kill time\" = passer le temps en attendant"
+  },
+  {
+    sentence: "We went off the beaten _____ and found a beautiful hidden cove.",
+    hint: "An expression meaning 'away from the usual tourist spots'.",
+    options: ["road", "lane", "track", "route"],
+    correct: 2,
+    answers: ["track", "path"],
+    fr: "sortir des sentiers battus",
+    example: "\"Off the beaten track\" = hors des sentiers battus"
+  },
+  {
+    sentence: "The hotel was fully _____ so we had to find a last-minute alternative.",
+    hint: "No rooms available.",
+    options: ["taken", "booked", "reserved", "occupied"],
+    correct: 1,
+    answers: ["booked", "booked up"],
+    fr: "complet",
+    example: "\"Fully booked\" = completely reserved, no availability"
+  },
+  {
+    sentence: "I always travel _____ — just a backpack and nothing else.",
+    hint: "The opposite of taking too much luggage.",
+    options: ["thin", "small", "light", "easy"],
+    correct: 2,
+    answers: ["light"],
+    fr: "voyager léger",
+    example: "\"Travel light\" = bring very few belongings"
+  },
+  {
+    sentence: "After a week on the beach, I got a really nice _____.",
+    hint: "Your skin changes colour in the sun.",
+    options: ["colour", "tan", "brown", "burn"],
+    correct: 1,
+    answers: ["tan", "suntan"],
+    fr: "bronzage",
+    example: "\"To get a tan\" / \"to top up your tan\""
+  },
+  {
+    sentence: "The view from our balcony was absolutely _____.",
+    hint: "A strong adjective meaning very beautiful or impressive.",
+    options: ["very nice", "stunning", "big", "far"],
+    correct: 1,
+    answers: ["stunning", "breathtaking", "incredible", "gorgeous"],
+    fr: "époustouflant / magnifique",
+    example: "Strong adjectives: stunning, breathtaking, spectacular"
+  },
+  {
+    sentence: "We got completely _____ trying to find the restaurant without GPS.",
+    hint: "You didn't know where you were.",
+    options: ["missed", "confused", "late", "lost"],
+    correct: 3,
+    answers: ["lost"],
+    fr: "perdu(s)",
+    example: "\"To get lost\" — note: GET lost, not BE lost (process vs state)"
+  },
+  {
+    sentence: "The local _____ was incredible — I tried dishes I'd never heard of.",
+    hint: "The food and cooking style of a region or country.",
+    options: ["kitchen", "recipe", "cuisine", "restaurant"],
+    correct: 2,
+    answers: ["cuisine"],
+    fr: "cuisine (locale)",
+    example: "\"Cuisine\" is more formal/sophisticated than \"food\""
+  },
+  {
+    sentence: "I need a holiday to _____ from my holiday!",
+    hint: "When your holiday was so busy you're exhausted.",
+    options: ["recover", "sleep", "escape", "return"],
+    correct: 0,
+    answers: ["recover", "rest"],
+    fr: "se remettre de",
+    example: "A common joke: the holiday was more tiring than work!"
+  },
+  {
+    sentence: "The beach was absolutely _____ — we could barely find a spot for our towels.",
+    hint: "Too many people.",
+    options: ["empty", "dirty", "sandy", "packed"],
+    correct: 3,
+    answers: ["packed", "heaving"],
+    fr: "bondé",
+    example: "\"Packed\" and \"heaving\" are stronger than \"crowded\""
+  },
+  {
+    sentence: "We managed to _____ a bargain — a five-star hotel for half price!",
+    hint: "To get something at a very good price.",
+    options: ["watch", "snag", "win", "see"],
+    correct: 1,
+    answers: ["snag", "grab", "bag", "get"],
+    fr: "faire une bonne affaire",
+    example: "\"To snag/grab/bag a bargain\" = informal, enthusiastic"
+  },
+  {
+    sentence: "I like to completely switch _____ on holiday — no emails, no phone.",
+    hint: "To stop thinking about work and relax.",
+    options: ["away", "off", "out", "down"],
+    correct: 1,
+    answers: ["off"],
+    fr: "déconnecter",
+    example: "\"Switch off\" = mentally disconnect from responsibilities"
+  },
+  {
+    sentence: "We caught the ferry just in the _____ of time — one minute later and we'd have missed it.",
+    hint: "A common expression: only just in time.",
+    options: ["blink", "point", "nick", "edge"],
+    correct: 2,
+    answers: ["nick"],
+    fr: "juste à temps / de justesse",
+    example: "\"In the nick of time\" = at the very last possible moment"
+  },
+  {
+    sentence: "The sunset over the sea was out of this _____.",
+    hint: "An expression meaning amazingly beautiful.",
+    options: ["universe", "world", "planet", "place"],
+    correct: 1,
+    answers: ["world"],
+    fr: "extraordinaire / incroyable",
+    example: "\"Out of this world\" = so good it seems unreal"
+  }
+];
+
+let numTeams = 2;
+let scores = [];
+let currentQ = 0;
+let shuffled = [];
+const teamNames = ['Team A', 'Team B', 'Team C', 'Team D'];
+const teamColors = ['t0','t1','t2','t3'];
+
+document.querySelectorAll('.team-count-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.team-count-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    numTeams = parseInt(btn.dataset.teams);
+  });
+});
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('revealBtn').addEventListener('click', revealAnswer);
+document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  scores = Array(numTeams).fill(0);
+  currentQ = 0;
+  shuffled = shuffle(QUESTIONS);
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  buildScoreBar();
+  showQuestion();
+}
+
+function buildScoreBar() {
+  const bar = document.getElementById('scoresBar');
+  bar.innerHTML = '';
+  for (let i = 0; i < numTeams; i++) {
+    bar.innerHTML += `<div class="score-chip ${teamColors[i]}" id="chip${i}">
+      <span class="dot"></span>${teamNames[i]}: <span id="score${i}">0</span>
+    </div>`;
+  }
+}
+
+function showQuestion() {
+  const q = shuffled[currentQ];
+  document.getElementById('roundLabel').textContent = `Round ${currentQ + 1} / ${shuffled.length}`;
+  document.getElementById('progress').style.width = `${((currentQ) / shuffled.length) * 100}%`;
+  document.getElementById('hint').textContent = q.hint;
+
+  const parts = q.sentence.split('_____');
+  document.getElementById('sentence').innerHTML =
+    parts[0] + '<span class="blank-word" id="blankWord">' + q.answers[0] + '</span>' + (parts[1] || '');
+
+  // Build options
+  const optionsGrid = document.getElementById('optionsGrid');
+  optionsGrid.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    optionsGrid.innerHTML += `<div class="option" data-idx="${i}"><span class="letter">${letters[i]}</span>${opt}</div>`;
+  });
+
+  document.getElementById('revealRow').style.display = 'flex';
+  document.getElementById('answerSection').classList.remove('show');
+
+  const scoreRow = document.getElementById('scoreRow');
+  scoreRow.innerHTML = '';
+  for (let i = 0; i < numTeams; i++) {
+    scoreRow.innerHTML += `<button class="btn btn-score ${teamColors[i]}" onclick="awardPoint(${i})">${teamNames[i]}</button>`;
+  }
+  scoreRow.innerHTML += `<button class="btn btn-score nobody" onclick="awardPoint(-1)">Nobody</button>`;
+}
+
+function revealAnswer() {
+  const q = shuffled[currentQ];
+  document.getElementById('blankWord').classList.add('revealed');
+  document.getElementById('revealRow').style.display = 'none';
+
+  document.querySelectorAll('.option').forEach((el, i) => {
+    el.classList.add('locked');
+    if (i === q.correct) {
+      el.classList.add('correct');
+    } else {
+      el.classList.add('wrong');
+    }
+  });
+
+  const aa = document.getElementById('acceptedAnswers');
+  aa.innerHTML = `<span class="answer-tag">${q.options[q.correct]}</span>`;
+
+  const alsoOk = document.getElementById('alsoOk');
+  const others = q.answers.filter(a => a.toLowerCase() !== q.options[q.correct].toLowerCase());
+  if (others.length > 0) {
+    alsoOk.textContent = 'Also accepted: ' + others.join(', ');
+  } else {
+    alsoOk.textContent = '';
+  }
+
+  document.getElementById('exampleSentence').textContent = q.example;
+  document.getElementById('frTranslation').innerHTML = `<strong>FR:</strong> ${q.fr}`;
+  document.getElementById('answerSection').classList.add('show');
+}
+
+function awardPoint(teamIdx) {
+  if (teamIdx >= 0) {
+    scores[teamIdx]++;
+    document.getElementById('score' + teamIdx).textContent = scores[teamIdx];
+    const chip = document.getElementById('chip' + teamIdx);
+    chip.classList.add('active');
+    setTimeout(() => chip.classList.remove('active'), 400);
+  }
+  document.querySelectorAll('#scoreRow .btn-score').forEach(b => b.disabled = true);
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= shuffled.length) {
+    endGame();
+    return;
+  }
+  showQuestion();
+}
+
+function endGame() {
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('end').style.display = 'block';
+  document.getElementById('progress').style.width = '100%';
+
+  const maxScore = Math.max(...scores);
+  const fs = document.getElementById('finalScores');
+  fs.innerHTML = '';
+
+  const order = scores.map((s, i) => ({ idx: i, score: s })).sort((a, b) => b.score - a.score);
+
+  order.forEach(({ idx, score }) => {
+    const isWinner = score === maxScore && score > 0;
+    fs.innerHTML += `<div class="final-score-row ${isWinner ? 'winner-row' : ''}">
+      <span class="dot" style="background:var(--${['teal','terracotta','gold','navy'][idx]})"></span>
+      ${teamNames[idx]}
+      <span class="points">${score}</span>
+      ${isWinner ? '<span class="trophy">🏆</span>' : ''}
+    </div>`;
+  });
+
+  fireConfetti();
+}
+
+function fireConfetti() {
+  const colors = ['#0e7c66','#c84a2c','#e8a825','#15263a','#f4d6b0'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = Math.random() * 2 + 's';
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 5000);
+  }
+}
+</script>
+
+</body>
+</html>
