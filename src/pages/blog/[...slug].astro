@@ -1,0 +1,284 @@
+---
+// src/pages/blog/[...slug].astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.md$/, '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+
+// Build canonical URL for SEO
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
+---
+
+<BaseLayout
+  title={`${post.data.title} | jacesclass blog`}
+  description={post.data.description}
+>
+  <!-- SEO: Article schema + Open Graph -->
+  <Fragment slot="head">
+    <link rel="canonical" href={canonicalURL} />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={post.data.title} />
+    <meta property="og:description" content={post.data.description} />
+    <meta property="article:published_time" content={post.data.publishDate.toISOString()} />
+    {post.data.updateDate && (
+      <meta property="article:modified_time" content={post.data.updateDate.toISOString()} />
+    )}
+    {post.data.tags.map((tag) => (
+      <meta property="article:tag" content={tag} />
+    ))}
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.data.title,
+      description: post.data.description,
+      datePublished: post.data.publishDate.toISOString(),
+      dateModified: (post.data.updateDate ?? post.data.publishDate).toISOString(),
+      author: { '@type': 'Person', name: 'James Cameron' },
+      keywords: post.data.tags.join(', '),
+    })} />
+  </Fragment>
+
+  <article class="blog-post">
+    <nav class="breadcrumb">
+      <a href="/blog">← All posts</a>
+    </nav>
+
+    <header class="post-header">
+      <h1>{post.data.title}</h1>
+      <p class="post-meta">
+        <time datetime={post.data.publishDate.toISOString()}>
+          {formatDate(post.data.publishDate)}
+        </time>
+        {post.data.updateDate && (
+          <>
+            <span class="dot">·</span>
+            <span class="updated">Updated {formatDate(post.data.updateDate)}</span>
+          </>
+        )}
+      </p>
+      {post.data.tags.length > 0 && (
+        <div class="tags-row">
+          {post.data.tags.map((tag) => (
+            <a
+              href={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+              class="tag-pill"
+            >{tag}</a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="post-footer">
+      <p>
+        <strong>James Cameron</strong> teaches Business English to French companies in Isère.
+        Find more games and resources at <a href="/">jacesclass.com</a>.
+      </p>
+      <a href="/blog" class="back-link">← Back to all posts</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .blog-post {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+  }
+  .breadcrumb a {
+    color: #c84a2c;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .post-header {
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid #d5cfb8;
+  }
+
+  .post-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 2.4rem;
+    line-height: 1.15;
+    color: #15263a;
+    margin: 0 0 16px;
+  }
+
+  .post-meta {
+    font-size: 0.9rem;
+    color: #8a8070;
+    margin: 0 0 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .post-meta .dot { color: #d5cfb8; }
+  .updated { font-style: italic; }
+
+  .tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag-pill {
+    background: white;
+    border: 1px solid #d5cfb8;
+    border-radius: 16px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #15263a;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .tag-pill:hover {
+    border-color: #c84a2c;
+    color: #c84a2c;
+  }
+
+  /* Prose styling for markdown content */
+  .prose {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #15263a;
+  }
+
+  .prose :global(h2) {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.7rem;
+    margin: 40px 0 16px;
+    color: #15263a;
+    line-height: 1.25;
+  }
+
+  .prose :global(h3) {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin: 32px 0 12px;
+    color: #15263a;
+  }
+
+  .prose :global(p) {
+    margin: 0 0 18px;
+  }
+
+  .prose :global(a) {
+    color: #c84a2c;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .prose :global(a:hover) {
+    text-decoration-thickness: 2px;
+  }
+
+  .prose :global(strong) {
+    font-weight: 700;
+    color: #15263a;
+  }
+
+  .prose :global(em) {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: #0e7c66;
+  }
+
+  .prose :global(blockquote) {
+    border-left: 3px solid #c84a2c;
+    margin: 24px 0;
+    padding: 8px 0 8px 20px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: #15263a;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 18px;
+    padding-left: 24px;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 8px;
+  }
+
+  .prose :global(code) {
+    background: rgba(14,124,102,0.08);
+    color: #0e7c66;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.95em;
+    font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+  }
+
+  .prose :global(hr) {
+    border: 0;
+    border-top: 1px solid #d5cfb8;
+    margin: 40px 0;
+  }
+
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+
+  .post-footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid #d5cfb8;
+    font-size: 0.95rem;
+    color: #15263a;
+  }
+
+  .post-footer p { margin: 0 0 16px; }
+
+  .post-footer a {
+    color: #c84a2c;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .post-footer a:hover { text-decoration: underline; }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .post-header h1 { font-size: 1.9rem; }
+    .prose { font-size: 1.05rem; }
+    .prose :global(h2) { font-size: 1.45rem; }
+  }
+</style>

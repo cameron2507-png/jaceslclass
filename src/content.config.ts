@@ -27,4 +27,18 @@ const games = defineCollection({
   }),
 });
 
-export const collections = { games };
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    publishDate: z.coerce.date(),
+    updateDate: z.coerce.date().optional(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+    featured: z.boolean().default(false),
+  }),
+});
+
+export const collections = { games, blog };
+

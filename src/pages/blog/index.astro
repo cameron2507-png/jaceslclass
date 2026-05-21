@@ -1,0 +1,247 @@
+---
+// src/pages/blog/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+const posts = allPosts.sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+
+// Collect all tags
+const tagCounts = new Map<string, number>();
+posts.forEach((post) => {
+  post.data.tags.forEach((tag) => {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  });
+});
+const tags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout
+  title="Blog — Teaching Tips & ESL Methodology | jacesclass"
+  description="Practical teaching tips, methodology notes, and observations from teaching Business English in French companies."
+>
+  <main class="blog-index">
+    <header class="page-header">
+      <h1>Blog</h1>
+      <p class="subtitle">Teaching tips, methodology, and notes from the classroom.</p>
+    </header>
+
+    {tags.length > 0 && (
+      <nav class="tag-cloud" aria-label="Filter by tag">
+        <a href="/blog" class="tag-pill active">All <span class="count">{posts.length}</span></a>
+        {tags.map(([tag, count]) => (
+          <a href={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag-pill">
+            {tag} <span class="count">{count}</span>
+          </a>
+        ))}
+      </nav>
+    )}
+
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li class="post-item">
+          <a href={`/blog/${post.id.replace(/\.md$/, '')}`} class="post-link">
+            <article>
+              {post.data.featured && <span class="featured-badge">Featured</span>}
+              <h2>{post.data.title}</h2>
+              <p class="post-meta">
+                <time datetime={post.data.publishDate.toISOString()}>
+                  {formatDate(post.data.publishDate)}
+                </time>
+                {post.data.tags.length > 0 && (
+                  <>
+                    <span class="dot">·</span>
+                    <span class="post-tags">
+                      {post.data.tags.map((tag, i) => (
+                        <>
+                          {i > 0 && ', '}
+                          <span>{tag}</span>
+                        </>
+                      ))}
+                    </span>
+                  </>
+                )}
+              </p>
+              <p class="post-description">{post.data.description}</p>
+              <span class="read-more">Read article →</span>
+            </article>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    {posts.length === 0 && (
+      <p class="empty">No posts yet — coming soon.</p>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-index {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .page-header {
+    margin-bottom: 32px;
+  }
+
+  .page-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 2.8rem;
+    color: #15263a;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: #c84a2c;
+    font-size: 1.15rem;
+  }
+
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #d5cfb8;
+  }
+
+  .tag-pill {
+    background: white;
+    border: 1px solid #d5cfb8;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #15263a;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tag-pill:hover {
+    border-color: #c84a2c;
+    color: #c84a2c;
+  }
+
+  .tag-pill.active {
+    background: #15263a;
+    color: white;
+    border-color: #15263a;
+  }
+
+  .tag-pill .count {
+    background: rgba(0,0,0,0.06);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .tag-pill.active .count {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .post-item {
+    background: white;
+    border: 1px solid #d5cfb8;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.25s;
+  }
+
+  .post-item:hover {
+    border-color: #c84a2c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(21,38,58,0.06);
+  }
+
+  .post-link {
+    display: block;
+    padding: 24px 28px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .featured-badge {
+    display: inline-block;
+    background: #0e7c66;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+
+  .post-item h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.45rem;
+    color: #15263a;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+
+  .post-meta {
+    font-size: 0.85rem;
+    color: #8a8070;
+    margin: 0 0 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .post-meta .dot { color: #d5cfb8; }
+  .post-tags { font-style: italic; }
+
+  .post-description {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: #15263a;
+    margin: 0 0 12px;
+  }
+
+  .read-more {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #c84a2c;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #8a8070;
+    font-style: italic;
+  }
+
+  @media (max-width: 600px) {
+    .page-header h1 { font-size: 2.2rem; }
+    .post-link { padding: 20px; }
+  }
+</style>

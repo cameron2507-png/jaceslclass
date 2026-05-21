@@ -1,0 +1,184 @@
+---
+// src/pages/blog/tag/[tag].astro
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+  // Collect unique tags (slugified)
+  const tagMap = new Map<string, { display: string; posts: typeof allPosts }>();
+
+  allPosts.forEach((post) => {
+    post.data.tags.forEach((tag) => {
+      const slug = tag.toLowerCase().replace(/\s+/g, '-');
+      if (!tagMap.has(slug)) {
+        tagMap.set(slug, { display: tag, posts: [] });
+      }
+      tagMap.get(slug)!.posts.push(post);
+    });
+  });
+
+  return Array.from(tagMap.entries()).map(([slug, { display, posts }]) => ({
+    params: { tag: slug },
+    props: { tagName: display, posts },
+  }));
+}
+
+const { tagName, posts } = Astro.props;
+
+const sortedPosts = posts.sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout
+  title={`${tagName} | Blog | jacesclass`}
+  description={`All blog posts tagged "${tagName}" — teaching tips and ESL methodology from jacesclass.com.`}
+>
+  <main class="tag-page">
+    <nav class="breadcrumb">
+      <a href="/blog">← All posts</a>
+    </nav>
+
+    <header class="page-header">
+      <p class="tag-label">Tag</p>
+      <h1>{tagName}</h1>
+      <p class="subtitle">
+        {sortedPosts.length} {sortedPosts.length === 1 ? 'post' : 'posts'}
+      </p>
+    </header>
+
+    <ul class="post-list">
+      {sortedPosts.map((post) => (
+        <li class="post-item">
+          <a href={`/blog/${post.id.replace(/\.md$/, '')}`} class="post-link">
+            <article>
+              <h2>{post.data.title}</h2>
+              <p class="post-meta">
+                <time datetime={post.data.publishDate.toISOString()}>
+                  {formatDate(post.data.publishDate)}
+                </time>
+              </p>
+              <p class="post-description">{post.data.description}</p>
+              <span class="read-more">Read article →</span>
+            </article>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+  }
+  .breadcrumb a {
+    color: #c84a2c;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .page-header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #d5cfb8;
+  }
+
+  .tag-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0e7c66;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+
+  .page-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 2.4rem;
+    color: #15263a;
+    margin: 0 0 8px;
+  }
+
+  .subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: #8a8070;
+    font-size: 1rem;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .post-item {
+    background: white;
+    border: 1px solid #d5cfb8;
+    border-radius: 12px;
+    transition: all 0.25s;
+  }
+
+  .post-item:hover {
+    border-color: #c84a2c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(21,38,58,0.06);
+  }
+
+  .post-link {
+    display: block;
+    padding: 22px 26px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-item h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    color: #15263a;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+
+  .post-meta {
+    font-size: 0.85rem;
+    color: #8a8070;
+    margin: 0 0 10px;
+  }
+
+  .post-description {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: #15263a;
+    margin: 0 0 10px;
+  }
+
+  .read-more {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #c84a2c;
+  }
+
+  @media (max-width: 600px) {
+    .page-header h1 { font-size: 2rem; }
+  }
+</style>
