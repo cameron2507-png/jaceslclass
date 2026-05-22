@@ -1,0 +1,178 @@
+---
+// src/pages/listening/[...slug].astro
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const exercises = await getCollection('listening');
+  return exercises.map(ex => ({
+  params: { slug: ex.id },
+  props: { exercise: ex },
+}));
+}
+
+const { exercise } = Astro.props;
+const { data } = exercise;
+const exerciseUrl = `/listening/${data.exerciseFile}`;
+---
+
+<BaseLayout title={`${data.title} — Listening`} description={data.description}>
+  <article class="exercise-page">
+    <nav class="breadcrumbs">
+      <a href="/listening">← Back to Listening</a>
+    </nav>
+
+    <header class="exercise-header">
+      <div class="exercise-meta">
+        <span class="level-tag">{data.level}</span>
+        <span class="activity-tag">{data.activityType}</span>
+        <span class="duration-tag">{data.duration} min</span>
+      </div>
+      <h1>{data.title}</h1>
+      <p class="description">{data.description}</p>
+      {data.instructions && (
+        <p class="instructions"><em>Instructions:</em> {data.instructions}</p>
+      )}
+    </header>
+
+    <div class="exercise-frame-wrap">
+      <iframe
+        src={exerciseUrl}
+        title={data.title}
+        class="exercise-frame"
+        loading="lazy"
+      ></iframe>
+    </div>
+
+    {data.transcript && (
+      <details class="transcript">
+        <summary>Show transcript</summary>
+        <div class="transcript-body" set:html={data.transcript.replace(/\n/g, '<br>')}></div>
+      </details>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .exercise-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 4rem;
+  }
+
+  .breadcrumbs {
+    margin-bottom: 1.25rem;
+  }
+  .breadcrumbs a {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.9rem;
+    color: #6b6252;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .breadcrumbs a:hover { color: #c84a2c; }
+
+  .exercise-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .exercise-meta {
+    display: flex;
+    justify-content: center;
+    gap: 0.45rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .level-tag, .activity-tag, .duration-tag {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .level-tag { background: #faf6ec; color: #15263a; border: 1px solid #d5cfb8; }
+  .activity-tag { background: #15263a; color: #faf6ec; }
+  .duration-tag { background: transparent; color: #6b6252; border: 1px solid #d5cfb8; }
+
+  .exercise-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    color: #15263a;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+  }
+  .description {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: #6b6252;
+    font-size: 1rem;
+    max-width: 620px;
+    margin: 0 auto 0.5rem;
+    line-height: 1.5;
+  }
+  .instructions {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.85rem;
+    color: #4a4438;
+    max-width: 620px;
+    margin: 0.5rem auto 0;
+  }
+
+  .exercise-frame-wrap {
+    background: #fff;
+    border: 1px solid #d5cfb8;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .exercise-frame {
+    width: 100%;
+    min-height: 900px;
+    border: none;
+    display: block;
+    background: #faf6ec;
+  }
+
+  .transcript {
+    background: #fff;
+    border: 1px solid #d5cfb8;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+  }
+  .transcript summary {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    color: #15263a;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .transcript summary::before {
+    content: '+';
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    color: #c84a2c;
+    line-height: 1;
+  }
+  .transcript[open] summary::before { content: '−'; }
+  .transcript summary::-webkit-details-marker { display: none; }
+  .transcript-body {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ece7d6;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #4a4438;
+  }
+
+  @media (max-width: 600px) {
+    .exercise-page { padding: 1rem 0.85rem 3rem; }
+    .exercise-frame { min-height: 1100px; }
+  }
+</style>

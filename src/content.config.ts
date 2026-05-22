@@ -40,5 +40,32 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { games, blog };
+const listening = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/listening' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    level: z.enum(['A1', 'A2', 'B1', 'B2', 'C1']),
+    activityType: z.enum([
+      'Gap-fill',
+      'Comprehension',
+      'True/False',
+      'Dictation',
+      'Ordering',
+    ]),
+    topic: z.string(),
+    duration: z.number(),
+    ageGroup: z
+      .enum(['Young learners', 'Teens', 'Adults', 'All ages'])
+      .default('All ages'),
+    audioFile: z.string(),
+    exerciseFile: z.string(),
+    transcript: z.string().optional(),
+    featured: z.boolean().default(false),
+    publishDate: z.coerce.date(),
+    instructions: z.string().optional(),
+  }),
+});
+
+export const collections = { games, blog, listening };
 

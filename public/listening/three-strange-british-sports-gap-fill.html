@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three Strange British Sports — Gap Fill</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hanken Grotesk', sans-serif;
+    background: #faf6ec;
+    color: #15263a;
+    line-height: 1.7;
+    padding: 1.5rem;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.25rem;
+    color: #15263a;
+  }
+
+  .subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    text-align: center;
+    color: #6b6252;
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .audio-wrapper {
+    background: #fff;
+    border: 1px solid #d5cfb8;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    text-align: center;
+  }
+
+  .audio-wrapper p {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #6b6252;
+    margin-bottom: 0.6rem;
+  }
+
+  audio { width: 100%; max-width: 500px; height: 40px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid #d5cfb8;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+    color: #15263a;
+  }
+
+  .text-block {
+    font-size: 0.95rem;
+    line-height: 1.85;
+  }
+
+  .gap-wrapper {
+    display: inline-block;
+    position: relative;
+    vertical-align: baseline;
+  }
+
+  .gap-input {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.9rem;
+    border: none;
+    border-bottom: 2px dashed #d5cfb8;
+    background: transparent;
+    color: #15263a;
+    padding: 0 4px 2px;
+    outline: none;
+    transition: border-color 0.25s;
+    text-align: center;
+  }
+
+  .gap-input:focus { border-bottom-color: #15263a; }
+
+  .gap-input.correct {
+    border-bottom: 2px solid #0e7c66;
+    color: #0e7c66;
+    font-weight: 600;
+    background: rgba(14, 124, 102, 0.06);
+    border-radius: 3px;
+  }
+
+  .gap-input.incorrect {
+    border-bottom: 2px solid #c84a2c;
+    color: #c84a2c;
+  }
+
+  .gap-number {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #fff;
+    background: #15263a;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 2px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+
+  .controls {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: #15263a;
+    color: #faf6ec;
+  }
+  .btn-primary:hover { background: #c84a2c; }
+
+  .btn-secondary {
+    background: transparent;
+    color: #15263a;
+    border: 1.5px solid #d5cfb8;
+  }
+  .btn-secondary:hover { border-color: #15263a; }
+
+  .scoreboard {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    color: #6b6252;
+    margin-bottom: 1.25rem;
+    min-height: 1.5em;
+  }
+
+  .scoreboard .score-num {
+    font-weight: 700;
+    color: #15263a;
+    font-size: 1.15rem;
+  }
+
+  .word-bank {
+    background: #fff;
+    border: 1px solid #d5cfb8;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .word-bank-title {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #6b6252;
+    margin-bottom: 0.5rem;
+  }
+
+  .word-bank-words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .wb-word {
+    font-size: 0.85rem;
+    background: #faf6ec;
+    border: 1px solid #d5cfb8;
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    color: #15263a;
+    font-weight: 500;
+    transition: opacity 0.3s;
+  }
+
+  .wb-word.used { opacity: 0.3; text-decoration: line-through; }
+
+  .hint-toggle {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.8rem;
+    color: #6b6252;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    margin-bottom: 0.75rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hint-toggle:hover { color: #15263a; }
+
+  .correction {
+    font-size: 0.78rem;
+    color: #c84a2c;
+    font-style: italic;
+    display: none;
+    margin-top: 1px;
+  }
+
+  .gap-wrapper.show-correction .correction { display: block; }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    h1 { font-size: 1.4rem; }
+    .card { padding: 1rem; }
+    .gap-input { font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Three Strange British Sports</h1>
+<p class="subtitle">Listen and fill in the missing words</p>
+
+<div class="audio-wrapper">
+  <p>Play the audio, then complete the gaps below.</p>
+  <audio controls src="/audio/three-strange-british-sports.mp3"></audio>
+</div>
+
+<button class="hint-toggle" id="bankToggle" onclick="toggleBank()">Show word bank</button>
+
+<div class="word-bank" id="wordBank" style="display:none;">
+  <p class="word-bank-title">Word bank (in alphabetical order)</p>
+  <div class="word-bank-words" id="wordBankList"></div>
+</div>
+
+<div id="content"></div>
+
+<div class="scoreboard" id="scoreboard"></div>
+
+<div class="controls">
+  <button class="btn btn-primary" onclick="checkAnswers()">Check answers</button>
+  <button class="btn btn-secondary" onclick="showAllAnswers()">Show answers</button>
+  <button class="btn btn-secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const gaps = [
+  { id: 1,  answer: "inventing" },
+  { id: 2,  answer: "traditions" },
+  { id: 3,  answer: "steep" },
+  { id: 4,  answer: "chase" },
+  { id: 5,  answer: "competitors" },
+  { id: 6,  answer: "bruises" },
+  { id: 7,  answer: "ambulances" },
+  { id: 8,  answer: "attracts" },
+  { id: 9,  answer: "collect" },
+  { id: 10, answer: "drill" },
+  { id: 11, answer: "thread" },
+  { id: 12, answer: "opponent's" },
+  { id: 13, answer: "championships" },
+  { id: 14, answer: "vinegar" },
+  { id: 15, answer: "wrestle" },
+  { id: 16, answer: "boarded up" },
+  { id: 17, answer: "referees" },
+  { id: 18, answer: "humour" },
+];
+
+const sections = [
+  {
+    title: "Introduction",
+    html: `Britain is famous for <g>1</g> many of the world's great sports, including football, cricket and rugby. But the British also have some much stranger <g>2</g>. Here are three of the most unusual.`
+  },
+  {
+    title: "1 — Cheese Rolling",
+    html: `Every spring, hundreds of people climb to the top of Cooper's Hill in Gloucestershire, in the south-west of England. A large round cheese — a Double Gloucester weighing about three or four kilos — is rolled down the <g>3</g> slope, and the runners <g>4</g> after it. The first person to reach the bottom wins the cheese.<br><br>It sounds simple, but the hill is so steep that almost no one stays on their feet. Most <g>5</g> tumble, roll and fall all the way down. Broken bones and <g>6</g> are common, and <g>7</g> always wait at the bottom. Despite the danger, the event <g>8</g> visitors from all over the world.`
+  },
+  {
+    title: "2 — Conkers",
+    html: `In autumn, horse chestnut trees drop their shiny brown nuts, called "conkers." Children — and plenty of adults — <g>9</g> them, <g>10</g> a hole through the middle, and <g>11</g> a piece of string through. Two players take turns trying to hit and break their <g>12</g> conker. The last one still in one piece is the winner.<br><br>There is even a World Conker <g>13</g>, held every October in Northamptonshire. It is a serious competition, although the players usually take it with a smile. Some people try to make their conkers harder by soaking them in <g>14</g> or baking them in the oven — but this is officially not allowed.`
+  },
+  {
+    title: "3 — The Atherstone Ball Game",
+    html: `Every year on Shrove Tuesday, the day before Lent begins, the small town of Atherstone in Warwickshire holds a very old game. It started in the 12th century, more than 800 years ago. The rules are extremely simple: a large leather ball is thrown into the crowd in the main street, and the person holding it at five o'clock is the winner.<br><br>For two hours, hundreds of people push, fight and <g>15</g> for the ball. Shop windows are <g>16</g> for protection, and the streets are closed to traffic. There are no teams and no <g>17</g> — just a noisy, friendly battle that has been part of the town's life for centuries.`
+  },
+  {
+    title: "Conclusion",
+    html: `These three games show another side of British culture: a love of tradition, a good sense of <g>18</g>, and perhaps just a little bit of madness.`
+  }
+];
+
+function inputWidth(answer) {
+  const ch = Math.max(answer.length + 2, 6);
+  return ch + 'ch';
+}
+
+function buildContent() {
+  const container = document.getElementById('content');
+  container.innerHTML = '';
+
+  sections.forEach(section => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    let html = `<div class="card-title">${section.title}</div><div class="text-block">`;
+    html += section.html.replace(/<g>(\d+)<\/g>/g, (_, id) => {
+      const gap = gaps.find(g => g.id === parseInt(id));
+      return `<span class="gap-wrapper" id="wrap-${id}"><span class="gap-number">${id}</span><input class="gap-input" id="gap-${id}" data-answer="${gap.answer}" style="width:${inputWidth(gap.answer)}" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="correction" id="corr-${id}"></span></span>`;
+    });
+    html += '</div>';
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+}
+
+function buildWordBank() {
+  const words = gaps.map(g => g.answer).sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
+  const list = document.getElementById('wordBankList');
+  list.innerHTML = '';
+  words.forEach(w => {
+    const span = document.createElement('span');
+    span.className = 'wb-word';
+    span.textContent = w;
+    span.dataset.word = w.toLowerCase();
+    list.appendChild(span);
+  });
+}
+
+function toggleBank() {
+  const bank = document.getElementById('wordBank');
+  const btn = document.getElementById('bankToggle');
+  if (bank.style.display === 'none') {
+    bank.style.display = 'block';
+    btn.textContent = 'Hide word bank';
+  } else {
+    bank.style.display = 'none';
+    btn.textContent = 'Show word bank';
+  }
+}
+
+function updateWordBank() {
+  const used = new Set();
+  gaps.forEach(g => {
+    const input = document.getElementById('gap-' + g.id);
+    const val = input.value.trim().toLowerCase();
+    if (val && val === g.answer.toLowerCase()) used.add(val);
+  });
+  document.querySelectorAll('.wb-word').forEach(el => {
+    el.classList.toggle('used', used.has(el.dataset.word));
+  });
+}
+
+function normalize(s) {
+  return s.trim().toLowerCase().replace(/['']/g, "'").replace(/\s+/g, ' ');
+}
+
+function checkAnswers() {
+  let correct = 0;
+  gaps.forEach(g => {
+    const input = document.getElementById('gap-' + g.id);
+    const wrap = document.getElementById('wrap-' + g.id);
+    const corr = document.getElementById('corr-' + g.id);
+    input.classList.remove('correct', 'incorrect');
+    wrap.classList.remove('show-correction');
+
+    if (normalize(input.value) === normalize(g.answer)) {
+      input.classList.add('correct');
+      correct++;
+    } else if (input.value.trim() !== '') {
+      input.classList.add('incorrect');
+      corr.textContent = '→ ' + g.answer;
+      wrap.classList.add('show-correction');
+    }
+  });
+
+  const total = gaps.length;
+  const sb = document.getElementById('scoreboard');
+  sb.innerHTML = `<span class="score-num">${correct}</span> / <span class="score-num">${total}</span> correct`;
+  updateWordBank();
+}
+
+function showAllAnswers() {
+  gaps.forEach(g => {
+    const input = document.getElementById('gap-' + g.id);
+    const wrap = document.getElementById('wrap-' + g.id);
+    input.value = g.answer;
+    input.classList.remove('incorrect');
+    input.classList.add('correct');
+    wrap.classList.remove('show-correction');
+  });
+  document.getElementById('scoreboard').innerHTML = '';
+  updateWordBank();
+}
+
+function resetAll() {
+  gaps.forEach(g => {
+    const input = document.getElementById('gap-' + g.id);
+    const wrap = document.getElementById('wrap-' + g.id);
+    input.value = '';
+    input.classList.remove('correct', 'incorrect');
+    wrap.classList.remove('show-correction');
+  });
+  document.getElementById('scoreboard').innerHTML = '';
+  updateWordBank();
+}
+
+document.addEventListener('input', updateWordBank);
+buildContent();
+buildWordBank();
+</script>
+</body>
+</html>

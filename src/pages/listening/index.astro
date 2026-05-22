@@ -1,0 +1,252 @@
+---
+// src/pages/listening/index.astro
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const exercises = await getCollection('listening');
+
+// Sort by publishDate desc, featured first
+const sorted = exercises.sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+});
+
+const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
+const activityTypes = ['Gap-fill', 'Comprehension', 'True/False', 'Dictation', 'Ordering'];
+---
+
+<BaseLayout title="Listening — Jace's Class" description="Listening exercises for English learners — gap-fills, comprehension, dictation and more.">
+  <section class="listening-hero">
+    <h1>Listening</h1>
+    <p class="lede">Train your ears with short audio texts and interactive exercises — gap-fills, comprehension, true/false, dictation and more.</p>
+  </section>
+
+  <section class="filters" aria-label="Filter exercises">
+    <div class="filter-group">
+      <span class="filter-label">Level</span>
+      <button class="chip is-active" data-filter="level" data-value="all">All</button>
+      {levels.map(l => <button class="chip" data-filter="level" data-value={l}>{l}</button>)}
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Activity</span>
+      <button class="chip is-active" data-filter="activity" data-value="all">All</button>
+      {activityTypes.map(t => <button class="chip" data-filter="activity" data-value={t}>{t}</button>)}
+    </div>
+  </section>
+
+  <section class="grid" id="grid">
+    {sorted.map(ex => (
+      <a
+        href={`/listening/${ex.slug}`}
+        class="card"
+        data-level={ex.data.level}
+        data-activity={ex.data.activityType}
+      >
+        {ex.data.featured && <span class="featured-badge">Featured</span>}
+        <div class="card-meta">
+          <span class="level-tag">{ex.data.level}</span>
+          <span class="activity-tag">{ex.data.activityType}</span>
+        </div>
+        <h2>{ex.data.title}</h2>
+        <p class="card-desc">{ex.data.description}</p>
+        <div class="card-footer">
+          <span class="topic">{ex.data.topic}</span>
+          <span class="duration">{ex.data.duration} min</span>
+        </div>
+      </a>
+    ))}
+  </section>
+
+  <p id="empty-state" class="empty-state" hidden>No exercises match those filters yet.</p>
+</BaseLayout>
+
+<style>
+  .listening-hero {
+    text-align: center;
+    padding: 3rem 1rem 1.5rem;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .listening-hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    color: #15263a;
+    margin: 0 0 0.5rem;
+  }
+  .lede {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: #6b6252;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .filters {
+    max-width: 1100px;
+    margin: 1rem auto 2rem;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .filter-label {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #6b6252;
+    margin-right: 0.4rem;
+    min-width: 4.5rem;
+  }
+  .chip {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid #d5cfb8;
+    background: #fff;
+    color: #15263a;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .chip:hover { border-color: #15263a; }
+  .chip.is-active {
+    background: #15263a;
+    color: #faf6ec;
+    border-color: #15263a;
+  }
+
+  .grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid #d5cfb8;
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+  }
+  .card:hover {
+    border-color: #15263a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(21, 38, 58, 0.06);
+  }
+  .card.is-hidden { display: none; }
+
+  .featured-badge {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.72rem;
+    color: #c84a2c;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.65rem;
+    flex-wrap: wrap;
+  }
+  .level-tag, .activity-tag {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .level-tag { background: #faf6ec; color: #15263a; border: 1px solid #d5cfb8; }
+  .activity-tag { background: #15263a; color: #faf6ec; }
+
+  .card h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #15263a;
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.88rem;
+    color: #4a4438;
+    line-height: 1.55;
+    margin: 0 0 1rem;
+    flex: 1;
+  }
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 0.78rem;
+    color: #6b6252;
+    border-top: 1px solid #ece7d6;
+    padding-top: 0.65rem;
+  }
+  .topic { font-style: italic; }
+
+  .empty-state {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: #6b6252;
+    padding: 2rem 1rem 4rem;
+  }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const cards = document.querySelectorAll<HTMLAnchorElement>('.card');
+  const empty = document.getElementById('empty-state');
+
+  const state = { level: 'all', activity: 'all' };
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const filter = chip.dataset.filter as 'level' | 'activity';
+      const value = chip.dataset.value!;
+      state[filter] = value;
+
+      // Update active state within this filter group
+      document.querySelectorAll(`.chip[data-filter="${filter}"]`).forEach(c =>
+        c.classList.toggle('is-active', c === chip)
+      );
+
+      applyFilters();
+    });
+  });
+
+  function applyFilters() {
+    let visible = 0;
+    cards.forEach(card => {
+      const matchesLevel = state.level === 'all' || card.dataset.level === state.level;
+      const matchesActivity = state.activity === 'all' || card.dataset.activity === state.activity;
+      const show = matchesLevel && matchesActivity;
+      card.classList.toggle('is-hidden', !show);
+      if (show) visible++;
+    });
+    if (empty) empty.hidden = visible > 0;
+  }
+</script>
