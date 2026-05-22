@@ -37,7 +37,7 @@ const activityTypes = ['Gap-fill', 'Comprehension', 'True/False', 'Dictation', '
   <section class="grid" id="grid">
     {sorted.map(ex => (
       <a
-        href={`/listening/${ex.slug}`}
+        href={`/listening/${ex.id}`}
         class="card"
         data-level={ex.data.level}
         data-activity={ex.data.activityType}
