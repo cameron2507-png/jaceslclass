@@ -1,6 +1,6 @@
 ---
-title: "Business English Blockbusters (A1/A2)"
-description: "Classic hexagonal grid game with elementary business English questions — basic office vocabulary and simple grammar."
+title: "Business English Vocabulary Game: Blockbusters (A1/A2)"
+description: "Adult teams answer basic office vocabulary and grammar questions to claim hexagons. An A1/A2 Blockbusters quiz for elementary business English classes."
 level: "A2"
 type: "Blockbusters"
 topic: "Business English"
