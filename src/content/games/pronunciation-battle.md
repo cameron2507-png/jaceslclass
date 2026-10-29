@@ -1,6 +1,6 @@
 ---
-title: "Pronunciation Battle"
-description: "Two players compete to pronounce tricky English words across three difficulty levels. IPA transcriptions and teaching notes settle every dispute."
+title: "Difficult English Words Pronunciation Game (B1)"
+description: "Two adult learners compete to say tricky English words like colonel and squirrel, with IPA and teaching notes. A B1 ESL pronunciation game."
 level: B1
 type: Quizzes
 topic: "Pronunciation"
