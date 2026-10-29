@@ -1,6 +1,6 @@
 ---
-title: "Set the Clock"
-description: "Read the time in words and move the clock hands to match. Ten rounds, from o'clock and half past up to every five minutes."
+title: "Telling the Time Game for Kids: Set the Clock (A1)"
+description: "Young learners read the time in words and move the clock hands to match, from o'clock to five-minute times. An A1 telling the time game for kids."
 level: A1
 type: Quizzes
 topic: "Telling the time"
