@@ -1,6 +1,6 @@
 ---
-title: "Conversation Cards (A1/A2)"
-description: "30 conversation cards about work and everyday life, each with an example sentence, four graded questions and useful words."
+title: "Conversation Questions for Adults: Work & Life (A1/A2)"
+description: "30 speaking cards with graded conversation questions about work and everyday life, plus example sentences and useful words. For adult A1/A2 learners."
 level: A2
 type: Quizzes
 topic: "Speaking"
