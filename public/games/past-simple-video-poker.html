@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Past Simple Video Poker (A2/B1) | Irregular Verbs Card Game for ESL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6ec;--card:#fff;--border:#d5cfb8;--navy:#15263a;--terra:#c84a2c;--teal:#0e7c66;--muted:#6b675c;--rule:#ece5d1}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--cream);color:var(--navy);font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;line-height:1.5;padding:28px 16px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:20px}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.9rem,5vw,2.5rem);line-height:1.1;margin:0 0 .35rem;letter-spacing:-.01em}
+.sub{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--muted);margin:0;font-size:1.02rem}
+.level{display:inline-block;margin-top:10px;font-size:.8rem;color:var(--teal);font-weight:600;border:1px solid var(--border);border-radius:999px;padding:2px 11px;background:var(--card)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--navy);color:#fff;border:1px solid var(--navy);border-radius:8px;padding:10px 18px;font-weight:600;font-size:.95rem;transition:background .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--terra);border-color:var(--terra)}
+.btn.ghost{background:var(--card);color:var(--navy);border-color:var(--border)}
+.btn.ghost:hover{border-color:var(--terra);color:var(--terra)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--navy);border-color:var(--navy)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chip{font-size:.85rem;padding:6px 13px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--navy);transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--terra)}
+.chip[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:clamp(20px,4vw,32px)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px}
+.keys{text-align:center;color:var(--muted);font-size:.85rem;margin:6px 0 22px}
+details.rules{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px}
+details.rules summary{font-family:'Fraunces',Georgia,serif;font-weight:600;cursor:pointer}
+details.rules p,details.rules li{font-size:.95rem}
+details.rules ul{padding-left:1.2rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.wrap{max-width:900px}
+.top{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0}
+.pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:4px 14px;font-size:.9rem}
+.pill b{font-family:'Fraunces',Georgia,serif}
+.hand{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.pc{position:relative;aspect-ratio:5/7;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;color:var(--navy);transition:border-color .15s,transform .15s}
+.pc.red{color:var(--terra)}
+.pc .rk{font-family:'Fraunces',Georgia,serif;font-size:clamp(1rem,3.4vw,1.5rem);font-weight:600;line-height:1}
+.pc .vb{font-weight:600;font-size:clamp(.78rem,2.4vw,1.05rem);color:var(--navy);text-align:center;word-break:break-word}
+.pc .st{font-size:.72rem;font-weight:600;text-align:center;min-height:1.1em;color:var(--muted)}
+.pc.held{border-color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy);transform:translateY(-4px)}
+.pc.held .st{color:var(--navy)}
+.pc.good{border-color:var(--teal);box-shadow:inset 0 0 0 2px var(--teal)}
+.pc.good .st{color:var(--teal)}
+.pc.bad{border-color:var(--terra);border-style:dashed;opacity:.6}
+.pc.bad .st{color:var(--terra)}
+.pc.empty{background:transparent;border-style:dashed}
+.msg{text-align:center;min-height:1.6em;font-weight:600;margin:16px 0 0}
+.msg.ok{color:var(--teal)} .msg.no{color:var(--terra)}
+.pay{width:100%;border-collapse:collapse;font-size:.92rem}
+.pay td{padding:4px 6px;border-bottom:1px solid var(--rule)}
+.pay td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.pay tr.win td{color:var(--teal);font-weight:600}
+dialog{border:1px solid var(--border);border-radius:14px;padding:clamp(20px,4vw,30px);max-width:460px;width:calc(100% - 32px);color:var(--navy);background:var(--card)}
+dialog::backdrop{background:rgba(21,38,58,.45)}
+.dmeta{color:var(--muted);font-size:.9rem;margin:0 0 6px}
+.dq{font-weight:500;font-size:1.3rem;margin:0 0 16px}
+.dq b{font-family:'Fraunces',Georgia,serif;font-size:1.6rem}
+.mc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mc button{border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--navy);padding:12px;font-size:1.1rem;font-weight:600}
+.mc button:hover:not(:disabled){border-color:var(--terra)}
+.mc button.right{border-color:var(--teal);background:var(--teal);color:#fff}
+.mc button.wrong{border-color:var(--terra);color:var(--terra)}
+.end{text-align:center;padding:10px 0}
+.stamp{display:inline-block;font-family:'Fraunces',Georgia,serif;font-size:1.8rem;font-weight:600;color:var(--terra);border:3px double var(--terra);border-radius:8px;padding:8px 18px;transform:rotate(-3deg);margin:6px 0 14px}
+.end p{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Past Simple Video Poker</h1><p class="sub">Every card carries a verb. Get its past simple wrong and the card doesn’t count.</p><span class="level">A2/B1</span></header>
+<div class="top"><span class="pill">Credits <b id="cr">100</b></span><span class="pill">Hand <b id="hn">1</b> of 10</span><span class="pill">Verbs right <b id="acc">0/0</b></span></div>
+<main class="card" id="table">
+  <div class="hand" id="hand"></div>
+  <p class="msg" id="msg" aria-live="polite">Press Deal to start. Each hand costs 5 credits.</p>
+  <div class="controls"><button class="btn" id="act">Deal</button></div>
+  <div class="end" id="end" hidden><div class="stamp" id="stamp"></div><p id="endP"></p><button class="btn" id="again">Play again</button></div>
+</main>
+<details class="rules"><summary>How to play and what pays</summary>
+<p>Press <b>Deal</b>. Tap the cards you want to keep, then press <b>Draw</b> to replace the others. Before the hand is scored, give the past simple of every verb in your hand. A wrong answer breaks that card, so it can’t help your hand.</p>
+<table class="pay" id="pay"></table>
+<p>Ten hands per game. Your stamp at the end depends on how many verbs you got right.</p></details>
+</div>
+<dialog id="dlg"><p class="dmeta" id="dm"></p><p class="dq">Past simple of <b id="dv"></b>?</p><div class="mc" id="mc"></div></dialog>
+<script>
+
+const VERBS=[["go", "went", "goed", "gone", "wented"], ["eat", "ate", "eated", "eaten", "ated"], ["see", "saw", "seed", "seen", "sawed"], ["take", "took", "taked", "taken", "tooked"], ["come", "came", "comed", "comes", "camed"], ["make", "made", "maked", "maded", "mades"], ["buy", "bought", "buyed", "brought", "boughted"], ["bring", "brought", "bringed", "brang", "bringt"], ["think", "thought", "thinked", "thinkt", "thoughted"], ["drink", "drank", "drinked", "drunked", "dranked"], ["swim", "swam", "swimmed", "swum", "swimed"], ["write", "wrote", "writed", "written", "wroted"], ["speak", "spoke", "speaked", "spoken", "spoked"], ["break", "broke", "breaked", "broken", "braked"], ["drive", "drove", "drived", "driven", "droved"], ["ride", "rode", "rided", "ridden", "roded"], ["fly", "flew", "flied", "flown", "flewed"], ["know", "knew", "knowed", "known", "knewed"], ["grow", "grew", "growed", "grown", "grewed"], ["throw", "threw", "throwed", "thrown", "thrue"], ["begin", "began", "beginned", "begun", "begined"], ["sing", "sang", "singed", "sung", "songed"], ["run", "ran", "runned", "runed", "ranned"], ["sit", "sat", "sitted", "sate", "seat"], ["stand", "stood", "standed", "stands", "stoods"], ["sleep", "slept", "sleeped", "slepted", "sleept"], ["feel", "felt", "feeled", "fell", "felted"], ["leave", "left", "leaved", "lefted", "leaft"], ["meet", "met", "meeted", "mett", "meted"], ["teach", "taught", "teached", "thought", "taughted"], ["catch", "caught", "catched", "cought", "caughted"], ["find", "found", "finded", "founded", "fond"], ["give", "gave", "gived", "given", "gaved"], ["get", "got", "getted", "gotted", "gat"], ["tell", "told", "telled", "tolled", "toll"], ["say", "said", "sayed", "sayd", "saided"], ["pay", "paid", "payed", "paied", "pait"], ["lose", "lost", "losed", "loosed", "lossed"], ["win", "won", "winned", "wan", "wonned"], ["choose", "chose", "choosed", "chosen", "choosen"], ["wear", "wore", "weared", "worn", "wored"], ["forget", "forgot", "forgetted", "forgotten", "forgat"], ["play", "played", "plaied", "playd", "playyed"], ["stop", "stopped", "stoped", "stopt", "stopted"], ["study", "studied", "studyed", "studed", "studid"], ["plan", "planned", "planed", "plannd", "plant"], ["try", "tried", "tryed", "tride", "trieded"], ["arrive", "arrived", "arrivd", "arriveded", "arove"], ["cry", "cried", "cryed", "cride", "crieded"], ["work", "worked", "workd", "workted", "wark"], ["listen", "listened", "listend", "listenned", "lisened"], ["watch", "watched", "watcht", "watchd", "wotched"]];
+const PAY=[['Royal flush',250],['Straight flush',50],['Four of a kind',25],['Full house',9],['Flush',6],['Straight',4],['Three of a kind',3],['Two pair',2],['Jacks or better',1]];
+const RANKS='23456789TJQKA', SUITS=['♠','♥','♦','♣'], RN={T:'10'};
+const $=id=>document.getElementById(id);
+let credits,handNo,right,asked,deck,hand,held,state,quiz;
+function shuffle(a){for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
+function payTable(hit){$('pay').innerHTML=PAY.map(p=>'<tr'+(p[0]===hit?' class="win"':'')+'><td>'+p[0]+'</td><td>'+p[1]*5+'</td></tr>').join('');}
+function start(){credits=100;handNo=0;right=0;asked=0;state='idle';hand=[];$('end').hidden=true;$('act').hidden=false;$('act').textContent='Deal';upd();render();payTable();$('msg').textContent='Press Deal to start. Each hand costs 5 credits.';$('msg').className='msg';}
+function upd(){$('cr').textContent=credits;$('hn').textContent=Math.max(1,handNo);$('acc').textContent=right+'/'+asked;}
+function newDeck(){const vs=shuffle(VERBS.slice());deck=shuffle(RANKS.split('').flatMap(r=>SUITS.map(s=>({r,s}))));deck.forEach((c,k)=>c.v=vs[k]);}
+function render(){
+  const h=$('hand');h.innerHTML='';
+  for(let k=0;k<5;k++){const c=hand[k];const b=document.createElement('button');
+    if(!c){b.className='pc empty';b.disabled=true;h.appendChild(b);continue;}
+    const red=c.s==='♥'||c.s==='♦';
+    b.className='pc'+(red?' red':'')+(held[k]?' held':'')+(c.ok===true?' good':'')+(c.ok===false?' bad':'');
+    b.innerHTML='<span class="rk"></span><span class="vb"></span><span class="st"></span>';
+    b.querySelector('.rk').textContent=(RN[c.r]||c.r)+c.s;b.querySelector('.vb').textContent=c.v[0];
+    b.querySelector('.st').textContent=c.ok===true?'✓ '+c.v[1]:c.ok===false?'✗ '+c.v[1]:held[k]?'Held':'';
+    b.setAttribute('aria-label',(RN[c.r]||c.r)+' of '+c.s+', verb '+c.v[0]+(held[k]?', held':''));
+    b.disabled=state!=='hold';b.onclick=()=>{held[k]=!held[k];render();};h.appendChild(b);}
+}
+function deal(){credits-=5;handNo++;newDeck();hand=deck.splice(0,5);held=[0,0,0,0,0];state='hold';upd();render();payTable();
+  $('msg').textContent='Tap the cards you want to keep, then press Draw.';$('msg').className='msg';$('act').textContent='Draw';}
+function draw(){for(let k=0;k<5;k++)if(!held[k])hand[k]=deck.shift();held=[0,0,0,0,0];state='quiz';render();quiz=0;ask();}
+function ask(){
+  if(quiz>=5){score();return;}
+  const c=hand[quiz];$('dm').textContent='Card '+(quiz+1)+' of 5: '+(RN[c.r]||c.r)+c.s;$('dv').textContent=c.v[0];
+  const opts=shuffle([c.v[1],c.v[2],c.v[3],c.v[4]]);$('mc').innerHTML='';
+  opts.forEach(o=>{const b=document.createElement('button');b.textContent=o;b.onclick=()=>answer(b,o===c.v[1]);$('mc').appendChild(b);});
+  if(!$('dlg').open)$('dlg').showModal();
+}
+function answer(b,ok){const c=hand[quiz];asked++;if(ok)right++;c.ok=ok;
+  document.querySelectorAll('#mc button').forEach(x=>{x.disabled=true;if(x.textContent===c.v[1])x.classList.add('right');});if(!ok)b.classList.add('wrong');
+  upd();render();setTimeout(()=>{quiz++;ask();},ok?550:1300);}
+$('dlg').addEventListener('cancel',e=>e.preventDefault());
+function evaluate(cards){
+  const n=cards.length;if(!n)return null;
+  const vals=cards.map(c=>RANKS.indexOf(c.r)).sort((a,b)=>a-b);const cnt={};vals.forEach(v=>cnt[v]=(cnt[v]||0)+1);
+  const groups=Object.entries(cnt).map(([v,c])=>[+v,c]).sort((a,b)=>b[1]-a[1]||b[0]-a[0]);
+  const flush=n===5&&cards.every(c=>c.s===cards[0].s);
+  const uniq=groups.length===5;
+  const straight=n===5&&uniq&&(vals[4]-vals[0]===4||vals.join()==='0,1,2,3,12');
+  if(flush&&straight)return vals[0]===8?'Royal flush':'Straight flush';
+  if(groups[0][1]===4)return 'Four of a kind';
+  if(groups[0][1]===3&&groups[1]&&groups[1][1]===2)return 'Full house';
+  if(flush)return 'Flush'; if(straight)return 'Straight';
+  if(groups[0][1]===3)return 'Three of a kind';
+  if(groups[0][1]===2&&groups[1]&&groups[1][1]===2)return 'Two pair';
+  if(groups[0][1]===2&&groups[0][0]>=9)return 'Jacks or better';
+  return null;
+}
+function score(){
+  $('dlg').close();state='done';
+  const good=hand.filter(c=>c.ok),res=evaluate(good),broken=5-good.length;
+  if(res){const win=PAY.find(p=>p[0]===res)[1]*5;credits+=win;$('msg').textContent=res+'! You win '+win+' credits.'+(broken?' ('+broken+' broken card'+(broken>1?'s':'')+')':'');$('msg').className='msg ok';}
+  else{$('msg').textContent='No winning hand'+(broken?' with '+broken+' broken card'+(broken>1?'s':'')+'.':'.');$('msg').className='msg no';}
+  payTable(res);upd();render();
+  if(handNo>=10||credits<5){$('act').textContent='See my result';}else $('act').textContent='Deal';
+}
+function finish(){
+  $('act').hidden=true;$('end').hidden=false;const pct=asked?Math.round(right/asked*100):0;
+  $('stamp').textContent=pct>=90?'High roller':pct>=75?'Card shark':pct>=50?'Steady hand':'Back to the table';
+  $('endP').textContent='You got '+right+' of '+asked+' verbs right ('+pct+'%) and finished with '+credits+' credits.';$('again').focus();
+}
+$('act').onclick=()=>{if(state==='hold')draw();else if(state==='done'&&(handNo>=10||credits<5))finish();else deal();};
+$('again').onclick=start;
+start();
+
+</script>
+</body>
+</html>

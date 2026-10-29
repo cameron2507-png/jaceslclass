@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Just a Minute Speaking Game (B1/B2) | 30 ESL Speaking Topics with Timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6ec;--card:#fff;--border:#d5cfb8;--navy:#15263a;--terra:#c84a2c;--teal:#0e7c66;--muted:#6b675c;--rule:#ece5d1}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--cream);color:var(--navy);font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;line-height:1.5;padding:28px 16px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:20px}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.9rem,5vw,2.5rem);line-height:1.1;margin:0 0 .35rem;letter-spacing:-.01em}
+.sub{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--muted);margin:0;font-size:1.02rem}
+.level{display:inline-block;margin-top:10px;font-size:.8rem;color:var(--teal);font-weight:600;border:1px solid var(--border);border-radius:999px;padding:2px 11px;background:var(--card)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--navy);color:#fff;border:1px solid var(--navy);border-radius:8px;padding:10px 18px;font-weight:600;font-size:.95rem;transition:background .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--terra);border-color:var(--terra)}
+.btn.ghost{background:var(--card);color:var(--navy);border-color:var(--border)}
+.btn.ghost:hover{border-color:var(--terra);color:var(--terra)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--navy);border-color:var(--navy)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chip{font-size:.85rem;padding:6px 13px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--navy);transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--terra)}
+.chip[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:clamp(20px,4vw,32px)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px}
+.keys{text-align:center;color:var(--muted);font-size:.85rem;margin:6px 0 22px}
+details.rules{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px}
+details.rules summary{font-family:'Fraunces',Georgia,serif;font-weight:600;cursor:pointer}
+details.rules p,details.rules li{font-size:.95rem}
+details.rules ul{padding-left:1.2rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.stage{text-align:center}
+.cat{color:var(--teal);font-weight:600;font-size:.9rem}
+.topic{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.8rem,5.5vw,2.6rem);line-height:1.2;margin:8px auto 22px;max-width:18em;min-height:2.4em;display:flex;align-items:center;justify-content:center}
+.ring{position:relative;width:170px;height:170px;margin:0 auto}
+.ring svg{transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:10}
+.ring .bg{stroke:var(--rule)} .ring .fg{stroke:var(--teal);stroke-linecap:round;transition:stroke-dashoffset .2s linear,stroke .2s}
+.ring .fg.late{stroke:var(--terra)}
+.ring .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-size:2.6rem;font-weight:600;font-variant-numeric:tabular-nums}
+.ring .num.done{color:var(--terra);font-size:1.8rem}
+.used{color:var(--muted);font-size:.9rem;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Just a Minute</h1><p class="sub">Speak for sixty seconds without hesitation, repetition or deviation.</p><span class="level">B1/B2</span></header>
+<main class="card stage" aria-live="polite">
+ <div class="cat" id="cat">Ready?</div>
+ <p class="topic" id="topic">Draw a topic to start</p>
+ <div class="ring"><svg viewBox="0 0 170 170" width="170" height="170"><circle class="bg" cx="85" cy="85" r="74"/><circle class="fg" id="fg" cx="85" cy="85" r="74"/></svg><div class="num" id="num">60</div></div>
+ <p class="used" id="used"></p>
+</main>
+<div class="controls"><button class="btn" id="draw">Draw a topic</button><button class="btn ghost" id="go" disabled>Start the clock</button><button class="btn ghost" id="rs" disabled>Reset the clock</button></div>
+<p class="keys">Press Space to draw a new topic.</p>
+<details class="rules"><summary>How to play</summary>
+<p>The speaker talks on the topic for one minute. Other players can challenge if they hear:</p>
+<ul><li><b>Hesitation</b>: a long pause, or “erm” and “um”.</li><li><b>Repetition</b>: the same important word used twice (small words like “the” don’t count).</li><li><b>Deviation</b>: going off the topic.</li></ul>
+<p>A correct challenge wins a point, and the challenger takes over the topic for the time left. Whoever is speaking when the minute ends wins a bonus point. Topics don’t repeat until all 30 have been used.</p></details>
+</div>
+<script>
+
+const TOPICS=[["Travel", "The best journey you’ve ever made"], ["Travel", "A city everyone should visit"], ["Travel", "Why people travel"], ["Travel", "Airports"], ["Travel", "Holidays at home or abroad?"], ["Travel", "Hotels"], ["Travel", "A place you’d never go back to"], ["Travel", "Packing a suitcase"], ["Travel", "Travelling alone"], ["Travel", "Souvenirs"], ["Travel", "Mountains or the beach?"], ["Travel", "Tourist traps"], ["Travel", "Train journeys"], ["Travel", "Learning a language before you travel"], ["General", "Coffee"], ["General", "Your first job"], ["General", "The perfect weekend"], ["General", "Social media"], ["General", "Being late"], ["General", "Cooking"], ["General", "Neighbours"], ["General", "Sport on TV"], ["General", "The weather"], ["General", "Mobile phones"], ["General", "Shopping"], ["General", "Your hometown"], ["General", "Childhood games"], ["General", "Sleep"], ["General", "Music"], ["General", "The future of work"]];
+const $=id=>document.getElementById(id);
+const C=2*Math.PI*74; $('fg').style.strokeDasharray=C;
+let bag=[],count=0,left=60,run=false,end=0,tick=null;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function draw(){
+  if(!bag.length){bag=shuffle(TOPICS.map((t,i)=>i));count=0;}
+  const t=TOPICS[bag.pop()];count++;
+  $('cat').textContent=t[0];$('topic').textContent=t[1];
+  $('used').textContent='Topic '+count+' of '+TOPICS.length;
+  $('go').disabled=false;$('rs').disabled=false;reset();
+}
+function paint(){
+  $('fg').style.strokeDashoffset=C*(1-left/60);
+  $('fg').classList.toggle('late',left<=10);
+  const d=left<=0;$('num').textContent=d?'Time!':Math.ceil(left);$('num').classList.toggle('done',d);
+}
+function reset(){clearInterval(tick);run=false;left=60;$('go').textContent='Start the clock';paint();}
+function go(){
+  if(run){left=Math.max(0,(end-Date.now())/1000);clearInterval(tick);run=false;$('go').textContent='Resume';return;}
+  if(left<=0)left=60;run=true;end=Date.now()+left*1000;$('go').textContent='Pause';
+  tick=setInterval(()=>{left=Math.max(0,(end-Date.now())/1000);paint();if(left<=0){clearInterval(tick);run=false;$('go').textContent='Start again';}},100);
+}
+$('draw').onclick=draw;$('go').onclick=go;$('rs').onclick=reset;
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!['BUTTON','SUMMARY'].includes(e.target.tagName)){e.preventDefault();draw();}});
+paint();
+
+</script>
+</body>
+</html>

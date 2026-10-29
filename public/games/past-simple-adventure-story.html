@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Past Simple Reading Game: Choose Your Own Adventure Story (A2/B1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6ec;--card:#fff;--border:#d5cfb8;--navy:#15263a;--terra:#c84a2c;--teal:#0e7c66;--muted:#6b675c;--rule:#ece5d1}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--cream);color:var(--navy);font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;line-height:1.5;padding:28px 16px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:20px}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.9rem,5vw,2.5rem);line-height:1.1;margin:0 0 .35rem;letter-spacing:-.01em}
+.sub{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--muted);margin:0;font-size:1.02rem}
+.level{display:inline-block;margin-top:10px;font-size:.8rem;color:var(--teal);font-weight:600;border:1px solid var(--border);border-radius:999px;padding:2px 11px;background:var(--card)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--navy);color:#fff;border:1px solid var(--navy);border-radius:8px;padding:10px 18px;font-weight:600;font-size:.95rem;transition:background .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--terra);border-color:var(--terra)}
+.btn.ghost{background:var(--card);color:var(--navy);border-color:var(--border)}
+.btn.ghost:hover{border-color:var(--terra);color:var(--terra)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--navy);border-color:var(--navy)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chip{font-size:.85rem;padding:6px 13px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--navy);transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--terra)}
+.chip[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:clamp(20px,4vw,32px)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px}
+.keys{text-align:center;color:var(--muted);font-size:.85rem;margin:6px 0 22px}
+details.rules{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px}
+details.rules summary{font-family:'Fraunces',Georgia,serif;font-weight:600;cursor:pointer}
+details.rules p,details.rules li{font-size:.95rem}
+details.rules ul{padding-left:1.2rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.wrap{max-width:720px}
+.scene h2{font-family:'Fraunces',Georgia,serif;font-size:1.7rem;margin:0 0 4px}
+.step{color:var(--muted);font-size:.9rem;margin:0 0 16px}
+.scene p.t{font-family:'Fraunces',Georgia,serif;font-size:1.18rem;line-height:1.7;margin:0 0 14px}
+.v{position:relative;border:none;background:none;padding:0;font:inherit;color:inherit;text-decoration:underline dotted var(--terra);text-decoration-thickness:2px;text-underline-offset:4px;cursor:help}
+.v .tip{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);background:var(--navy);color:#fff;font-family:'Hanken Grotesk',sans-serif;font-size:.85rem;font-weight:500;white-space:nowrap;padding:4px 9px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .15s;z-index:2}
+.v:hover .tip,.v:focus .tip,.v.on .tip{opacity:1}
+.choices{display:grid;gap:10px;margin-top:20px;border-top:1px solid var(--rule);padding-top:18px}
+.choices .q{color:var(--muted);margin:0}
+.choice{text-align:left;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:1.05rem;font-weight:600;color:var(--navy);transition:border-color .15s,color .15s}
+.choice:hover{border-color:var(--terra);color:var(--terra)}
+.ending{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--teal);font-size:1.2rem;margin:4px 0 16px}
+.gl{margin-top:22px;border-top:1px solid var(--rule);padding-top:16px}
+.gl h3{font-family:'Fraunces',Georgia,serif;margin:0 0 4px}
+.gl p{color:var(--muted);margin:0 0 10px;font-size:.95rem}
+.gl table{border-collapse:collapse;width:100%;max-width:420px}
+.gl td,.gl th{text-align:left;padding:5px 8px;border-bottom:1px solid var(--rule)}
+.gl th{font-size:.85rem;color:var(--muted);font-weight:600}
+.gl td:last-child{color:var(--teal);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>The Map in the Bookshop</h1><p class="sub">A choose-your-own-adventure story in the past simple.</p><span class="level">A2/B1</span></header>
+<main class="card scene" id="scene" aria-live="polite"></main>
+<div class="controls"><button class="btn ghost" id="restart">Start the story again</button></div>
+<details class="rules"><summary>How to use it</summary>
+<p>Read each part of the story and choose what Emma does next. There are four different endings.</p>
+<ul><li>Every past simple verb is underlined. Hover or tap it to see the base form.</li><li>At the end, you get a list of all the verbs on your path.</li><li>In class, let the group vote on each choice, then retell the story in their own words.</li></ul></details>
+</div>
+<script>
+
+const S={"start": {"t": "The bookshop", "p": ["Last Saturday, Emma [walked|walk] into a small bookshop near the river. It [was|be] raining, and she [wanted|want] somewhere warm.", "She [found|find] an old book about the city and [opened|open] it. A piece of paper [fell|fall] out. It [was|be] a map, drawn by hand, with a red cross on it. Someone [wrote|write] a message at the bottom: “Don’t tell anyone.”"], "c": [["Ask the owner about the map", "owner"], ["Put the map in her pocket and leave", "rain"]]}, "rain": {"t": "Into the rain", "p": ["Emma [paid|pay] for the book and [left|leave] the shop quickly. Outside, she [looked|look] at the map again.", "The red cross [was|be] in the park, under a big oak tree. Next to it, someone [drew|draw] a small lighthouse. Emma [didn’t know|know] what to do."], "c": [["Go to the park now", "oak"], ["Go home and find out more", "research"]]}, "owner": {"t": "The owner’s story", "p": ["The owner, an old man called Mr Hale, [put|put] on his glasses and [smiled|smile].", "“My grandfather [drew|draw] that map,” he [said|say]. “He [worked|work] at the lighthouse fifty years ago. One night he [hid|hide] something there, but he never [told|tell] anyone what it [was|be].”"], "c": [["Go home and research the lighthouse", "research"], ["Ask Mr Hale to come with her", "lighthouse"]]}, "oak": {"t": "The oak tree", "p": ["Emma [ran|run] to the park. She [found|find] the oak tree and [began|begin] to dig with her hands.", "After ten minutes, she [hit|hit] something hard: a small metal box. Just then, a man in a long coat [came|come] towards her. “That’s mine,” he [said|say]."], "c": [["Run away with the box", "night"], ["Give him the box", "e_box"]]}, "research": {"t": "Research", "p": ["At home, Emma [searched|search] online for the old lighthouse. She [read|read] that it [closed|close] in 1975, after a storm [destroyed|destroy] part of it.", "In an old newspaper she [saw|see] a photo of the lighthouse keeper. He [had|have] the same eyes as Mr Hale from the bookshop."], "c": [["Go back to the bookshop", "e_family"], ["Go to the lighthouse alone", "night"]]}, "lighthouse": {"t": "To the lighthouse", "p": ["Mr Hale [closed|close] the shop and they [drove|drive] to the coast together. The wind [was|be] strong and the sea [was|be] grey.", "Inside the lighthouse, they [climbed|climb] the stairs. At the top, Mr Hale [pointed|point] at a loose stone in the wall."], "c": [["Pull out the stone", "e_gold"], ["Wait for Mr Hale to do it", "e_slow"]]}, "night": {"t": "Night falls", "p": ["Emma [got|get] to the lighthouse just before dark. The door [was|be] open. She [heard|hear] footsteps above her and [held|hold] her breath.", "Then a torch [shone|shine] in her face. It [was|be] Mr Hale. “I [knew|know] you’d come,” he [said|say] quietly."], "c": [["Tell him everything", "e_gold"], ["Ask him why he is there", "e_family"]]}, "e_box": {"t": "The wrong treasure", "end": "A kind heart", "p": ["The man [opened|open] the box. Inside there [were|be] only old photos of a family at the beach. He [sat|sit] down on the grass and [cried|cry].", "“These [were|be] my father’s,” he [said|say]. Emma [didn’t find|find] any gold, but she [made|make] a new friend that day."]}, "e_family": {"t": "Family history", "end": "The story was the treasure", "p": ["Mr Hale [listened|listen] to her and [laughed|laugh]. “You [found|find] me out,” he [said|say]. He [took|take] a letter from his desk.", "His grandfather [wrote|write] it before he [died|die]. The treasure [was|be] the map itself, a game he [made|make] for his grandson. Emma [spent|spend] the afternoon drinking tea and hearing family stories."]}, "e_gold": {"t": "The lighthouse secret", "end": "Treasure found!", "p": ["Behind the stone there [was|be] a small leather bag. Inside, they [found|find] gold coins and a note: “For the person who never [gave|give] up.”", "Mr Hale [gave|give] half the coins to Emma. A year later, she [opened|open] her own little bookshop by the river."]}, "e_slow": {"t": "Too slow", "end": "To be continued…", "p": ["Emma [waited|wait], but Mr Hale [didn’t move|move]. Suddenly, a huge wave [hit|hit] the rocks and the lights [went|go] out.", "When they [came|come] back on, the stone [was|be] on the floor and the hole [was|be] empty. Someone [was|be] there before them…"]}};
+const $=id=>document.getElementById(id);
+let path=[];
+function fmt(text,box){
+  const p=document.createElement('p');p.className='t';
+  text.split(/(\[[^\]]+\])/).forEach(part=>{
+    const m=part.match(/^\[([^|]+)\|([^\]]+)\]$/);
+    if(!m){p.appendChild(document.createTextNode(part));return;}
+    const b=document.createElement('button');b.className='v';b.type='button';b.textContent=m[1];
+    const neg=m[1].startsWith('didn');
+    const tip=document.createElement('span');tip.className='tip';tip.textContent=neg?'didn’t + '+m[2]:m[2]+' → '+m[1];b.appendChild(tip);
+    b.setAttribute('aria-label',m[1]+', from '+m[2]);
+    b.onclick=()=>{document.querySelectorAll('.v.on').forEach(x=>x!==b&&x.classList.remove('on'));b.classList.toggle('on');};
+    box.verbs.push([m[2],m[1]]);p.appendChild(b);
+  });
+  return p;
+}
+function go(id){
+  path.push(id);const s=S[id],box=$('scene');box.innerHTML='';box.verbs=box.verbs||[];
+  const h=document.createElement('h2');h.textContent=s.t;box.appendChild(h);
+  const st=document.createElement('p');st.className='step';st.textContent=s.end?'The end':'Part '+path.length;box.appendChild(st);
+  if(s.end){const e=document.createElement('p');e.className='ending';e.textContent='Ending: '+s.end;box.appendChild(e);}
+  s.p.forEach(t=>box.appendChild(fmt(t,box)));
+  if(s.c){const c=document.createElement('div');c.className='choices';c.innerHTML='<p class="q">What does Emma do?</p>';
+    s.c.forEach(ch=>{const b=document.createElement('button');b.className='choice';b.textContent=ch[0];b.onclick=()=>{go(ch[1]);window.scrollTo({top:0,behavior:'smooth'});};c.appendChild(b);});box.appendChild(c);}
+  else glossary(box);
+  const f=box.querySelector('.choice, .v');
+}
+function glossary(box){
+  const seen=new Map();box.verbs.forEach(([base,form])=>{const f=form.startsWith('didn')?'didn’t '+base:form;if(!seen.has(base+f))seen.set(base+f,[base,f]);});
+  const rows=[...seen.values()].sort((a,b)=>a[0].localeCompare(b[0]));
+  const g=document.createElement('div');g.className='gl';
+  g.innerHTML='<h3>Verbs on your path</h3><p>'+rows.length+' verbs. Try another path to find more. There are four endings.</p>';
+  const t=document.createElement('table');t.innerHTML='<tr><th>Base form</th><th>Past simple</th></tr>';
+  rows.forEach(r=>{const tr=document.createElement('tr');r.forEach(x=>{const td=document.createElement('td');td.textContent=x;tr.appendChild(td);});t.appendChild(tr);});
+  g.appendChild(t);box.appendChild(g);
+}
+function restart(){path=[];$('scene').verbs=[];go('start');}
+$('restart').onclick=restart;
+document.addEventListener('click',e=>{if(!e.target.closest('.v'))document.querySelectorAll('.v.on').forEach(x=>x.classList.remove('on'));});
+restart();
+
+</script>
+</body>
+</html>

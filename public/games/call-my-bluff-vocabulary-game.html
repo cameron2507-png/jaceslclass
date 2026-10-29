@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Call My Bluff Vocabulary Game (B1/B2) | Funny English Words Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6ec;--card:#fff;--border:#d5cfb8;--navy:#15263a;--terra:#c84a2c;--teal:#0e7c66;--muted:#6b675c;--rule:#ece5d1}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--cream);color:var(--navy);font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;line-height:1.5;padding:28px 16px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:20px}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.9rem,5vw,2.5rem);line-height:1.1;margin:0 0 .35rem;letter-spacing:-.01em}
+.sub{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--muted);margin:0;font-size:1.02rem}
+.level{display:inline-block;margin-top:10px;font-size:.8rem;color:var(--teal);font-weight:600;border:1px solid var(--border);border-radius:999px;padding:2px 11px;background:var(--card)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--navy);color:#fff;border:1px solid var(--navy);border-radius:8px;padding:10px 18px;font-weight:600;font-size:.95rem;transition:background .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--terra);border-color:var(--terra)}
+.btn.ghost{background:var(--card);color:var(--navy);border-color:var(--border)}
+.btn.ghost:hover{border-color:var(--terra);color:var(--terra)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--navy);border-color:var(--navy)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chip{font-size:.85rem;padding:6px 13px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--navy);transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--terra)}
+.chip[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:clamp(20px,4vw,32px)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px}
+.keys{text-align:center;color:var(--muted);font-size:.85rem;margin:6px 0 22px}
+details.rules{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px}
+details.rules summary{font-family:'Fraunces',Georgia,serif;font-weight:600;cursor:pointer}
+details.rules p,details.rules li{font-size:.95rem}
+details.rules ul{padding-left:1.2rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.top{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0}
+.pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:4px 14px;font-size:.9rem}
+.pill b{font-family:'Fraunces',Georgia,serif}
+.lead{color:var(--muted);margin:0}
+.word{font-family:'Fraunces',Georgia,serif;font-size:clamp(2rem,6vw,2.8rem);font-weight:600;margin:4px 0 18px;line-height:1.1}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:14px;align-items:flex-start;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:1.08rem;font-weight:500;color:var(--navy);line-height:1.45;transition:border-color .15s}
+.opt:hover:not(:disabled){border-color:var(--terra)}
+.opt .l{font-family:'Fraunces',Georgia,serif;font-weight:600;color:var(--muted);min-width:1.2em}
+.opt.right{border-color:var(--teal);box-shadow:inset 0 0 0 1px var(--teal)}
+.opt.right .l{color:var(--teal)}
+.opt.wrong{border-color:var(--terra);box-shadow:inset 0 0 0 1px var(--terra)}
+.opt:disabled{cursor:default}
+.tag{font-size:.8rem;font-weight:600;margin-left:auto;white-space:nowrap}
+.right .tag{color:var(--teal)} .wrong .tag,.bluff .tag{color:var(--terra)}
+.msg{min-height:1.5em;font-weight:600;margin:14px 0 0}
+.msg.ok{color:var(--teal)} .msg.no{color:var(--terra)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Call My Bluff</h1><p class="sub">One definition is true. The other two are bluffs.</p><span class="level">B1/B2</span></header>
+<div class="top"><span class="pill">Word <b id="n">1</b> of 20</span><span class="pill">Score <b id="sc">0</b></span></div>
+<main class="card" aria-live="polite">
+ <p class="lead">What does this word mean?</p>
+ <p class="word" id="word"></p>
+ <div class="opts" id="opts"></div>
+ <p class="msg" id="msg"></p>
+</main>
+<div class="controls"><button class="btn ghost" id="reveal">Reveal the answer</button><button class="btn" id="next">Next word</button><button class="btn ghost" id="restart">Start again</button></div>
+<details class="rules"><summary>How to play</summary>
+<p>Read the word aloud and the three definitions. Players vote for the definition they think is true, then click it to check.</p>
+<ul><li>As a team game, give each definition to a different player. They read it aloud and try to convince the other team it’s true.</li><li>Ask learners to explain why they believe or doubt each definition. That’s where the speaking happens.</li><li>Every word is real English. Most are informal or humorous British words.</li></ul></details>
+</div>
+<script>
+
+const WORDS=[["kerfuffle", "a fuss or commotion, often about something unimportant", ["a small round cushion used on a garden chair", "a thick Scottish wool scarf"]], ["flummox", "to confuse someone completely", ["to stuff a pillow with feathers", "to walk slowly through deep mud"]], ["skedaddle", "to run away quickly", ["a wooden spoon for stirring jam", "to slide sideways on ice"]], ["codswallop", "nonsense", ["a traditional fish pie from Cornwall", "a loud splash in water"]], ["collywobbles", "a nervous feeling in your stomach", ["small bumps on an old road", "a children’s toy that rocks but doesn’t fall over"]], ["gormless", "stupid; lacking common sense", ["without any hair", "very hungry after work"]], ["lollygag", "to waste time doing nothing useful", ["to laugh so much you can’t stop", "a sweet on a stick that changes colour"]], ["brouhaha", "a noisy, excited reaction to something", ["a type of strong French coffee", "a happy laugh between old friends"]], ["gallivant", "to go from place to place looking for fun", ["a large ship used to carry soldiers", "to clean silver until it shines"]], ["bumf", "boring printed papers and documents", ["a soft fall onto the ground", "the bottom part of a chair"]], ["chinwag", "a friendly chat", ["a small dog with a short tail", "a beard that covers only the chin"]], ["mollycoddle", "to protect someone too much", ["a warm drink made with milk and honey", "to cook fish slowly in butter"]], ["skulduggery", "dishonest or secret behaviour", ["the study of old bones", "a heavy boat used to clear rivers"]], ["widdershins", "in the opposite direction to the sun; anticlockwise", ["thin socks worn under boots", "a type of small seaside shell"]], ["kibosh", "something that puts a stop to a plan (to put the kibosh on it)", ["a heavy wooden club", "a spicy Turkish sausage"]], ["discombobulated", "confused and upset", ["taken apart into small pieces", "without a combination lock"]], ["higgledy-piggledy", "in a messy, disordered way", ["very happy and excited", "a children’s game played with pigs on a farm"]], ["snickersnee", "a large knife", ["a quiet, unkind laugh", "a cold wind that blows before snow"]], ["gobsmacked", "extremely surprised", ["hit in the face by a ball", "having eaten too much"]], ["hobnob", "to spend time with rich or important people", ["a small iron nail for boots", "to walk with a limp"]]];
+const $=id=>document.getElementById(id);
+let order,i,score,answered;
+function shuffle(a){for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
+function start(){order=shuffle(WORDS.map((w,k)=>k));i=0;score=0;load();}
+function load(){
+  const w=WORDS[order[i]];answered=false;
+  $('n').textContent=i+1;$('sc').textContent=score;$('word').textContent=w[0];$('msg').textContent='';$('msg').className='msg';
+  const opts=shuffle([[w[1],true],[w[2][0],false],[w[2][1],false]]);
+  const box=$('opts');box.innerHTML='';
+  opts.forEach((o,k)=>{const b=document.createElement('button');b.className='opt';b.dataset.t=o[1]?'1':'';
+    b.innerHTML='<span class="l">'+'ABC'[k]+'</span><span class="d"></span><span class="tag"></span>';b.querySelector('.d').textContent=o[0];
+    b.onclick=()=>pick(b);box.appendChild(b);});
+  $('next').textContent=i===WORDS.length-1?'See my score':'Next word';
+}
+function mark(chosen){
+  document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;
+    if(b.dataset.t){b.classList.add('right');b.querySelector('.tag').textContent='True';}
+    else{b.classList.add('bluff');b.querySelector('.tag').textContent='Bluff';if(b===chosen)b.classList.add('wrong');}});
+}
+function pick(b){if(answered)return;answered=true;
+  if(b.dataset.t){score++;$('sc').textContent=score;$('msg').textContent='Correct! That’s the real meaning.';$('msg').className='msg ok';}
+  else{$('msg').textContent='That was a bluff!';$('msg').className='msg no';}
+  mark(b);}
+$('reveal').onclick=()=>{if(answered)return;answered=true;mark(null);$('msg').textContent='The true definition is marked.';$('msg').className='msg';};
+$('next').onclick=()=>{if(i===WORDS.length-1){$('word').textContent='Final score: '+score+' / '+WORDS.length;$('opts').innerHTML='';$('msg').textContent=score>=16?'Bluff detector!':score>=11?'Hard to fool!':score>=6?'Not bad at all.':'Those bluffers got you!';$('msg').className='msg ok';$('next').textContent='Play again';i=WORDS.length;return;}
+  if(i>=WORDS.length){start();return;} i++;load();};
+$('restart').onclick=start;
+start();
+
+</script>
+</body>
+</html>

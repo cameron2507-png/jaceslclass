@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Irregular Verbs Jeopardy Game (A2/B1) | Past Simple and Present Perfect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6ec;--card:#fff;--border:#d5cfb8;--navy:#15263a;--terra:#c84a2c;--teal:#0e7c66;--muted:#6b675c;--rule:#ece5d1}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--cream);color:var(--navy);font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;line-height:1.5;padding:28px 16px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:20px}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.9rem,5vw,2.5rem);line-height:1.1;margin:0 0 .35rem;letter-spacing:-.01em}
+.sub{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--muted);margin:0;font-size:1.02rem}
+.level{display:inline-block;margin-top:10px;font-size:.8rem;color:var(--teal);font-weight:600;border:1px solid var(--border);border-radius:999px;padding:2px 11px;background:var(--card)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--navy);color:#fff;border:1px solid var(--navy);border-radius:8px;padding:10px 18px;font-weight:600;font-size:.95rem;transition:background .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--terra);border-color:var(--terra)}
+.btn.ghost{background:var(--card);color:var(--navy);border-color:var(--border)}
+.btn.ghost:hover{border-color:var(--terra);color:var(--terra)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--navy);border-color:var(--navy)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chip{font-size:.85rem;padding:6px 13px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--navy);transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--terra)}
+.chip[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:clamp(20px,4vw,32px)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px}
+.keys{text-align:center;color:var(--muted);font-size:.85rem;margin:6px 0 22px}
+details.rules{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px}
+details.rules summary{font-family:'Fraunces',Georgia,serif;font-weight:600;cursor:pointer}
+details.rules p,details.rules li{font-size:.95rem}
+details.rules ul{padding-left:1.2rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.wrap{max-width:1040px}
+.teams{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:14px 0 18px}
+.team{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 16px;display:flex;align-items:center;gap:12px}
+.team input{font:inherit;font-weight:600;color:var(--navy);border:none;border-bottom:1px dashed var(--border);background:transparent;width:8.5em}
+.team .pts{font-family:'Fraunces',Georgia,serif;font-size:1.5rem;font-weight:600;font-variant-numeric:tabular-nums;min-width:3ch;text-align:right}
+.t0 .pts{color:var(--teal)} .t1 .pts{color:var(--terra)}
+.scroll{overflow-x:auto}
+.board{display:grid;grid-template-columns:repeat(5,minmax(104px,1fr));gap:8px;min-width:560px}
+.cat{font-family:'Fraunces',Georgia,serif;font-weight:600;text-align:center;font-size:.98rem;line-height:1.25;padding:10px 6px;border-bottom:2px solid var(--navy);display:flex;align-items:flex-end;justify-content:center;min-height:62px}
+.cell{background:var(--card);border:1px solid var(--border);border-radius:10px;height:72px;font-family:'Fraunces',Georgia,serif;font-size:1.5rem;font-weight:600;color:var(--navy);transition:border-color .15s,color .15s}
+.cell:hover{border-color:var(--terra);color:var(--terra)}
+.cell.used{background:transparent;border-style:dashed;color:transparent;cursor:default}
+.cell.used:hover{border-color:var(--border)}
+dialog{border:1px solid var(--border);border-radius:14px;padding:clamp(20px,4vw,34px);max-width:640px;width:calc(100% - 32px);color:var(--navy);background:var(--card)}
+dialog::backdrop{background:rgba(21,38,58,.45)}
+.dmeta{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:16px}
+.dmeta b{color:var(--teal)}
+.clue{font-weight:500;font-size:clamp(1.25rem,3.4vw,1.6rem);line-height:1.45;margin:0 0 14px}
+.fr{color:var(--muted);margin:0 0 12px}
+.ans{font-family:'Fraunces',Georgia,serif;font-size:1.45rem;font-weight:600;color:var(--teal);border-top:1px solid var(--rule);padding-top:14px;margin:6px 0 4px}
+.anote{color:var(--muted);margin:0 0 6px}
+.drow{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.end{text-align:center;margin:20px 0}
+.end h2{font-family:'Fraunces',Georgia,serif;font-size:2rem;margin:0 0 6px}
+.end p{color:var(--muted);margin:0 0 16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Irregular Verbs Jeopardy</h1><p class="sub">Past simple and present perfect in real sentences.</p><span class="level">A2/B1</span></header>
+<div class="teams">
+  <label class="team t0"><input id="n0" value="Team A" aria-label="First team name"><span class="pts" id="s0">0</span></label>
+  <label class="team t1"><input id="n1" value="Team B" aria-label="Second team name"><span class="pts" id="s1">0</span></label>
+</div>
+<div class="end" id="end" hidden><h2 id="endT"></h2><p id="endP"></p><button class="btn" id="again">Play again</button></div>
+<div class="scroll"><div class="board" id="board"></div></div>
+<div class="controls"><button class="btn ghost" id="reset">Start a new game</button></div>
+<details class="rules"><summary>How to play</summary>
+<p>Teams take turns choosing a category and a value. Read the clue aloud, let the team answer, then show the answer and give the points to the team that got it right.</p>
+<ul><li>Higher values are harder.</li><li>Click a team name to change it.</li></ul></details>
+</div>
+<dialog id="dlg">
+  <div class="dmeta"><b id="dCat"></b><span id="dVal"></span></div>
+  <p class="clue" id="dQ"></p>
+  <p class="fr" id="dFr" hidden></p>
+  <div id="dAns" hidden><p class="ans" id="dA"></p><p class="anote" id="dN" hidden></p></div>
+  <div class="drow" id="rowShow"><button class="btn" id="show">Show the answer</button><button class="btn ghost" id="frBtn" hidden>Show French</button></div>
+  <div class="drow" id="rowAward" hidden><button class="btn" id="a0"></button><button class="btn" id="a1"></button><button class="btn ghost" id="aN">No one</button></div>
+</dialog>
+<script>
+
+const BOARD=[{"cat": "Past simple stories", "clues": [["The train ___ late, so I ___ a taxi. (be, take)", "was, took", null, null], ["We ___ the match and ___ pizza. (watch, eat)", "watched, ate", null, null], ["She ___ the door and ___ inside. (shut, run)", "shut, ran", null, null], ["I ___ my phone and the screen ___. (drop, break)", "dropped, broke", null, null], ["He ___ his bike to work and ___ his leg. (ride, hurt)", "rode, hurt", null, null]]}, {"cat": "Present perfect", "clues": [["I’ve just ___ lunch. (have)", "had", null, null], ["Have you ___ the news? (hear)", "heard", null, null], ["They’ve ___ to Italy three times. (fly)", "flown", null, null], ["She hasn’t ___ a word all morning. (say)", "said", null, null], ["We’ve ___ each other since school. (know)", "known", null, null]]}, {"cat": "Negatives and questions", "clues": [["Make it negative: I saw him.", "I didn’t see him.", null, null], ["Make a question: You found your keys.", "Did you find your keys?", null, null], ["Make it negative: She has finished.", "She hasn’t finished.", null, null], ["Make a question: They left early.", "Did they leave early?", null, null], ["Make a question: He has written the report.", "Has he written the report?", null, null]]}, {"cat": "Fix the mistake", "clues": [["I have went to Spain.", "I have been to Spain.", "Or “gone”, if you are still there.", null], ["She has wrote three emails.", "She has written three emails.", null, null], ["We drunk a lot of coffee yesterday.", "We drank a lot of coffee yesterday.", null, null], ["Did you heard the noise?", "Did you hear the noise?", null, null], ["I’ve saw that film last week.", "I saw that film last week.", "A finished time (last week) needs the past simple.", null]]}, {"cat": "Odd one out", "clues": [["bring, buy, think, eat", "eat", "The others end in -ought: brought, bought, thought.", null], ["sing, drink, swim, take", "take", "The others follow i-a-u: sang/sung, drank/drunk, swam/swum.", null], ["cut, put, hit, run", "run", "The others don’t change: cut, put, hit.", null], ["sleep, keep, feel, see", "see", "The others end in -t: slept, kept, felt.", null], ["know, grow, throw, show", "show", "Show is regular in the past simple: showed. The others: knew, grew, threw.", null]]}], VALUES=[100,200,300,400,500];
+const $=id=>document.getElementById(id);
+let scores=[0,0], used=new Set(), cur=null;
+function name(i){return $('n'+i).value.trim()||('Team '+'AB'[i]);}
+function build(){
+  const b=$('board'); b.innerHTML='';
+  BOARD.forEach(c=>{const d=document.createElement('div');d.className='cat';d.textContent=c.cat;b.appendChild(d);});
+  VALUES.forEach((v,ri)=>BOARD.forEach((c,ci)=>{
+    const k=ci+'-'+ri, x=document.createElement('button');
+    x.className='cell'+(used.has(k)?' used':''); x.textContent=v; x.disabled=used.has(k);
+    x.setAttribute('aria-label',c.cat+' for '+v); x.onclick=()=>open(ci,ri); b.appendChild(x);
+  }));
+}
+function open(ci,ri){
+  cur={ci,ri}; const c=BOARD[ci].clues[ri];
+  $('dCat').textContent=BOARD[ci].cat; $('dVal').textContent=VALUES[ri]+' points';
+  $('dQ').textContent=c[0]; $('dA').textContent=c[1];
+  $('dN').textContent=c[2]||''; $('dN').hidden=!c[2];
+  $('dFr').textContent=c[3]?'French: '+c[3]:''; $('dFr').hidden=true; $('frBtn').hidden=!c[3];
+  $('dAns').hidden=true; $('rowShow').hidden=false; $('rowAward').hidden=true;
+  $('a0').textContent=name(0)+' got it'; $('a1').textContent=name(1)+' got it';
+  $('dlg').showModal(); $('show').focus();
+}
+$('frBtn').onclick=()=>{$('dFr').hidden=false;$('frBtn').hidden=true;};
+$('show').onclick=()=>{$('dAns').hidden=false;$('rowShow').hidden=true;$('rowAward').hidden=false;if(BOARD[cur.ci].clues[cur.ri][3])$('dFr').hidden=false;$('a0').focus();};
+function award(t){
+  if(t>=0){scores[t]+=VALUES[cur.ri];$('s'+t).textContent=scores[t];}
+  used.add(cur.ci+'-'+cur.ri); $('dlg').close(); build();
+  if(used.size===25)finish();
+}
+$('a0').onclick=()=>award(0); $('a1').onclick=()=>award(1); $('aN').onclick=()=>award(-1);
+function finish(){
+  const w=scores[0]===scores[1]?null:(scores[0]>scores[1]?0:1);
+  $('endT').textContent=w===null?'It’s a draw!':name(w)+' wins!';
+  $('endP').textContent=name(0)+' '+scores[0]+', '+name(1)+' '+scores[1]+'.';
+  $('end').hidden=false; window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){scores=[0,0];used=new Set();$('s0').textContent=0;$('s1').textContent=0;$('end').hidden=true;build();}
+$('reset').onclick=reset; $('again').onclick=reset;
+build();
+
+</script>
+</body>
+</html>
