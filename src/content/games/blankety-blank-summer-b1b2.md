@@ -1,6 +1,6 @@
 ---
-title: "Blankety Blank: Summer Holidays (B1/B2)"
-description: "A team game inspired by the UK TV classic. Multiple-choice gap-fill on holiday collocations and expressions — kill time, off the beaten track, in the nick of time. Trickier than it looks!"
+title: "Holiday Collocations Game: Blankety Blank (B1/B2)"
+description: "Teams pick the right word to complete holiday collocations and expressions like 'off the beaten track'. A B1/B2 ESL gap-fill game for all ages."
 level: "B2"
 type: "Gap-fills"
 topic: "Summer Holidays"
