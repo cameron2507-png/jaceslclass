@@ -1,6 +1,6 @@
 ---
-title: "Pronunciation Battle — FR vs EN"
-description: "A French speaker and an English speaker go head-to-head, each challenged in the other's language. Écureuil meets squirrel."
+title: "Pronunciation Game: French vs English Battle (B1)"
+description: "A French and an English speaker take turns saying tricky words in each other's language, with IPA to check. A B1 pronunciation game for adults."
 level: B1
 type: Quizzes
 topic: "Pronunciation"
