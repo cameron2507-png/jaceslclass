@@ -1,6 +1,6 @@
 ---
-title: "Hotel vocabulary hangman"
-description: "Classic hangman with hotel-themed words. A quick warm-up or vocabulary recap for travel and hospitality lessons."
+title: "Hotel Vocabulary Hangman Game for ESL (A2)"
+description: "Learners guess hotel and travel words like reception, checkout and concierge letter by letter. A quick A2 vocabulary warm-up game for all ages."
 level: A2
 type: Hangman
 topic: "Hotels & travel"
