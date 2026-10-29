@@ -1,6 +1,6 @@
 ---
-title: "Blankety Blank: Summer Holidays (A1/A2)"
-description: "A team game inspired by the UK TV classic. Multiple-choice gap-fill on summer holiday vocabulary — beach, travel, weather and more. Choose A, B, C or D!"
+title: "Summer Holidays Vocabulary Game: Blankety Blank (A1/A2)"
+description: "Teams choose A, B, C or D to fill gaps in sentences about the beach, travel and weather. A fun A1/A2 ESL summer holiday vocabulary game for all ages."
 level: "A2"
 type: "Gap-fills"
 topic: "Summer Holidays"
