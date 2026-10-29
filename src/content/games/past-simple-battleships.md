@@ -1,6 +1,6 @@
 ---
-title: "Past Simple Battleships"
-description: "Answer past simple grammar questions to fire at a hidden fleet. Sink all four ships before you run out of shots."
+title: "Past Simple Grammar Game: Battleships for Teens (A2)"
+description: "Teens answer past simple questions on regular and irregular verbs, negatives and questions to sink the fleet. An A2 ESL battleships grammar game."
 level: A2
 type: Quizzes
 topic: "Past simple"
