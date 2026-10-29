@@ -1,6 +1,6 @@
 ---
-title: "Past tenses jeopardy"
-description: "Two-team quiz covering past simple, past continuous, present perfect, and a mixed category. Sixteen questions across four difficulty levels."
+title: "Past Tenses Jeopardy Game (B1)"
+description: "Teams of teens answer questions on past simple, past continuous and present perfect. A B1 Jeopardy grammar review game to play before a test."
 level: B1
 type: Jeopardy
 topic: "Grammar — past tenses"
