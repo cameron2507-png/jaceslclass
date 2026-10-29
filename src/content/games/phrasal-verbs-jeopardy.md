@@ -1,6 +1,6 @@
 ---
-title: "Phrasal Verbs Jeopardy"
-description: "Two-team Jeopardy quiz covering 25 common phrasal verbs across five categories: work, relationships, travel, daily life and emotions. Each answer reveals an example sentence."
+title: "Phrasal Verbs Jeopardy Game (B1)"
+description: "Two teams guess 25 common phrasal verbs from clues about work, travel, relationships and emotions. A B1 ESL Jeopardy quiz for teens and adults."
 level: B1
 type: Jeopardy
 topic: "Phrasal verbs"
