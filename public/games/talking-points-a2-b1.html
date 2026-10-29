@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talking Points: A2/B1 speaking cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6ec;--card:#fff;--border:#d5cfb8;--navy:#15263a;--terra:#c84a2c;--teal:#0e7c66;--muted:#6b675c;--rule:#ece5d1}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--cream);color:var(--navy);font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;line-height:1.5;padding:28px 16px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:20px}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.9rem,5vw,2.5rem);line-height:1.1;margin:0 0 .35rem;letter-spacing:-.01em}
+.sub{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--muted);margin:0;font-size:1.02rem}
+.level{display:inline-block;margin-top:10px;font-size:.8rem;color:var(--teal);font-weight:600;border:1px solid var(--border);border-radius:999px;padding:2px 11px;background:var(--card)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--navy);color:#fff;border:1px solid var(--navy);border-radius:8px;padding:10px 18px;font-weight:600;font-size:.95rem;transition:background .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--terra);border-color:var(--terra)}
+.btn.ghost{background:var(--card);color:var(--navy);border-color:var(--border)}
+.btn.ghost:hover{border-color:var(--terra);color:var(--terra)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--navy);border-color:var(--navy)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chip{font-size:.85rem;padding:6px 13px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--navy);transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--terra)}
+.chip[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:clamp(20px,4vw,32px)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px}
+.keys{text-align:center;color:var(--muted);font-size:.85rem;margin:6px 0 22px}
+details.rules{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px}
+details.rules summary{font-family:'Fraunces',Georgia,serif;font-weight:600;cursor:pointer}
+details.rules p,details.rules li{font-size:.95rem}
+details.rules ul{padding-left:1.2rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.chip.topic[aria-pressed="false"]{color:var(--muted);text-decoration:line-through;font-weight:400}
+.meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:18px}
+.cat{color:var(--teal);font-weight:600;font-size:.9rem}
+.count{font-family:'Fraunces',Georgia,serif;color:var(--muted);font-size:.9rem}
+.q{font-weight:500;font-size:clamp(1.25rem,3.4vw,1.55rem);line-height:1.5;margin:0 0 14px}
+.devil{color:var(--terra);font-weight:600;margin:-4px 0 14px;font-size:.98rem}
+.link{background:none;border:none;color:var(--navy);text-decoration:underline;text-underline-offset:3px;padding:0;font-size:.95rem}
+.link:hover{color:var(--terra)}
+.fu{margin:12px 0 0;padding-left:1.2rem}
+.fu li{font-size:1.05rem;line-height:1.55;margin-bottom:6px}
+.timer{margin-top:24px;padding-top:16px;border-top:1px solid var(--rule)}
+.track{height:8px;background:var(--rule);border-radius:999px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--teal);border-radius:999px}
+.fill.late{background:var(--terra)}
+.trow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap}
+.secs{font-family:'Fraunces',Georgia,serif;font-size:1.6rem;font-weight:600;font-variant-numeric:tabular-nums}
+.secs.done{color:var(--terra)}
+.seconds{display:flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted)}
+.seconds .chip{padding:4px 10px;font-size:.8rem}
+#devilBtn[aria-pressed="true"]{border-color:var(--terra);color:var(--terra);box-shadow:inset 0 0 0 1px var(--terra)}
+.empty{color:var(--muted);text-align:center;margin:20px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Talking Points</h1>
+  <p class="sub">Pick a card, speak for thirty seconds, then answer the follow-ups.</p>
+  <span class="level">A2/B1</span>
+</header>
+<div class="bar" id="chips" role="group" aria-label="Topics to include"></div>
+<main class="card" id="card" aria-live="polite">
+  <div class="meta"><span class="cat" id="cat"></span><span class="count" id="count"></span></div>
+  <p class="q" id="q"></p>
+  
+  <button class="link" id="fuBtn" aria-expanded="false" aria-controls="fu">Show follow-up questions</button>
+  <ul class="fu" id="fu" hidden></ul>
+  <div class="timer">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="trow">
+      <span class="secs" id="secs">0:30</span>
+      <div class="seconds" role="group" aria-label="Timer length">Speak for <button class="chip" data-sec="20" aria-pressed="false">20s</button><button class="chip" data-sec="30" aria-pressed="true">30s</button><button class="chip" data-sec="45" aria-pressed="false">45s</button><button class="chip" data-sec="60" aria-pressed="false">60s</button></div>
+    </div>
+  </div>
+</main>
+<p class="empty" id="empty" hidden>Choose at least one topic to see a card.</p>
+<div class="controls">
+  <button class="btn" id="startBtn">Start timer</button>
+  <button class="btn ghost" id="nextBtn">Next card</button>
+  <button class="btn ghost" id="shuffleBtn">Shuffle deck</button>
+  
+</div>
+<p class="keys">Press Space for the next card and T to start or pause the timer.</p>
+<details class="rules">
+  <summary>How to play</summary>
+  <p>One person takes a card and speaks about it until the timer runs out. Then the group asks the follow-up questions.</p>
+<ul><li>Tap the topics at the top to remove them from the deck.</li><li>Thirty seconds is a good start at this level. Move up to 45 or 60 when the group is ready.</li><li>Cards don’t repeat until the whole deck has been used.</li></ul>
+</details>
+</div>
+<script>
+
+const DECK = [
+[
+"Everyday life",
+"Describe a normal weekday morning for you.",
+[
+"What would you like to change about it?",
+"Are you a morning person or an evening person?"
+]
+],
+[
+"Everyday life",
+"What do you usually do on Sundays?",
+[
+"Is Sunday different from Saturday for you?",
+"What did you do last Sunday?"
+]
+],
+[
+"Everyday life",
+"Talk about your home. Which is your favourite room?",
+[
+"What would you like to change in your home?",
+"Do you prefer a house or a flat?"
+]
+],
+[
+"Everyday life",
+"How do you get to work or school?",
+[
+"How long does it take?",
+"What is the best way to travel in your town?"
+]
+],
+[
+"Everyday life",
+"Which jobs in the house do you like, and which don’t you like?",
+[
+"Who does the cooking in your home?",
+"What did you clean last weekend?"
+]
+],
+[
+"Everyday life",
+"Talk about your phone. What do you use it for most?",
+[
+"How many hours a day do you use it?",
+"Could you live without it for a week?"
+]
+],
+[
+"Everyday life",
+"What is the weather like where you live?",
+[
+"What is your favourite season, and why?",
+"What do you do when it rains all day?"
+]
+],
+[
+"Everyday life",
+"Describe your neighbourhood.",
+[
+"What shops are there near your home?",
+"Do you know your neighbours?"
+]
+],
+[
+"Food and drink",
+"What did you eat yesterday?",
+[
+"Was it a typical day for you?",
+"Who made the meals?"
+]
+],
+[
+"Food and drink",
+"Describe a dish from your region.",
+[
+"How do you make it?",
+"When do people usually eat it?"
+]
+],
+[
+"Food and drink",
+"Do you like cooking? Why or why not?",
+[
+"What is the best thing you can cook?",
+"Who taught you to cook?"
+]
+],
+[
+"Food and drink",
+"Talk about a restaurant you like.",
+[
+"What do you usually order?",
+"How often do you go there?"
+]
+],
+[
+"Food and drink",
+"What food did you hate as a child? Do you like it now?",
+[
+"Is there a food you still don’t like?",
+"What do children eat too much of today?"
+]
+],
+[
+"Food and drink",
+"Coffee or tea? Talk about what you drink during the day.",
+[
+"How many coffees do you have a day?",
+"What do you drink with dinner?"
+]
+],
+[
+"Food and drink",
+"Where do you buy your food?",
+[
+"Do you prefer the supermarket or the market?",
+"Do you write a shopping list?"
+]
+],
+[
+"Food and drink",
+"Describe the perfect picnic.",
+[
+"Where would you go?",
+"Who would you invite?"
+]
+],
+[
+"Free time",
+"What do you do to relax after work?",
+[
+"Did you do it yesterday?",
+"What do you do when you feel stressed?"
+]
+],
+[
+"Free time",
+"Talk about a film or series you watched recently.",
+[
+"Would you recommend it?",
+"Do you prefer the cinema or watching at home?"
+]
+],
+[
+"Free time",
+"Do you play a sport?",
+[
+"When did you start?",
+"Which sport would you like to try?"
+]
+],
+[
+"Free time",
+"Talk about a hobby you had as a child.",
+[
+"Do you still do it?",
+"Why did you stop?"
+]
+],
+[
+"Free time",
+"What music do you listen to?",
+[
+"Have you been to a concert? Tell me about it.",
+"Do you play an instrument?"
+]
+],
+[
+"Free time",
+"Describe your perfect weekend.",
+[
+"Who would you spend it with?",
+"How is it different from a normal weekend?"
+]
+],
+[
+"Free time",
+"Do you read books or listen to podcasts?",
+[
+"What was the last one?",
+"Where do you usually read or listen?"
+]
+],
+[
+"Free time",
+"What would you like to learn in the future?",
+[
+"Why?",
+"How much time could you give it every week?"
+]
+],
+[
+"Travel and places",
+"Talk about the best holiday you have had.",
+[
+"Where did you stay?",
+"Would you go back?"
+]
+],
+[
+"Travel and places",
+"Describe your town to a tourist.",
+[
+"What should they see?",
+"Where should they eat?"
+]
+],
+[
+"Travel and places",
+"Do you prefer the mountains or the sea?",
+[
+"What do you do there?",
+"Where did you go last summer?"
+]
+],
+[
+"Travel and places",
+"Talk about a city you would like to visit.",
+[
+"Why that city?",
+"Who would you go with?"
+]
+],
+[
+"Travel and places",
+"Train, car or plane: how do you prefer to travel?",
+[
+"What was your longest journey?",
+"What do you do on a long journey?"
+]
+],
+[
+"Travel and places",
+"What do you always take on holiday?",
+[
+"What did you forget last time?",
+"Do you pack early or at the last minute?"
+]
+],
+[
+"Travel and places",
+"Describe a place that is special to you.",
+[
+"When did you first go there?",
+"How do you feel when you are there?"
+]
+],
+[
+"Travel and places",
+"Have you ever had a problem on a trip?",
+[
+"What happened?",
+"How did you solve it?"
+]
+],
+[
+"Work and study",
+"Describe your job in three sentences.",
+[
+"What do you like most about it?",
+"What is difficult about it?"
+]
+],
+[
+"Work and study",
+"Talk about a typical day at work.",
+[
+"What time do you start and finish?",
+"What do you do at lunchtime?"
+]
+],
+[
+"Work and study",
+"What was your favourite subject at school?",
+[
+"Who was your best teacher?",
+"Which subject didn’t you like?"
+]
+],
+[
+"Work and study",
+"Describe your first job.",
+[
+"How old were you?",
+"What did you learn?"
+]
+],
+[
+"Work and study",
+"Do you prefer working alone or in a team?",
+[
+"Can you give an example?",
+"What makes a good colleague?"
+]
+],
+[
+"Work and study",
+"Talk about your workplace.",
+[
+"What can you see from your desk or workstation?",
+"What would you change?"
+]
+],
+[
+"Work and study",
+"Why are you learning English?",
+[
+"When do you use English?",
+"What is the hardest part for you?"
+]
+],
+[
+"Work and study",
+"What job did you want when you were a child?",
+[
+"Why?",
+"Which job would you like to try for one day?"
+]
+],
+[
+"People and things",
+"Describe a person in your family.",
+[
+"What do you do together?",
+"How are you similar?"
+]
+],
+[
+"People and things",
+"Talk about your best friend.",
+[
+"How did you meet?",
+"What do you like about them?"
+]
+],
+[
+"People and things",
+"Describe something you bought recently.",
+[
+"Why did you buy it?",
+"Was it expensive?"
+]
+],
+[
+"People and things",
+"What is the most useful thing in your home?",
+[
+"How often do you use it?",
+"What would you do without it?"
+]
+],
+[
+"People and things",
+"Talk about a famous person you admire.",
+[
+"Why do you admire them?",
+"Would you like to meet them?"
+]
+],
+[
+"People and things",
+"Describe a present you gave or received.",
+[
+"Who was it for, or who was it from?",
+"Was it a good choice?"
+]
+],
+[
+"People and things",
+"Do you have a pet, or would you like one?",
+[
+"Which animal makes the best pet?",
+"Who looks after it?"
+]
+],
+[
+"People and things",
+"Describe an object you keep for sentimental reasons.",
+[
+"Where did it come from?",
+"Where do you keep it?"
+]
+]
+];
+const DEFAULT_SECS = 30;
+const CATS = [...new Set(DECK.map(c => c[0]))];
+let active = new Set(CATS), order = [], pos = -1, last = -1;
+let seconds = DEFAULT_SECS, remaining = DEFAULT_SECS, running = false, endAt = 0, tick = null;
+const $ = id => document.getElementById(id);
+
+function fmt(s){ s = Math.ceil(s); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+
+function buildChips(){
+  const box = $('chips');
+  CATS.forEach(cat => {
+    const b = document.createElement('button');
+    b.className = 'chip topic'; b.setAttribute('aria-pressed','true');
+    const n = DECK.filter(c => c[0] === cat).length;
+    b.textContent = cat + ' (' + n + ')';
+    b.onclick = () => {
+      if (active.has(cat)) active.delete(cat); else active.add(cat);
+      b.setAttribute('aria-pressed', active.has(cat) ? 'true' : 'false');
+      shuffle();
+    };
+    box.appendChild(b);
+  });
+}
+
+function shuffle(){
+  const p = DECK.map((c,i) => i).filter(i => active.has(DECK[i][0]));
+  for (let i = p.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [p[i],p[j]] = [p[j],p[i]]; }
+  if (p.length > 1 && p[0] === last){ [p[0],p[1]] = [p[1],p[0]]; }
+  order = p; pos = -1;
+  nextCard();
+}
+
+function nextCard(){
+  const empty = order.length === 0;
+  $('card').hidden = empty; $('empty').hidden = !empty;
+  ['startBtn','nextBtn','shuffleBtn'].forEach(id => $(id).disabled = empty);
+  if (empty){ stopTimer(); return; }
+  pos++;
+  if (pos >= order.length){ shuffle(); return; }
+  const c = DECK[order[pos]]; last = order[pos];
+  $('cat').textContent = c[0];
+  $('count').textContent = 'Card ' + (pos+1) + ' of ' + order.length;
+  $('q').textContent = c[1];
+  const fu = $('fu'); fu.innerHTML = '';
+  c[2].forEach(t => { const li = document.createElement('li'); li.textContent = t; fu.appendChild(li); });
+  fu.hidden = true; $('fuBtn').setAttribute('aria-expanded','false'); $('fuBtn').textContent = 'Show follow-up questions';
+  resetTimer();
+}
+
+function draw(){
+  const done = seconds - remaining;
+  $('fill').style.width = (done / seconds * 100) + '%';
+  $('fill').classList.toggle('late', remaining <= 10 && remaining < seconds);
+  const out = remaining <= 0;
+  $('secs').textContent = out ? 'Time’s up' : fmt(remaining);
+  $('secs').classList.toggle('done', out);
+}
+function stopTimer(){ running = false; clearInterval(tick); $('startBtn').textContent = remaining < seconds && remaining > 0 ? 'Resume timer' : 'Start timer'; }
+function resetTimer(){ clearInterval(tick); running = false; remaining = seconds; $('startBtn').textContent = 'Start timer'; draw(); }
+function toggleTimer(){
+  if (running){ remaining = Math.max(0,(endAt - Date.now())/1000); stopTimer(); draw(); return; }
+  if (remaining <= 0) remaining = seconds;
+  running = true; endAt = Date.now() + remaining*1000; $('startBtn').textContent = 'Pause timer';
+  tick = setInterval(() => {
+    remaining = Math.max(0,(endAt - Date.now())/1000); draw();
+    if (remaining <= 0){ running = false; clearInterval(tick); $('startBtn').textContent = 'Start again'; }
+  }, 100);
+}
+
+$('startBtn').onclick = toggleTimer;
+$('nextBtn').onclick = nextCard;
+$('shuffleBtn').onclick = shuffle;
+$('fuBtn').onclick = () => {
+  const fu = $('fu'); fu.hidden = !fu.hidden;
+  $('fuBtn').setAttribute('aria-expanded', String(!fu.hidden));
+  $('fuBtn').textContent = fu.hidden ? 'Show follow-up questions' : 'Hide follow-up questions';
+};
+document.querySelectorAll('.seconds .chip').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.seconds .chip').forEach(x => x.setAttribute('aria-pressed','false'));
+    b.setAttribute('aria-pressed','true'); seconds = Number(b.dataset.sec); resetTimer();
+  };
+});
+const dv = $('devilBtn');
+if (dv){
+  dv.onclick = () => {
+    const on = dv.getAttribute('aria-pressed') !== 'true';
+    dv.setAttribute('aria-pressed', String(on));
+    dv.textContent = on ? 'Devil’s advocate: on' : 'Devil’s advocate: off';
+    $('devilLine').hidden = !on;
+  };
+}
+document.addEventListener('keydown', e => {
+  if (['BUTTON','SUMMARY','INPUT'].includes(e.target.tagName)) return;
+  if (e.code === 'Space'){ e.preventDefault(); if (!$('nextBtn').disabled) nextCard(); }
+  if (e.key === 't' || e.key === 'T'){ if (!$('startBtn').disabled) toggleTimer(); }
+});
+buildChips();
+shuffle();
+
+</script>
+</body>
+</html>

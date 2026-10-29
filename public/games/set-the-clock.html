@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set the Clock: telling the time (A1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6ec;--card:#fff;--border:#d5cfb8;--navy:#15263a;--terra:#c84a2c;--teal:#0e7c66;--muted:#6b675c;--rule:#ece5d1}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--cream);color:var(--navy);font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;line-height:1.5;padding:28px 16px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:20px}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.9rem,5vw,2.5rem);line-height:1.1;margin:0 0 .35rem;letter-spacing:-.01em}
+.sub{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--muted);margin:0;font-size:1.02rem}
+.level{display:inline-block;margin-top:10px;font-size:.8rem;color:var(--teal);font-weight:600;border:1px solid var(--border);border-radius:999px;padding:2px 11px;background:var(--card)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--navy);color:#fff;border:1px solid var(--navy);border-radius:8px;padding:10px 18px;font-weight:600;font-size:.95rem;transition:background .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--terra);border-color:var(--terra)}
+.btn.ghost{background:var(--card);color:var(--navy);border-color:var(--border)}
+.btn.ghost:hover{border-color:var(--terra);color:var(--terra)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--navy);border-color:var(--navy)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chip{font-size:.85rem;padding:6px 13px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--navy);transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--terra)}
+.chip[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:clamp(20px,4vw,32px)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px}
+.keys{text-align:center;color:var(--muted);font-size:.85rem;margin:6px 0 22px}
+details.rules{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px}
+details.rules summary{font-family:'Fraunces',Georgia,serif;font-weight:600;cursor:pointer}
+details.rules p,details.rules li{font-size:.95rem}
+details.rules ul{padding-left:1.2rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.top{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:4px 14px;font-size:.9rem}
+.pill b{font-family:'Fraunces',Georgia,serif}
+.game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center}
+@media (max-width:640px){.game{grid-template-columns:1fr}}
+.face{width:100%;max-width:300px;display:block;margin:0 auto}
+.face text{font-family:'Fraunces',Georgia,serif;font-size:19px;font-weight:600;fill:#15263a;text-anchor:middle}
+.hand{transition:transform .35s ease}
+.ask{font-size:.95rem;color:var(--muted);margin:0}
+.target{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.7rem,5vw,2.2rem);line-height:1.15;margin:4px 0 20px}
+.ctrl{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--rule)}
+.ctrl:last-of-type{border-bottom:1px solid var(--rule)}
+.lab{display:flex;align-items:center;gap:10px;font-weight:600}
+.sw{width:26px;height:6px;border-radius:3px;display:inline-block}
+.sw.h{background:var(--navy);height:8px;width:20px}
+.sw.m{background:var(--teal)}
+.step{display:flex;gap:6px}
+.step button{width:46px;height:42px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--navy);font-size:1.3rem;font-weight:600}
+.step button:hover{border-color:var(--terra);color:var(--terra)}
+.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.fb{min-height:1.6em;margin:14px 0 0;font-weight:600}
+.fb.ok{color:var(--teal)}
+.fb.no{color:var(--terra)}
+.end{text-align:center;padding:20px 0}
+.end .emoji{font-size:3.4rem;line-height:1}
+.end h2{font-family:'Fraunces',Georgia,serif;font-size:2rem;margin:10px 0 4px}
+.end p{color:var(--muted);margin:0 0 20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Set the Clock</h1>
+  <p class="sub">Read the time, then move the hands to match.</p>
+  <span class="level">A1</span>
+</header>
+<div class="bar" role="group" aria-label="Which times">
+  <button class="chip" data-mode="half" aria-pressed="false">O’clock and half past</button>
+  <button class="chip" data-mode="quarter" aria-pressed="false">Add quarters</button>
+  <button class="chip" data-mode="all" aria-pressed="true">All five-minute times</button>
+</div>
+<div class="top"><span class="pill">Round <b id="round">1</b> of 10</span><span class="pill">Score <b id="score">0</b></span></div>
+<main class="card">
+  <div class="game" id="game">
+    <svg class="face" viewBox="0 0 240 240" role="img" aria-label="Clock">
+      <circle cx="120" cy="120" r="114" fill="#fff" stroke="#d5cfb8" stroke-width="3"/>
+      <line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(0 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(6 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(12 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(18 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(24 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(30 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(36 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(42 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(48 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(54 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(60 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(66 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(72 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(78 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(84 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(90 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(96 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(102 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(108 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(114 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(120 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(126 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(132 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(138 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(144 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(150 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(156 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(162 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(168 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(174 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(180 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(186 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(192 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(198 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(204 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(210 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(216 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(222 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(228 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(234 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(240 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(246 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(252 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(258 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(264 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(270 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(276 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(282 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(288 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(294 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(300 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(306 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(312 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(318 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(324 120 120)"/><line x1="120" y1="14" x2="120" y2="24" stroke="#15263a" stroke-width="2.5" transform="rotate(330 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(336 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(342 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(348 120 120)"/><line x1="120" y1="17" x2="120" y2="24" stroke="#d5cfb8" stroke-width="1.5" transform="rotate(354 120 120)"/><text x="159.0" y="59.5">1</text><text x="187.5" y="88.0">2</text><text x="198.0" y="127.0">3</text><text x="187.5" y="166.0">4</text><text x="159.0" y="194.5">5</text><text x="120.0" y="205.0">6</text><text x="81.0" y="194.5">7</text><text x="52.5" y="166.0">8</text><text x="42.0" y="127.0">9</text><text x="52.5" y="88.0">10</text><text x="81.0" y="59.5">11</text><text x="120.0" y="49.0">12</text>
+      <g class="hand" id="hourHand"><line x1="120" y1="132" x2="120" y2="68" stroke="#15263a" stroke-width="8" stroke-linecap="round"/></g>
+      <g class="hand" id="minHand"><line x1="120" y1="136" x2="120" y2="34" stroke="#0e7c66" stroke-width="5" stroke-linecap="round"/></g>
+      <circle cx="120" cy="120" r="7" fill="#15263a"/>
+    </svg>
+    <div>
+      <p class="ask">Set the clock to</p>
+      <p class="target" id="target" aria-live="polite"></p>
+      <div class="ctrl"><span class="lab"><span class="sw h"></span>Short hand: hours</span>
+        <span class="step"><button id="hDown" aria-label="Hour back">−</button><button id="hUp" aria-label="Hour forward">+</button></span></div>
+      <div class="ctrl"><span class="lab"><span class="sw m"></span>Long hand: minutes</span>
+        <span class="step"><button id="mDown" aria-label="Five minutes back">−</button><button id="mUp" aria-label="Five minutes forward">+</button></span></div>
+      <div class="actions"><button class="btn" id="checkBtn">Check</button><button class="btn ghost" id="nextBtn" hidden>Next time</button></div>
+      <p class="fb" id="fb" aria-live="polite"></p>
+    </div>
+  </div>
+  <div class="end" id="end" hidden>
+    <div class="emoji" id="emoji"></div>
+    <h2 id="endTitle"></h2>
+    <p id="endText"></p>
+    <button class="btn" id="againBtn">Play again</button>
+  </div>
+</main>
+<p class="keys">The long hand moves five minutes at a time.</p>
+<details class="rules">
+  <summary>How to play</summary>
+  <p>Read the time in words. Use the buttons to move the short hand (hours) and the long hand (minutes), then press Check.</p>
+  <ul><li>If the answer is wrong, the clock shows the right time so you can see the difference.</li><li>There are ten times in each game.</li><li>Start with o’clock and half past, then add quarters when the class is ready.</li></ul>
+</details>
+</div>
+<script>
+
+const NUM = ['twelve','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+const MIN = {5:'five',10:'ten',20:'twenty',25:'twenty-five'};
+const $ = id => document.getElementById(id);
+let mode = 'all', round = 1, score = 0, h = 12, m = 0, tH = 3, tM = 0, checked = false, lastKey = '';
+
+function words(hh, mm){
+  const nxt = hh % 12 + 1;
+  if (mm === 0) return NUM[hh] + ' o’clock';
+  if (mm === 15) return 'quarter past ' + NUM[hh];
+  if (mm === 30) return 'half past ' + NUM[hh];
+  if (mm === 45) return 'quarter to ' + NUM[nxt];
+  if (mm < 30) return MIN[mm] + ' past ' + NUM[hh];
+  return MIN[60 - mm] + ' to ' + NUM[nxt];
+}
+function digital(hh, mm){ return hh + ':' + String(mm).padStart(2,'0'); }
+function pick(){
+  const mins = mode === 'half' ? [0,30] : mode === 'quarter' ? [0,15,30,45] : [0,5,10,15,20,25,30,35,40,45,50,55];
+  let k;
+  do { tH = 1 + Math.floor(Math.random()*12); tM = mins[Math.floor(Math.random()*mins.length)]; k = tH + ':' + tM; } while (k === lastKey);
+  lastKey = k;
+  const t = words(tH, tM);
+  $('target').textContent = t.charAt(0).toUpperCase() + t.slice(1);
+}
+let mDeg = 0, hDeg = 0;
+function near(cur, want){ return cur + ((((want - cur) % 360) + 540) % 360) - 180; }
+function draw(){
+  mDeg = near(mDeg, m*6); hDeg = near(hDeg, (h%12)*30 + m*0.5);
+  $('minHand').style.transform = 'rotate(' + mDeg + 'deg)';
+  $('hourHand').style.transform = 'rotate(' + hDeg + 'deg)';
+}
+['minHand','hourHand'].forEach(id => $(id).style.transformOrigin = '120px 120px');
+function move(dh, dm){
+  if (checked) return;
+  h = ((h - 1 + dh + 12) % 12) + 1; m = (m + dm + 60) % 60; draw(); $('fb').textContent = ''; $('fb').className = 'fb';
+}
+$('hUp').onclick = () => move(1,0); $('hDown').onclick = () => move(-1,0);
+$('mUp').onclick = () => move(0,5); $('mDown').onclick = () => move(0,-5);
+
+$('checkBtn').onclick = () => {
+  if (checked) return; checked = true;
+  if (h === tH && m === tM){ score++; $('fb').textContent = 'Correct! It’s ' + digital(tH,tM) + '.'; $('fb').className = 'fb ok'; }
+  else { $('fb').textContent = 'Not quite. It’s ' + digital(tH,tM) + '. Look at the clock.'; $('fb').className = 'fb no'; h = tH; m = tM; draw(); }
+  $('score').textContent = score;
+  $('checkBtn').hidden = true; $('nextBtn').hidden = false;
+  $('nextBtn').textContent = round === 10 ? 'See my score' : 'Next time';
+  $('nextBtn').focus();
+};
+$('nextBtn').onclick = () => {
+  if (round === 10){ finish(); return; }
+  round++; newRound();
+};
+function newRound(){
+  checked = false; h = 12; m = 0; draw();
+  $('round').textContent = round; $('fb').textContent = ''; $('fb').className = 'fb';
+  $('checkBtn').hidden = false; $('nextBtn').hidden = true; pick();
+}
+function finish(){
+  $('game').hidden = true; $('end').hidden = false;
+  const [e,t] = score === 10 ? ['🏆','Perfect!'] : score >= 7 ? ['🌟','Great work!'] : score >= 4 ? ['👍','Good try!'] : ['⏰','Keep practising!'];
+  $('emoji').textContent = e; $('endTitle').textContent = t;
+  $('endText').textContent = 'You got ' + score + ' out of 10.';
+  $('againBtn').focus();
+}
+function restart(){ round = 1; score = 0; $('score').textContent = 0; $('game').hidden = false; $('end').hidden = true; newRound(); }
+$('againBtn').onclick = restart;
+document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true'); mode = b.dataset.mode; restart();
+});
+restart();
+
+</script>
+</body>
+</html>

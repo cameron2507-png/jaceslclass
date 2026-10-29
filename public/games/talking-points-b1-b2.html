@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talking Points: B1/B2 speaking cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6ec;--card:#fff;--border:#d5cfb8;--navy:#15263a;--terra:#c84a2c;--teal:#0e7c66;--muted:#6b675c;--rule:#ece5d1}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--cream);color:var(--navy);font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;line-height:1.5;padding:28px 16px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:20px}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.9rem,5vw,2.5rem);line-height:1.1;margin:0 0 .35rem;letter-spacing:-.01em}
+.sub{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--muted);margin:0;font-size:1.02rem}
+.level{display:inline-block;margin-top:10px;font-size:.8rem;color:var(--teal);font-weight:600;border:1px solid var(--border);border-radius:999px;padding:2px 11px;background:var(--card)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--navy);color:#fff;border:1px solid var(--navy);border-radius:8px;padding:10px 18px;font-weight:600;font-size:.95rem;transition:background .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--terra);border-color:var(--terra)}
+.btn.ghost{background:var(--card);color:var(--navy);border-color:var(--border)}
+.btn.ghost:hover{border-color:var(--terra);color:var(--terra)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:disabled:hover{background:var(--navy);border-color:var(--navy)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chip{font-size:.85rem;padding:6px 13px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--navy);transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--terra)}
+.chip[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:clamp(20px,4vw,32px)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px}
+.keys{text-align:center;color:var(--muted);font-size:.85rem;margin:6px 0 22px}
+details.rules{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px}
+details.rules summary{font-family:'Fraunces',Georgia,serif;font-weight:600;cursor:pointer}
+details.rules p,details.rules li{font-size:.95rem}
+details.rules ul{padding-left:1.2rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.chip.topic[aria-pressed="false"]{color:var(--muted);text-decoration:line-through;font-weight:400}
+.meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:18px}
+.cat{color:var(--teal);font-weight:600;font-size:.9rem}
+.count{font-family:'Fraunces',Georgia,serif;color:var(--muted);font-size:.9rem}
+.q{font-weight:500;font-size:clamp(1.25rem,3.4vw,1.55rem);line-height:1.5;margin:0 0 14px}
+.devil{color:var(--terra);font-weight:600;margin:-4px 0 14px;font-size:.98rem}
+.link{background:none;border:none;color:var(--navy);text-decoration:underline;text-underline-offset:3px;padding:0;font-size:.95rem}
+.link:hover{color:var(--terra)}
+.fu{margin:12px 0 0;padding-left:1.2rem}
+.fu li{font-size:1.05rem;line-height:1.55;margin-bottom:6px}
+.timer{margin-top:24px;padding-top:16px;border-top:1px solid var(--rule)}
+.track{height:8px;background:var(--rule);border-radius:999px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--teal);border-radius:999px}
+.fill.late{background:var(--terra)}
+.trow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap}
+.secs{font-family:'Fraunces',Georgia,serif;font-size:1.6rem;font-weight:600;font-variant-numeric:tabular-nums}
+.secs.done{color:var(--terra)}
+.seconds{display:flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted)}
+.seconds .chip{padding:4px 10px;font-size:.8rem}
+#devilBtn[aria-pressed="true"]{border-color:var(--terra);color:var(--terra);box-shadow:inset 0 0 0 1px var(--terra)}
+.empty{color:var(--muted);text-align:center;margin:20px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Talking Points</h1>
+  <p class="sub">Pick a card, give your opinion, then defend it.</p>
+  <span class="level">B1/B2</span>
+</header>
+<div class="bar" id="chips" role="group" aria-label="Topics to include"></div>
+<main class="card" id="card" aria-live="polite">
+  <div class="meta"><span class="cat" id="cat"></span><span class="count" id="count"></span></div>
+  <p class="q" id="q"></p>
+  <p class="devil" id="devilLine" hidden>Argue the opposite of what you really think.</p>
+  <button class="link" id="fuBtn" aria-expanded="false" aria-controls="fu">Show follow-up questions</button>
+  <ul class="fu" id="fu" hidden></ul>
+  <div class="timer">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="trow">
+      <span class="secs" id="secs">0:30</span>
+      <div class="seconds" role="group" aria-label="Timer length">Speak for <button class="chip" data-sec="45" aria-pressed="false">45s</button><button class="chip" data-sec="60" aria-pressed="true">60s</button><button class="chip" data-sec="90" aria-pressed="false">90s</button></div>
+    </div>
+  </div>
+</main>
+<p class="empty" id="empty" hidden>Choose at least one topic to see a card.</p>
+<div class="controls">
+  <button class="btn" id="startBtn">Start timer</button>
+  <button class="btn ghost" id="nextBtn">Next card</button>
+  <button class="btn ghost" id="shuffleBtn">Shuffle deck</button>
+  <button class="btn ghost" id="devilBtn" aria-pressed="false">Devil’s advocate: off</button>
+</div>
+<p class="keys">Press Space for the next card and T to start or pause the timer.</p>
+<details class="rules">
+  <summary>How to play</summary>
+  <p>One person takes a card and gives their opinion until the timer runs out. The others then use the follow-up questions to push back.</p>
+<ul><li>Tap Essential oils and Biomass to remove the industry cards, so the deck works for any group.</li><li>Turn on Devil’s advocate for a harder round: the speaker must argue the opposite of what they really think.</li><li>Cards don’t repeat until the whole deck has been used.</li></ul>
+</details>
+</div>
+<script>
+
+const DECK = [
+[
+"Essential oils",
+"Explain how an essential oil gets from the plant to the bottle.",
+[
+"Which step is the most delicate?",
+"Where do things usually go wrong?"
+]
+],
+[
+"Essential oils",
+"How do you know whether a batch of oil is good quality?",
+[
+"What tests or checks are done?",
+"What happens to a batch that fails?"
+]
+],
+[
+"Essential oils",
+"Raw-material prices can change a lot from one harvest to the next. How does this affect your work?",
+[
+"How do companies protect themselves?",
+"Who pays in the end, the producer or the customer?"
+]
+],
+[
+"Essential oils",
+"Natural or synthetic: does it really matter to the customer?",
+[
+"Why are people willing to pay more for natural?",
+"Is natural always better for the environment?"
+]
+],
+[
+"Essential oils",
+"Essential oils can be hazardous to handle. What precautions are needed?",
+[
+"What is the biggest risk on site?",
+"How are new staff trained?"
+]
+],
+[
+"Essential oils",
+"The market for essential oils keeps growing. Why do you think that is?",
+[
+"Which markets are growing fastest?",
+"Is it a trend, or is it here to stay?"
+]
+],
+[
+"Biomass",
+"Explain biomass energy to someone who has never heard of it.",
+[
+"What is the main fuel?",
+"How is it different from fossil fuels?"
+]
+],
+[
+"Biomass",
+"Is biomass really carbon neutral? Give your opinion.",
+[
+"What do critics say?",
+"How would you answer them?"
+]
+],
+[
+"Biomass",
+"Talk about a breakdown or technical problem you have dealt with at work.",
+[
+"How long did it take to fix?",
+"What did you learn from it?"
+]
+],
+[
+"Biomass",
+"A neighbour complains about noise and smoke from a biomass plant. How should the company respond?",
+[
+"Who should talk to them?",
+"What can realistically be changed?"
+]
+],
+[
+"Biomass",
+"How do you make sure there is enough fuel for the winter?",
+[
+"What happens if supply runs short?",
+"How far away does the wood come from?"
+]
+],
+[
+"Biomass",
+"Energy prices have changed a lot in recent years. How has this affected biomass?",
+[
+"Is it a good time to invest?",
+"Will prices go up or down over the next five years?"
+]
+],
+[
+"Travel",
+"Which country has surprised you the most, and why?",
+[
+"What did you expect before you went?",
+"Could you live there?"
+]
+],
+[
+"Travel",
+"Is it better to travel alone or with other people?",
+[
+"What is the best thing about each?",
+"Who is your ideal travel companion?"
+]
+],
+[
+"Travel",
+"Has tourism ruined some places? Give an example.",
+[
+"What could be done about it?",
+"Should popular places limit the number of visitors?"
+]
+],
+[
+"Travel",
+"Describe a journey that went badly wrong.",
+[
+"What would you do differently?",
+"Can you laugh about it now?"
+]
+],
+[
+"Travel",
+"Should people fly less for environmental reasons?",
+[
+"Would you give up flying?",
+"What are the realistic alternatives in Europe?"
+]
+],
+[
+"Travel",
+"Talk about a place you know that tourists haven’t discovered.",
+[
+"How did you find it?",
+"Should it stay a secret?"
+]
+],
+[
+"Travel",
+"What makes a city good to visit?",
+[
+"Which city does this best?",
+"Which famous city disappointed you?"
+]
+],
+[
+"Holidays",
+"Do you prefer a relaxing holiday or an active one?",
+[
+"Has this changed as you’ve got older?",
+"Describe your ideal day on holiday."
+]
+],
+[
+"Holidays",
+"Is a holiday at home just as good as going away?",
+[
+"What would you do with a week at home?",
+"What do you miss when you are away?"
+]
+],
+[
+"Holidays",
+"Talk about a holiday tradition in your family.",
+[
+"Where did it come from?",
+"Will you keep it going?"
+]
+],
+[
+"Holidays",
+"Campsite, hotel or holiday rental: what are the pros and cons?",
+[
+"Which did you choose last time?",
+"What would make you change?"
+]
+],
+[
+"Holidays",
+"Do you plan everything in advance or decide on the day?",
+[
+"What went wrong the last time you didn’t plan?",
+"What is the best last-minute decision you’ve made?"
+]
+],
+[
+"Holidays",
+"Should you check your work emails on holiday?",
+[
+"Do you?",
+"What would your manager say?"
+]
+],
+[
+"Holidays",
+"How long does it take you to really switch off on holiday?",
+[
+"What helps you relax?",
+"What stops you relaxing?"
+]
+],
+[
+"Food",
+"French food is famous around the world. Is its reputation deserved?",
+[
+"Which French dish is overrated?",
+"Which is underrated?"
+]
+],
+[
+"Food",
+"Describe a meal you will never forget.",
+[
+"Who were you with?",
+"Could you recreate it at home?"
+]
+],
+[
+"Food",
+"Should children be allowed to choose what they eat?",
+[
+"What did you have to eat as a child?",
+"Where should parents draw the line?"
+]
+],
+[
+"Food",
+"Is it worth paying more for local or organic food?",
+[
+"Do you?",
+"Can everyone afford it?"
+]
+],
+[
+"Food",
+"Which food from another country would you like to see more of in France?",
+[
+"Where did you first try it?",
+"Why isn’t it more popular here?"
+]
+],
+[
+"Food",
+"Have eating habits changed in the last twenty years?",
+[
+"Is that a good or a bad thing?",
+"What will we be eating in twenty years’ time?"
+]
+],
+[
+"Food",
+"Talk about a dish you can cook really well.",
+[
+"Where did the recipe come from?",
+"What is the secret?"
+]
+],
+[
+"England",
+"British food has a bad reputation. Is it deserved?",
+[
+"Which British food have you tried?",
+"What would you like to ask your teacher about it?"
+]
+],
+[
+"England",
+"Compare working life in France and in Britain.",
+[
+"Which would suit you better?",
+"What could each country learn from the other?"
+]
+],
+[
+"England",
+"What comes to mind when you think of England?",
+[
+"Where do those ideas come from?",
+"Which of them might be wrong?"
+]
+],
+[
+"England",
+"Have you been to England? Describe what struck you.",
+[
+"What would you like to see next time?",
+"If you haven’t been, where would you go first?"
+]
+],
+[
+"England",
+"Why do you think the British talk about the weather so much?",
+[
+"What do the French talk about instead?",
+"Is small talk important?"
+]
+],
+[
+"England",
+"The British are known for queuing and politeness. Stereotype or truth?",
+[
+"What stereotypes do people have about the French?",
+"Is there any truth in them?"
+]
+],
+[
+"England",
+"Is it more useful to learn British English or American English?",
+[
+"Which do you hear more often?",
+"Which do you find easier to understand?"
+]
+],
+[
+"General",
+"Is it better to have one career or several during your working life?",
+[
+"What would your second career be?",
+"What stops people changing?"
+]
+],
+[
+"General",
+"Will we work less in the future?",
+[
+"Would you like a four-day week?",
+"What would you do with the extra day?"
+]
+],
+[
+"General",
+"What is the best advice you have ever been given?",
+[
+"Who gave it to you?",
+"Did you follow it?"
+]
+],
+[
+"General",
+"Do smartphones make us more or less connected to other people?",
+[
+"How many hours a day do you spend on yours?",
+"Have you ever tried a digital detox?"
+]
+],
+[
+"General",
+"Is it better to live in a town or in the countryside?",
+[
+"Where do you live now?",
+"Where would you like to retire?"
+]
+],
+[
+"General",
+"Should everyone learn a second language at school?",
+[
+"How were you taught English?",
+"What would you change?"
+]
+],
+[
+"General",
+"Which skill would you like to master, and why?",
+[
+"What is stopping you?",
+"How long would it take?"
+]
+],
+[
+"General",
+"Is it ever acceptable to tell a white lie?",
+[
+"Can you give an example?",
+"When did you last tell one?"
+]
+]
+];
+const DEFAULT_SECS = 60;
+const CATS = [...new Set(DECK.map(c => c[0]))];
+let active = new Set(CATS), order = [], pos = -1, last = -1;
+let seconds = DEFAULT_SECS, remaining = DEFAULT_SECS, running = false, endAt = 0, tick = null;
+const $ = id => document.getElementById(id);
+
+function fmt(s){ s = Math.ceil(s); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+
+function buildChips(){
+  const box = $('chips');
+  CATS.forEach(cat => {
+    const b = document.createElement('button');
+    b.className = 'chip topic'; b.setAttribute('aria-pressed','true');
+    const n = DECK.filter(c => c[0] === cat).length;
+    b.textContent = cat + ' (' + n + ')';
+    b.onclick = () => {
+      if (active.has(cat)) active.delete(cat); else active.add(cat);
+      b.setAttribute('aria-pressed', active.has(cat) ? 'true' : 'false');
+      shuffle();
+    };
+    box.appendChild(b);
+  });
+}
+
+function shuffle(){
+  const p = DECK.map((c,i) => i).filter(i => active.has(DECK[i][0]));
+  for (let i = p.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [p[i],p[j]] = [p[j],p[i]]; }
+  if (p.length > 1 && p[0] === last){ [p[0],p[1]] = [p[1],p[0]]; }
+  order = p; pos = -1;
+  nextCard();
+}
+
+function nextCard(){
+  const empty = order.length === 0;
+  $('card').hidden = empty; $('empty').hidden = !empty;
+  ['startBtn','nextBtn','shuffleBtn'].forEach(id => $(id).disabled = empty);
+  if (empty){ stopTimer(); return; }
+  pos++;
+  if (pos >= order.length){ shuffle(); return; }
+  const c = DECK[order[pos]]; last = order[pos];
+  $('cat').textContent = c[0];
+  $('count').textContent = 'Card ' + (pos+1) + ' of ' + order.length;
+  $('q').textContent = c[1];
+  const fu = $('fu'); fu.innerHTML = '';
+  c[2].forEach(t => { const li = document.createElement('li'); li.textContent = t; fu.appendChild(li); });
+  fu.hidden = true; $('fuBtn').setAttribute('aria-expanded','false'); $('fuBtn').textContent = 'Show follow-up questions';
+  resetTimer();
+}
+
+function draw(){
+  const done = seconds - remaining;
+  $('fill').style.width = (done / seconds * 100) + '%';
+  $('fill').classList.toggle('late', remaining <= 10 && remaining < seconds);
+  const out = remaining <= 0;
+  $('secs').textContent = out ? 'Time’s up' : fmt(remaining);
+  $('secs').classList.toggle('done', out);
+}
+function stopTimer(){ running = false; clearInterval(tick); $('startBtn').textContent = remaining < seconds && remaining > 0 ? 'Resume timer' : 'Start timer'; }
+function resetTimer(){ clearInterval(tick); running = false; remaining = seconds; $('startBtn').textContent = 'Start timer'; draw(); }
+function toggleTimer(){
+  if (running){ remaining = Math.max(0,(endAt - Date.now())/1000); stopTimer(); draw(); return; }
+  if (remaining <= 0) remaining = seconds;
+  running = true; endAt = Date.now() + remaining*1000; $('startBtn').textContent = 'Pause timer';
+  tick = setInterval(() => {
+    remaining = Math.max(0,(endAt - Date.now())/1000); draw();
+    if (remaining <= 0){ running = false; clearInterval(tick); $('startBtn').textContent = 'Start again'; }
+  }, 100);
+}
+
+$('startBtn').onclick = toggleTimer;
+$('nextBtn').onclick = nextCard;
+$('shuffleBtn').onclick = shuffle;
+$('fuBtn').onclick = () => {
+  const fu = $('fu'); fu.hidden = !fu.hidden;
+  $('fuBtn').setAttribute('aria-expanded', String(!fu.hidden));
+  $('fuBtn').textContent = fu.hidden ? 'Show follow-up questions' : 'Hide follow-up questions';
+};
+document.querySelectorAll('.seconds .chip').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.seconds .chip').forEach(x => x.setAttribute('aria-pressed','false'));
+    b.setAttribute('aria-pressed','true'); seconds = Number(b.dataset.sec); resetTimer();
+  };
+});
+const dv = $('devilBtn');
+if (dv){
+  dv.onclick = () => {
+    const on = dv.getAttribute('aria-pressed') !== 'true';
+    dv.setAttribute('aria-pressed', String(on));
+    dv.textContent = on ? 'Devil’s advocate: on' : 'Devil’s advocate: off';
+    $('devilLine').hidden = !on;
+  };
+}
+document.addEventListener('keydown', e => {
+  if (['BUTTON','SUMMARY','INPUT'].includes(e.target.tagName)) return;
+  if (e.code === 'Space'){ e.preventDefault(); if (!$('nextBtn').disabled) nextCard(); }
+  if (e.key === 't' || e.key === 'T'){ if (!$('startBtn').disabled) toggleTimer(); }
+});
+buildChips();
+shuffle();
+
+</script>
+</body>
+</html>
