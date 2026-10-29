@@ -1,6 +1,6 @@
 ---
-title: "Talking Points (A2/B1)"
-description: "48 speaking cards on everyday life, food, free time, travel, work and people, with a timer and two follow-up questions on every card."
+title: "Conversation Questions Cards: Talking Points (A2/B1)"
+description: "48 timed speaking cards with conversation questions on daily life, food, travel and work. Adult A2/B1 ESL learners talk, then answer follow-ups."
 level: B1
 type: Quizzes
 topic: "Speaking"
