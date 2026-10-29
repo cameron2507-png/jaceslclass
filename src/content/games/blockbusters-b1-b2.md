@@ -1,6 +1,6 @@
 ---
-title: "Business English Blockbusters (B1/B2)"
-description: "Classic hexagonal grid game with intermediate business English questions — corporate vocabulary and advanced grammar structures."
+title: "Business English Grammar Quiz: Blockbusters (B1/B2)"
+description: "Teams answer business vocabulary and grammar questions (conditionals, passives, inversion) to win the grid. A B1/B2 game for adult business English."
 level: "B2"
 type: "Blockbusters"
 topic: "Business English"
