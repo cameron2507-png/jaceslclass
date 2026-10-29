@@ -1,6 +1,6 @@
 ---
-title: "Business meetings taboo"
-description: "Eighteen meeting and project-management terms — agenda, deadline, KPI, stakeholder, pivot — with five forbidden words each. Pushes paraphrasing skills."
+title: "Business Meetings Vocabulary Taboo Game (B2)"
+description: "Adult learners describe 18 meeting words like agenda, KPI and stakeholder without saying the forbidden words. A B2 business English speaking game."
 level: B2
 type: Taboo
 topic: "Business meetings"
