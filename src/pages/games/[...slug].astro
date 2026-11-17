@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GameCard from '../../components/GameCard.astro';
 import TypeIcon from '../../components/TypeIcon.astro';
-import { gameLevels, levelRange, typeSlug, byNewest } from '../../data/taxonomy';
+import { gameLevels, levelRange, typeSlug, typeLabel, byNewest } from '../../data/taxonomy';
 
 export async function getStaticPaths() {
   const games = await getCollection('games');
@@ -86,7 +86,7 @@ const related = all
       <div class="container">
         <div class="section-head">
           <h2>More games like this</h2>
-          <a href={`/type/${typeSlug(data.type)}`}>More {data.type} games →</a>
+          <a href={`/type/${typeSlug(data.type)}`}>More {typeLabel(data.type)} →</a>
         </div>
         <div class="games-grid">
           {related.map(g => (
