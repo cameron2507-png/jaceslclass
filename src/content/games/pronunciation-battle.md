@@ -2,7 +2,7 @@
 title: "Difficult English Words Pronunciation Game (B1)"
 description: "Two adult learners compete to say tricky English words like colonel and squirrel, with IPA and teaching notes. A B1 ESL pronunciation game."
 level: B1
-type: Quizzes
+type: "Pronunciation"
 topic: "Pronunciation"
 duration: 20
 ageGroup: "Adults"
