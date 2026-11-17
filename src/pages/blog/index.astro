@@ -23,16 +23,16 @@ const formatDate = (date: Date) =>
 ---
 
 <BaseLayout
-  title="Blog — Teaching Tips & ESL Methodology | jacesclass"
+  title="Blog — Teaching Tips & ESL Methodology — JAC's Class"
   description="Practical teaching tips, methodology notes, and observations from teaching Business English in French companies."
 >
-  <main class="blog-index">
+  <div class="blog-index">
     <header class="page-header">
       <h1>Blog</h1>
       <p class="subtitle">Teaching tips, methodology, and notes from the classroom.</p>
     </header>
 
-    {tags.length > 0 && (
+    {tags.length > 0 && posts.length >= 3 && (
       <nav class="tag-cloud" aria-label="Filter by tag">
         <a href="/blog" class="tag-pill active">All <span class="count">{posts.length}</span></a>
         {tags.map(([tag, count]) => (
@@ -79,7 +79,7 @@ const formatDate = (date: Date) =>
     {posts.length === 0 && (
       <p class="empty">No posts yet — coming soon.</p>
     )}
-  </main>
+  </div>
 </BaseLayout>
 
 <style>
