@@ -2,7 +2,7 @@
 title: "Just a Minute Speaking Game: 30 Topics with Timer"
 description: "A free Just a Minute speaking game for B1/B2 ESL classes: 30 travel and general topics, a 60-second timer and the classic challenge rules."
 level: B2
-type: Quizzes
+type: "Speaking games"
 topic: "Speaking"
 duration: 20
 ageGroup: "Adults"
