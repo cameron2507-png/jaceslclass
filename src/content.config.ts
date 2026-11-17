@@ -16,6 +16,12 @@ const games = defineCollection({
       'Typhoon',
       'Gap-fills',
       'Quizzes',
+      'Speaking games',
+      'Battleships',
+      'Pronunciation',
+      'Translation',
+      'Card games',
+      'Stories',
     ]),
     topic: z.string(),
     duration: z.number(), // minutes
@@ -68,4 +74,3 @@ const listening = defineCollection({
 });
 
 export const collections = { games, blog, listening };
-
