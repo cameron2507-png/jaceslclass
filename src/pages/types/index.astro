@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TypeIcon from '../../components/TypeIcon.astro';
+import { TYPES, typeSlug, countBy } from '../../data/taxonomy';
+
+const games = await getCollection('games');
+const counts = countBy(games, g => [g.data.type]);
+const types = TYPES.filter(t => counts.get(t.name)).sort((a, b) => counts.get(b.name)! - counts.get(a.name)!);
+---
+<BaseLayout
+  title="ESL games by type — JAC's Class"
+  description="Free classroom games for English teachers by format: Jeopardy, Typhoon, speaking games, Battleships, Taboo and more."
+>
+  <section class="section">
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> › Game types</nav>
+      <h1>Games by type</h1>
+      <p class="page-lede">Pick a format your class enjoys, then choose the level and topic.</p>
+      <div class="index-grid">
+        {types.map(t => (
+          <a href={`/type/${typeSlug(t.name)}`} class="index-card">
+            <span class="index-card__icon"><TypeIcon type={t.name} size={28} /></span>
+            <span class="index-card__title">{t.name}</span>
+            <span class="index-card__text">{t.blurb}</span>
+            <span class="index-card__count">{counts.get(t.name)} {counts.get(t.name) === 1 ? 'game' : 'games'} →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

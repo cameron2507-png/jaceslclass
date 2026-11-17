@@ -2,7 +2,7 @@
 title: "Past Simple Reading: Choose Your Own Adventure Story"
 description: "A choose-your-own-adventure reading game for A2/B1 learners. Every past simple verb is underlined: tap it to see the base form. Four endings."
 level: B1
-type: Quizzes
+type: "Stories"
 topic: "Past simple"
 duration: 20
 ageGroup: "All ages"

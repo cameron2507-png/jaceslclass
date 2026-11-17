@@ -15,13 +15,13 @@ const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
 const activityTypes = ['Gap-fill', 'Comprehension', 'True/False', 'Dictation', 'Ordering'];
 ---
 
-<BaseLayout title="Listening — Jace's Class" description="Listening exercises for English learners — gap-fills, comprehension, dictation and more.">
+<BaseLayout title="Listening — JAC's Class" description="Listening exercises for English learners — gap-fills, comprehension, dictation and more.">
   <section class="listening-hero">
     <h1>Listening</h1>
     <p class="lede">Train your ears with short audio texts and interactive exercises — gap-fills, comprehension, true/false, dictation and more.</p>
   </section>
 
-  <section class="filters" aria-label="Filter exercises">
+  <section class="filters" aria-label="Filter exercises" hidden={exercises.length < 4}>
     <div class="filter-group">
       <span class="filter-label">Level</span>
       <button class="chip is-active" data-filter="level" data-value="all">All</button>

@@ -2,9 +2,13 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GameCard from '../../components/GameCard.astro';
+import { LEVELS, TYPE_NAMES, gameLevels, countBy, byNewest } from '../../data/taxonomy';
 
-const games = await getCollection('games');
-games.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+const games = (await getCollection('games')).sort(byNewest);
+const levelCounts = countBy(games, g => gameLevels(g));
+const typeCounts = countBy(games, g => [g.data.type]);
+const levels = LEVELS.filter(l => levelCounts.get(l.code));
+const types = TYPE_NAMES.filter(t => typeCounts.get(t)).sort((a, b) => typeCounts.get(b)! - typeCounts.get(a)!);
 ---
 <BaseLayout
   title="All games — JAC's Class"
@@ -13,61 +17,43 @@ games.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
   <section class="section">
     <div class="container">
       <h1>All games</h1>
-      <p style="margin-bottom: 1.5rem; color: var(--color-ink-soft);">
-        {games.length} {games.length === 1 ? 'game' : 'games'}. Use the filter or search to narrow down.
-      </p>
+      <p class="page-lede"><span id="resultCount">{games.length}</span> of {games.length} games. Search or filter to narrow down.</p>
 
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="Search title, topic, type…"
-          style="flex: 1; min-width: 200px; padding: 0.6rem 0.9rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius); font-family: var(--font-body); font-size: 0.95rem; background: var(--color-surface);"
-        />
-        <select id="levelFilter" style="padding: 0.6rem 0.9rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius); font-family: var(--font-body); font-size: 0.95rem; background: var(--color-surface);">
-          <option value="">All levels</option>
-          <option value="A1">A1</option>
-          <option value="A2">A2</option>
-          <option value="B1">B1</option>
-          <option value="B2">B2</option>
-          <option value="C1">C1</option>
-        </select>
-        <select id="typeFilter" style="padding: 0.6rem 0.9rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius); font-family: var(--font-body); font-size: 0.95rem; background: var(--color-surface);">
-          <option value="">All types</option>
-          <option>Hangman</option>
-          <option>Jeopardy</option>
-          <option>Blockbusters</option>
-          <option>Taboo</option>
-          <option>Codenames</option>
-          <option>Typhoon</option>
-          <option>Gap-fills</option>
-          <option>Quizzes</option>
-        </select>
+      <div class="filters">
+        <input id="searchInput" class="filters__search" type="search" placeholder="Search title, topic, type…" aria-label="Search games" />
+        <div class="filter-group" role="group" aria-label="Level">
+          <span class="filter-label">Level</span>
+          <button type="button" class="chip is-active" data-filter="level" data-value="">All</button>
+          {levels.map(l => (
+            <button type="button" class="chip" data-filter="level" data-value={l.code}>{l.code}<span class="chip__count">{levelCounts.get(l.code)}</span></button>
+          ))}
+        </div>
+        <div class="filter-group" role="group" aria-label="Game type">
+          <span class="filter-label">Type</span>
+          <button type="button" class="chip is-active" data-filter="type" data-value="">All</button>
+          {types.map(t => (
+            <button type="button" class="chip" data-filter="type" data-value={t}>{t}<span class="chip__count">{typeCounts.get(t)}</span></button>
+          ))}
+        </div>
       </div>
 
       <div id="gamesGrid" class="games-grid">
         {games.map(game => (
           <div
             class="game-card-wrap"
-            data-title={game.data.title.toLowerCase()}
-            data-topic={game.data.topic.toLowerCase()}
+            data-search={`${game.data.title} ${game.data.topic} ${game.data.type} ${gameLevels(game).join(' ')}`.toLowerCase()}
             data-type={game.data.type}
-            data-level={game.data.level}
+            data-levels={gameLevels(game).join(' ')}
           >
-            <GameCard
-              slug={game.id}
-              title={game.data.title}
-              level={game.data.level}
-              type={game.data.type}
-              topic={game.data.topic}
-              duration={game.data.duration}
-            />
+            <GameCard slug={game.id} title={game.data.title} level={game.data.level} levels={gameLevels(game)}
+              type={game.data.type} topic={game.data.topic} duration={game.data.duration} />
           </div>
         ))}
       </div>
 
-      <div id="noResults" class="empty-state" style="display: none;">
-        <p>No games match those filters yet. Try clearing one of them.</p>
+      <div id="noResults" class="empty-state" hidden>
+        <p>No games match those filters yet.</p>
+        <button type="button" class="btn btn--ghost" id="clearFilters">Clear filters</button>
       </div>
     </div>
   </section>
@@ -75,34 +61,56 @@ games.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 
 <script>
   const params = new URLSearchParams(window.location.search);
-  const initialQ = params.get('q') ?? '';
+  const state = { q: params.get('q') ?? '', level: params.get('level') ?? '', type: params.get('type') ?? '' };
 
   const search = document.getElementById('searchInput') as HTMLInputElement;
-  const levelF = document.getElementById('levelFilter') as HTMLSelectElement;
-  const typeF = document.getElementById('typeFilter') as HTMLSelectElement;
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip'));
   const cards = Array.from(document.querySelectorAll<HTMLElement>('.game-card-wrap'));
   const noResults = document.getElementById('noResults') as HTMLElement;
+  const count = document.getElementById('resultCount') as HTMLElement;
 
-  if (initialQ) search.value = initialQ;
+  search.value = state.q;
 
-  function applyFilters() {
-    const q = search.value.trim().toLowerCase();
-    const lvl = levelF.value;
-    const tp = typeF.value;
-    let visible = 0;
-    for (const c of cards) {
-      const matches =
-        (!q || c.dataset.title!.includes(q) || c.dataset.topic!.includes(q) || c.dataset.type!.toLowerCase().includes(q)) &&
-        (!lvl || c.dataset.level === lvl) &&
-        (!tp || c.dataset.type === tp);
-      c.style.display = matches ? '' : 'none';
-      if (matches) visible++;
+  function syncChips() {
+    for (const c of chips) {
+      const key = c.dataset.filter as 'level' | 'type';
+      c.classList.toggle('is-active', state[key] === c.dataset.value);
     }
-    noResults.style.display = visible === 0 ? 'block' : 'none';
   }
 
-  search.addEventListener('input', applyFilters);
-  levelF.addEventListener('change', applyFilters);
-  typeF.addEventListener('change', applyFilters);
-  applyFilters();
+  function apply() {
+    const words = state.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    let visible = 0;
+    for (const c of cards) {
+      const show =
+        words.every(w => c.dataset.search!.includes(w)) &&
+        (!state.level || c.dataset.levels!.split(' ').includes(state.level)) &&
+        (!state.type || c.dataset.type === state.type);
+      c.hidden = !show;
+      if (show) visible++;
+    }
+    noResults.hidden = visible > 0;
+    count.textContent = String(visible);
+    const p = new URLSearchParams();
+    if (state.q.trim()) p.set('q', state.q.trim());
+    if (state.level) p.set('level', state.level);
+    if (state.type) p.set('type', state.type);
+    const qs = p.toString();
+    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+  }
+
+  search.addEventListener('input', () => { state.q = search.value; apply(); });
+  for (const c of chips) {
+    c.addEventListener('click', () => {
+      state[c.dataset.filter as 'level' | 'type'] = c.dataset.value!;
+      syncChips(); apply();
+    });
+  }
+  document.getElementById('clearFilters')!.addEventListener('click', () => {
+    state.q = ''; state.level = ''; state.type = ''; search.value = '';
+    syncChips(); apply();
+  });
+
+  syncChips();
+  apply();
 </script>

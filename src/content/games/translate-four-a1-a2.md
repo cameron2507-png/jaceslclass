@@ -2,7 +2,7 @@
 title: "Translate Four: French to English Translation Game (A1/A2)"
 description: "Connect Four for two teams: the first team to translate the French sentence into English drops a counter. A1 and A2 sentences."
 level: "A2"
-type: "Quizzes"
+type: "Translation"
 topic: "French to English translation"
 duration: 30
 ageGroup: "All ages"

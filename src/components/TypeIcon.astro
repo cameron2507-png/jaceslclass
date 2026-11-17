@@ -1,0 +1,25 @@
+---
+// Small line icon for each game type. Inherits the text colour.
+interface Props { type: string; size?: number }
+const { type, size = 20 } = Astro.props;
+
+const paths: Record<string, string> = {
+  Jeopardy: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9.5h18M3 14.5h18M9 4v16M15 4v16"/>',
+  Typhoon: '<path d="M12 4c-4.4 0-8 3-8 7 0 3 2.5 5 5 5 2 0 3.5-1.5 3.5-3s-1-2.5-2-2.5"/><path d="M12 20c4.4 0 8-3 8-7 0-3-2.5-5-5-5-2 0-3.5 1.5-3.5 3s1 2.5 2 2.5"/>',
+  'Speaking games': '<path d="M4 5h16v10H9l-4 4v-4H4z"/><path d="M8 9h8M8 12h5"/>',
+  Battleships: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>',
+  Blockbusters: '<path d="M12 3l7.5 4.5v9L12 21l-7.5-4.5v-9z"/><path d="M12 8l3.5 2v4L12 16l-3.5-2v-4z"/>',
+  Hangman: '<path d="M4 21h10M7 21V3h9v3"/><circle cx="16" cy="9" r="2.5"/><path d="M16 11.5V16M13.5 14h5"/>',
+  Taboo: '<circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/>',
+  'Gap-fills': '<path d="M3 7h7M3 12h3M15 12h6M3 17h12"/><rect x="12" y="5" width="9" height="4" rx="1"/><rect x="7.5" y="10" width="6" height="4" rx="1"/>',
+  Pronunciation: '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/>',
+  Translation: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+  'Card games': '<rect x="3" y="6" width="11" height="15" rx="2" transform="rotate(-8 8.5 13.5)"/><rect x="10" y="3" width="11" height="15" rx="2"/>',
+  Stories: '<path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z"/><path d="M12 6v14"/>',
+  Codenames: '<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5.5 5.5"/>',
+  Quizzes: '<circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><circle cx="12" cy="17" r=".6" fill="currentColor"/>',
+};
+const svg = paths[type] ?? paths.Quizzes;
+---
+<svg class="type-icon" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+  stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={svg} />

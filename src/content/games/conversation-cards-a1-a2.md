@@ -2,7 +2,7 @@
 title: "Conversation Questions for Adults: Work & Life (A1/A2)"
 description: "30 speaking cards with graded conversation questions about work and everyday life, plus example sentences and useful words. For adult A1/A2 learners."
 level: A2
-type: Quizzes
+type: "Speaking games"
 topic: "Speaking"
 duration: 20
 ageGroup: "Adults"

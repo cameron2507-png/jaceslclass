@@ -1,7 +1,7 @@
 ---
 title: "Future Tenses Grammar Game: Battleships (A2)"
 description: "Adult learners answer will, going to and present continuous questions to sink a hidden fleet. An A2 future tenses battleships game with EN/FR help."
-type: "Quizzes"
+type: "Battleships"
 level: "A2"
 topic: "Future tenses"
 duration: 15

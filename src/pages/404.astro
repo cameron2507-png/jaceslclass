@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Page not found — JAC's Class" description="This page doesn't exist." noindex>
+  <section class="section">
+    <div class="container not-found">
+      <span class="hero__eyebrow">Error 404</span>
+      <h1>This page has gone missing.</h1>
+      <p>The link may be old, or the game may have moved. Try a search instead.</p>
+      <form class="search-wrap" action="/games" method="get" role="search">
+        <input type="search" name="q" placeholder="Search games…" aria-label="Search games" />
+        <button type="submit" class="btn btn--primary">Search</button>
+      </form>
+      <div class="not-found__links">
+        <a href="/games" class="btn btn--ghost">All games</a>
+        <a href="/levels" class="btn btn--ghost">Games by level</a>
+        <a href="/" class="btn btn--ghost">Home page</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

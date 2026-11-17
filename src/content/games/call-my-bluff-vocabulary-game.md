@@ -2,7 +2,7 @@
 title: "Call My Bluff Vocabulary Game: Funny English Words"
 description: "A Call My Bluff vocabulary game for B1/B2 ESL learners: guess the true meaning of 20 funny English words like kerfuffle and gobsmacked."
 level: B2
-type: Quizzes
+type: "Speaking games"
 topic: "Vocabulary"
 duration: 20
 ageGroup: "Adults"
