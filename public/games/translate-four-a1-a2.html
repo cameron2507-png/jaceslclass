@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Translate Four A1/A2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf6ec; --surface:#FFFFFF; --ink:#15263a; --muted:#5b6472; --line:#d5cfb8;
+  --frame:#15263a; --frame-dark:#0d1a29; --hole:#faf6ec;
+  --t1:#c84a2c; --t2:#0e7c66; --ok:#0e7c66; --amber:#c84a2c;
+  --shadow:0 1px 0 rgba(21,38,58,.12);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:1.05rem;line-height:1.5}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:1360px;margin:0 auto;padding:1rem clamp(1rem,3vw,2rem) 2rem}
+header{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+h1{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:clamp(2rem,4.5vw,3.2rem);line-height:1;letter-spacing:-.03em;margin:0;display:flex;align-items:center;gap:.5rem}
+h1 .dots{display:inline-flex;gap:.12em}
+h1 .dots i{width:.38em;height:.38em;border-radius:50%;background:var(--t1)}
+h1 .dots i:nth-child(even){background:var(--t2)}
+.tools{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn{border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:.5rem .9rem;font-weight:700;box-shadow:var(--shadow)}
+.btn:hover{border-color:var(--muted)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--frame);border-color:var(--frame);color:#F3F9FB}
+.btn.big{font-size:1.15rem;padding:.75rem 1.4rem}
+
+/* Setup */
+.setup{max-width:640px;margin:0 auto}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:1.25rem}
+.card h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:1.35rem;margin:0 0 .6rem}
+.card+.card{margin-top:1rem}
+.names{display:grid;gap:.5rem}
+.names label{display:flex;align-items:center;gap:.6rem}
+.names input{flex:1;min-width:0;border:2px solid var(--line);background:var(--bg);border-radius:8px;padding:.45rem .6rem}
+.disc{width:1.3rem;height:1.3rem;border-radius:50%;background:var(--c);flex:none;box-shadow:inset 0 -3px 0 rgba(0,0,0,.2)}
+.levels{display:flex;gap:.5rem;flex-wrap:wrap}
+.levels label{display:flex;align-items:center;gap:.4rem;border:2px solid var(--line);background:var(--bg);border-radius:10px;padding:.5rem .9rem;font-weight:700;cursor:pointer}
+.levels input{width:1.1rem;height:1.1rem}
+.levels label:has(input:checked){border-color:var(--frame);background:color-mix(in srgb,var(--frame) 12%,var(--surface))}
+.hint{color:var(--muted);font-size:.95rem;margin:.6rem 0 0}
+.how{margin:0;padding-left:1.2rem;color:var(--muted)}
+.how li+li{margin-top:.25rem}
+.start{margin-top:1rem;display:flex;justify-content:flex-end}
+
+/* Game */
+.game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:1.5rem;align-items:start}
+@media (max-width:900px){.game{grid-template-columns:1fr}}
+.side{display:grid;gap:1rem}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.team{background:var(--surface);border:2px solid var(--line);border-left:10px solid var(--c);border-radius:12px;padding:.5rem .8rem}
+.team[aria-current="true"]{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 40%,transparent)}
+.team .nm{font-weight:700}
+.team .w{color:var(--muted);font-size:.95rem}
+.prompt{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:clamp(1rem,2.5vw,1.6rem)}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin:0 0 .5rem;color:var(--muted);font-weight:700}
+.lvl{background:var(--frame);color:#F3F9FB;border-radius:6px;padding:.05rem .5rem;font-size:.9rem}
+.fr{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(1.5rem,3.2vw,2.3rem);line-height:1.2;letter-spacing:-.01em;margin:0 0 1rem}
+.en{background:var(--bg);border-left:5px solid var(--ok);border-radius:6px;padding:.6rem .8rem;margin:0 0 1rem;font-size:1.1rem}
+.actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.award{border:none;border-radius:10px;padding:.75rem 1.1rem;font-weight:700;font-size:1.05rem;background:var(--c);color:#fff;box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}
+.award:hover{filter:brightness(1.07)}
+.status{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:1.3rem;margin:0;display:flex;align-items:center;gap:.6rem}
+
+.board-wrap{display:flex;justify-content:center}
+.board{width:min(100%,calc((100dvh - 7rem) * 7 / 6.6));min-width:300px}
+.arrows{display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(4px,.9vw,10px);padding:0 clamp(8px,1.4vw,16px);height:clamp(2rem,4.5vw,3rem)}
+.arrow{border:none;background:none;padding:0;display:grid;place-items:center;border-radius:50%}
+.arrow .disc{width:70%;height:auto;aspect-ratio:1;opacity:0;transition:opacity .12s,transform .12s;transform:translateY(-4px)}
+.drop .arrow:hover .disc,.drop .arrow:focus-visible .disc{opacity:1;transform:none}
+.drop .arrow .disc{opacity:.35}
+.arrow:disabled{cursor:default}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(4px,.9vw,10px);background:var(--frame);border-radius:16px;padding:clamp(8px,1.4vw,16px);box-shadow:inset 0 -8px 0 var(--frame-dark)}
+.cell{aspect-ratio:1;border-radius:50%;background:var(--hole);box-shadow:inset 0 4px 6px rgba(0,0,0,.25);position:relative;overflow:hidden}
+.drop .cell{cursor:pointer}
+.cell .p{position:absolute;inset:0;border-radius:50%;background:var(--c);box-shadow:inset 0 -5px 0 rgba(0,0,0,.2),inset 0 0 0 5px rgba(0,0,0,.08)}
+.cell .p.fall{animation:fall var(--d,.4s) cubic-bezier(.45,0,.9,.6)}
+@keyframes fall{from{transform:translateY(calc(var(--rows) * -112%))}to{transform:none}}
+.cell.win .p{box-shadow:inset 0 -5px 0 rgba(0,0,0,.2),inset 0 0 0 5px #fff;animation:pulse 1s ease-in-out infinite alternate}
+@keyframes pulse{to{filter:brightness(1.25)}}
+.feet{display:flex;justify-content:space-between;padding:0 6%}
+.feet i{width:12%;height:12px;background:var(--frame-dark);border-radius:0 0 6px 6px}
+@media (prefers-reduced-motion:reduce){.cell .p.fall,.cell.win .p{animation:none}.arrow .disc{transition:none}}
+
+dialog{border:none;border-radius:16px;background:var(--surface);color:var(--ink);width:min(520px,calc(100% - 2rem));padding:2rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(9,32,47,.6)}
+dialog .big{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:clamp(1.8rem,5vw,2.6rem);margin:.4rem 0}
+dialog .row{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:1.2rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Translate Four</h1>
+    <div class="tools" id="tools" hidden>
+      <button class="btn" id="undoBtn" disabled>Undo</button>
+      <button class="btn" id="newBoardBtn">New board</button>
+      <button class="btn" id="setupBtn">Settings</button>
+    </div>
+  </header>
+
+  <section class="setup" id="setup">
+    <div class="card">
+      <h2>Teams</h2>
+      <div class="names">
+        <label><span class="disc" style="--c:var(--t1)"></span><input id="n0" maxlength="24" aria-label="Red team name"></label>
+        <label><span class="disc" style="--c:var(--t2)"></span><input id="n1" maxlength="24" aria-label="Green team name"></label>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Levels</h2>
+      <div class="levels" id="levels"></div>
+      <p class="hint" id="lvlHint"></p>
+    </div>
+    <div class="card">
+      <h2>How to play</h2>
+      <ol class="how">
+        <li>A French sentence appears. The first team to say it correctly in English wins it.</li>
+        <li>Click that team’s button. They choose a column and drop a counter.</li>
+        <li>Wrong answer? Let the other team try, or skip to a new sentence.</li>
+        <li>Four in a row, across, down or diagonally, wins the board.</li>
+      </ol>
+    </div>
+    <div class="start"><button class="btn primary big" id="startBtn">Start game</button></div>
+  </section>
+
+  <section class="game" id="game" hidden>
+    <div class="side">
+      <div class="teams" id="teams"></div>
+      <div class="prompt" id="prompt" aria-live="polite"></div>
+    </div>
+    <div class="board-wrap">
+      <div class="board" id="board">
+        <div class="arrows" id="arrows"></div>
+        <div class="grid" id="grid" role="grid" aria-label="Board"></div>
+        <div class="feet" aria-hidden="true"><i></i><i></i></div>
+      </div>
+    </div>
+  </section>
+</div>
+<dialog id="dlg"></dialog>
+
+<script>
+const BANK = {
+A1: [
+["Je m’appelle Paul.","My name is Paul."],
+["J’ai trente ans.","I’m thirty (years old)."],
+["J’habite à Grenoble.","I live in Grenoble."],
+["Je suis ingénieur.","I’m an engineer."],
+["Il est huit heures.","It’s eight o’clock."],
+["J’aime le chocolat.","I like chocolate."],
+["Elle a un chat noir.","She has a black cat."],
+["Nous sommes fatigués.","We are tired."],
+["Le café est chaud.","The coffee is hot."],
+["Où sont mes clés ?","Where are my keys?"],
+["Je ne parle pas allemand.","I don’t speak German."],
+["Tu as des frères et sœurs ?","Do you have any brothers or sisters?"],
+["Mon bureau est au premier étage.","My office is on the first floor."],
+["Il y a un parking derrière l’usine.","There’s a car park behind the factory."],
+["Aujourd’hui, c’est lundi.","Today is Monday."],
+["Je bois de l’eau.","I drink water. / I’m drinking water."],
+["Ma voiture est rouge.","My car is red."],
+["Il travaille le samedi.","He works on Saturdays."],
+["Je mange à midi.","I eat at midday."],
+["Bonne journée !","Have a nice day!"]
+],
+A2: [
+["Je travaille ici depuis trois ans.","I have worked here for three years."],
+["Il fait très froid aujourd’hui.","It’s very cold today."],
+["Nous allons au cinéma ce soir.","We’re going to the cinema tonight."],
+["J’ai besoin d’un café.","I need a coffee."],
+["Où est la gare, s’il vous plaît ?","Where is the station, please?"],
+["Ma sœur habite à Lyon.","My sister lives in Lyon."],
+["Je me lève à six heures tous les jours.","I get up at six o’clock every day."],
+["Combien ça coûte ?","How much does it cost?"],
+["Il y a une réunion à dix heures.","There’s a meeting at ten o’clock."],
+["J’aime faire du vélo le week-end.","I like cycling at the weekend."],
+["Hier, j’ai mangé au restaurant avec des collègues.","Yesterday I ate at a restaurant with colleagues."],
+["Pouvez-vous répéter, s’il vous plaît ?","Can you repeat that, please?"],
+["Mon fils a dix ans.","My son is ten (years old)."],
+["Je n’ai pas le temps ce matin.","I don’t have time this morning."],
+["La machine est en panne.","The machine has broken down. / The machine is out of order."],
+["Nous avons deux enfants et un chien.","We have two children and a dog."],
+["Je suis allé en Espagne l’été dernier.","I went to Spain last summer."],
+["Il pleut depuis ce matin.","It has been raining since this morning."],
+["Je voudrais réserver une table pour quatre personnes.","I’d like to book a table for four (people)."],
+["Le magasin ferme à dix-neuf heures.","The shop closes at 7 pm."]
+]
+};
+const ROWS = 6, COLS = 7, KEY = 'translate-four-a1a2';
+const DEF_NAMES = ['Red team', 'Green team'];
+const COLORS = ['var(--t1)', 'var(--t2)'];
+
+let settings = { names: DEF_NAMES.slice(), levels: ['A1','A2'] };
+let S = null, history = [], lastDrop = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({ settings, S, history: history.slice(-25) })); } catch(e){} }
+function load(){ try { const d = JSON.parse(localStorage.getItem(KEY) || 'null'); if (d) { if (d.settings) settings = d.settings; S = d.S || null; history = d.history || []; } } catch(e){} }
+
+/* ----- Setup ----- */
+function renderSetup(){
+  $('n0').value = settings.names[0]; $('n1').value = settings.names[1];
+  $('levels').innerHTML = Object.keys(BANK).map(l =>
+    `<label><input type="checkbox" value="${l}" ${settings.levels.includes(l) ? 'checked' : ''}>${l}</label>`).join('');
+  updateHint();
+}
+function updateHint(){
+  const n = settings.levels.reduce((t, l) => t + BANK[l].length, 0);
+  $('lvlHint').textContent = settings.levels.length ? `${n} sentences, shuffled. Pick several levels to mix them.` : 'Pick at least one level.';
+  $('startBtn').disabled = !settings.levels.length;
+}
+$('levels').addEventListener('change', () => {
+  settings.levels = [...$('levels').querySelectorAll('input:checked')].map(i => i.value); updateHint(); save();
+});
+['n0','n1'].forEach((id, i) => $(id).addEventListener('input', e => { settings.names[i] = e.target.value; save(); }));
+
+function buildDeck(){
+  const d = []; settings.levels.forEach(l => BANK[l].forEach((_, i) => d.push([l, i]))); return shuffle(d);
+}
+$('startBtn').addEventListener('click', () => {
+  const keepWins = S && S.levelsKey === settings.levels.join() ? S.teams.map(t => t.wins) : [0, 0];
+  S = {
+    teams: settings.names.map((n, i) => ({ name: n.trim() || DEF_NAMES[i], wins: keepWins[i] || 0 })),
+    levelsKey: settings.levels.join(),
+    deck: buildDeck(), cur: null, shown: false,
+    board: emptyBoard(), mode: 'ask', dropper: null, win: null, starter: 0
+  };
+  history = []; nextSentence(); save(); showGame();
+});
+function emptyBoard(){ return Array.from({ length: ROWS }, () => Array(COLS).fill(null)); }
+
+/* ----- Game ----- */
+function showGame(){ $('setup').hidden = true; $('game').hidden = false; $('tools').hidden = false; render(); }
+function showSetup(){ $('setup').hidden = false; $('game').hidden = true; $('tools').hidden = true; renderSetup(); }
+$('setupBtn').addEventListener('click', showSetup);
+
+function nextSentence(){
+  if (!S.deck.length) S.deck = buildDeck();
+  S.cur = S.deck.pop(); S.shown = false; S.mode = 'ask'; S.dropper = null;
+}
+function snapshot(){ history.push(JSON.stringify(S)); if (history.length > 25) history.shift(); }
+
+function render(){
+  $('teams').innerHTML = S.teams.map((t, i) => `
+    <div class="team" style="--c:${COLORS[i]}" aria-current="${S.mode === 'drop' && S.dropper === i}">
+      <div class="nm">${esc(t.name)}</div><div class="w">${t.wins} board${t.wins === 1 ? '' : 's'} won</div>
+    </div>`).join('');
+
+  const [lvl, idx] = S.cur, [fr, en] = BANK[lvl][idx];
+  let p = `<p class="meta"><span>Translate into English</span><span class="lvl">${lvl}</span></p><p class="fr" lang="fr">${esc(fr)}</p>`;
+  if (S.mode === 'ask') {
+    p += S.shown ? `<p class="en">${esc(en)}</p>` : '';
+    p += `<div class="actions">
+      ${S.teams.map((t, i) => `<button class="award" style="--c:${COLORS[i]}" data-award="${i}">${esc(t.name)} first</button>`).join('')}
+      <button class="btn" data-act="show">${S.shown ? 'Hide answer' : 'Show answer'}</button>
+      <button class="btn" data-act="skip">New sentence</button></div>`;
+  } else if (S.mode === 'drop') {
+    p += `<p class="en">${esc(en)}</p><p class="status"><span class="disc" style="--c:${COLORS[S.dropper]}"></span>${esc(S.teams[S.dropper].name)}: choose a column.</p>`;
+  } else {
+    p += `<p class="en">${esc(en)}</p>`;
+  }
+  $('prompt').innerHTML = p;
+
+  const drop = S.mode === 'drop';
+  $('board').classList.toggle('drop', drop);
+  $('arrows').innerHTML = Array.from({ length: COLS }, (_, c) =>
+    `<button class="arrow" data-col="${c}" ${drop && S.board[0][c] === null ? '' : 'disabled'} aria-label="Drop in column ${c + 1}"><span class="disc" style="--c:${drop ? COLORS[S.dropper] : 'transparent'}"></span></button>`).join('');
+  const winSet = new Set((S.win || []).map(([r, c]) => r + ',' + c));
+  let g = '';
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const v = S.board[r][c], fall = lastDrop && lastDrop[0] === r && lastDrop[1] === c;
+    g += `<div class="cell${winSet.has(r + ',' + c) ? ' win' : ''}" data-col="${c}" role="gridcell" aria-label="${v === null ? 'empty' : esc(S.teams[v].name)}">${v === null ? '' :
+      `<span class="p${fall ? ' fall' : ''}" style="--c:${COLORS[v]};--rows:${r + 1};--d:${(.18 + r * .06).toFixed(2)}s"></span>`}</div>`;
+  }
+  $('grid').innerHTML = g;
+  lastDrop = null;
+  $('undoBtn').disabled = !history.length;
+}
+
+$('prompt').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.award) { snapshot(); S.mode = 'drop'; S.dropper = +b.dataset.award; save(); render(); }
+  else if (b.dataset.act === 'show') { S.shown = !S.shown; save(); render(); }
+  else if (b.dataset.act === 'skip') { snapshot(); nextSentence(); save(); render(); }
+});
+$('board').addEventListener('click', e => {
+  if (S.mode !== 'drop') return;
+  const el = e.target.closest('[data-col]'); if (!el) return;
+  dropIn(+el.dataset.col);
+});
+document.addEventListener('keydown', e => {
+  if (S && S.mode === 'drop' && !$('dlg').open && /^[1-7]$/.test(e.key)) dropIn(+e.key - 1);
+});
+
+function dropIn(c){
+  let r = ROWS - 1; while (r >= 0 && S.board[r][c] !== null) r--;
+  if (r < 0) return;
+  snapshot();
+  S.board[r][c] = S.dropper; lastDrop = [r, c];
+  const line = findWin(r, c, S.dropper);
+  if (line) {
+    S.win = line; S.mode = 'won'; S.teams[S.dropper].wins++;
+    save(); render();
+    setTimeout(() => endDialog(`${esc(S.teams[S.dropper].name)} win!`, COLORS[S.dropper]), 900);
+  } else if (S.board[0].every(v => v !== null)) {
+    S.mode = 'won'; save(); render();
+    setTimeout(() => endDialog('It’s a draw!', null), 600);
+  } else {
+    nextSentence(); save(); render();
+  }
+}
+function findWin(r, c, p){
+  for (const [dr, dc] of [[0,1],[1,0],[1,1],[1,-1]]) {
+    const line = [[r, c]];
+    for (const s of [1, -1]) {
+      let rr = r + dr * s, cc = c + dc * s;
+      while (rr >= 0 && rr < ROWS && cc >= 0 && cc < COLS && S.board[rr][cc] === p) { line.push([rr, cc]); rr += dr * s; cc += dc * s; }
+    }
+    if (line.length >= 4) return line;
+  }
+  return null;
+}
+function endDialog(msg, color){
+  const d = $('dlg');
+  d.innerHTML = `${color ? `<span class="disc" style="--c:${color};width:3rem;height:3rem;display:inline-block"></span>` : ''}
+    <p class="big">${msg}</p>
+    <p>${S.teams.map(t => `${esc(t.name)}: ${t.wins}`).join('<br>')}</p>
+    <div class="row"><button class="btn" data-x="look">Look at the board</button><button class="btn primary big" data-x="again" autofocus>Next board</button></div>`;
+  d.showModal();
+}
+$('dlg').addEventListener('click', e => {
+  const b = e.target.closest('[data-x]'); if (!b) return;
+  $('dlg').close();
+  if (b.dataset.x === 'again') newBoard();
+});
+function newBoard(){
+  S.board = emptyBoard(); S.win = null; history = []; nextSentence(); save(); render();
+}
+$('newBoardBtn').addEventListener('click', () => {
+  if (S.mode !== 'won' && S.board.some(r => r.some(v => v !== null)) && !confirm('Clear the board and start again?')) return;
+  newBoard();
+});
+$('undoBtn').addEventListener('click', () => { if (!history.length) return; S = JSON.parse(history.pop()); save(); render(); });
+
+load();
+if (S) showGame(); else showSetup();
+</script>
+</body>
+</html>
