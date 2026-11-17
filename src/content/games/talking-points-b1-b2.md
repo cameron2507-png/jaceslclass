@@ -2,7 +2,7 @@
 title: "Opinion Questions Speaking Cards: Talking Points (B1/B2)"
 description: "48 timed opinion cards on travel, food and big questions, plus industry topics. Adult B1/B2 business English learners argue and defend their views."
 level: B2
-type: Quizzes
+type: "Speaking games"
 topic: "Speaking"
 duration: 25
 ageGroup: "Adults"
