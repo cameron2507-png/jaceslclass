@@ -33,6 +33,8 @@ export const TYPES = [
 
 export type GameType = (typeof TYPES)[number]['name'];
 export const TYPE_NAMES = TYPES.map(t => t.name) as unknown as [GameType, ...GameType[]];
+// "Jeopardy" -> "Jeopardy games", but "Speaking games" stays as it is.
+export const typeLabel = (name: string) => (/games$/i.test(name) ? name : `${name} games`);
 export const typeBlurb = (name: string) => TYPES.find(t => t.name === name)?.blurb ?? '';
 
 // URL segment for a type: existing ones are unchanged (Hangman, Gap-fills),
