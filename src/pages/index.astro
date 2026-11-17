@@ -2,37 +2,23 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GameCard from '../components/GameCard.astro';
+import TypeIcon from '../components/TypeIcon.astro';
+import { LEVELS, TYPE_NAMES, typeSlug, gameLevels, countBy, byNewest } from '../data/taxonomy';
 
-const allGames = await getCollection('games');
-
-// sort by publishDate desc
-allGames.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+const allGames = (await getCollection('games')).sort(byNewest);
 
 const featured = allGames.filter(g => g.data.featured).slice(0, 4);
-const recent = allGames.slice(0, 8);
+const featuredIds = new Set(featured.map(g => g.id));
+const recent = allGames.filter(g => !featuredIds.has(g.id)).slice(0, 8);
 
-const levels = [
-  { code: 'A1', label: 'Beginner' },
-  { code: 'A2', label: 'Elementary' },
-  { code: 'B1', label: 'Intermediate' },
-  { code: 'B2', label: 'Upper int.' },
-  { code: 'C1', label: 'Advanced' },
-];
-
-const gameTypes = [
-  'Hangman',
-  'Jeopardy',
-  'Blockbusters',
-  'Taboo',
-  'Codenames',
-  'Typhoon',
-  'Gap-fills',
-  'Quizzes',
-];
+const levelCounts = countBy(allGames, g => gameLevels(g));
+const typeCounts = countBy(allGames, g => [g.data.type]);
+const levels = LEVELS.filter(l => levelCounts.get(l.code));
+const types = TYPE_NAMES.filter(t => typeCounts.get(t)).sort((a, b) => typeCounts.get(b)! - typeCounts.get(a)!);
 ---
 <BaseLayout
   title="JAC's Class — Free interactive ESL games for teachers"
-  description="Free, ready-to-play classroom games for English teachers. Hangman, Jeopardy, Taboo, Codenames and more — sorted by CEFR level and topic."
+  description="Free, ready-to-play classroom games for English teachers. Jeopardy, Typhoon, Taboo, Battleships and more, sorted by CEFR level and topic."
 >
   <section class="hero">
     <div class="container">
@@ -40,7 +26,7 @@ const gameTypes = [
       <h1>Drop-in classroom games for English teachers.</h1>
       <p class="hero__lede">
         No login. No prep. Built in a real classroom by a teacher who needed them.
-        Sorted by CEFR level, topic and game type.
+        {allGames.length} games, sorted by CEFR level, topic and game type.
       </p>
       <form class="search-wrap" action="/games" method="get" role="search">
         <input
@@ -49,7 +35,7 @@ const gameTypes = [
           placeholder="Try “past simple”, “hotels”, “B1 vocabulary”…"
           aria-label="Search games"
         />
-        <button type="submit" class="btn btn--primary">Browse all</button>
+        <button type="submit" class="btn btn--primary">Search</button>
       </form>
     </div>
   </section>
@@ -63,14 +49,8 @@ const gameTypes = [
         </div>
         <div class="games-grid">
           {featured.map(game => (
-            <GameCard
-              slug={game.id}
-              title={game.data.title}
-              level={game.data.level}
-              type={game.data.type}
-              topic={game.data.topic}
-              duration={game.data.duration}
-            />
+            <GameCard slug={game.id} title={game.data.title} level={game.data.level} levels={gameLevels(game)}
+              type={game.data.type} topic={game.data.topic} duration={game.data.duration} />
           ))}
         </div>
       </div>
@@ -81,12 +61,14 @@ const gameTypes = [
     <div class="container">
       <div class="section-head">
         <h2>Browse by level</h2>
+        <a href="/levels">All levels →</a>
       </div>
       <div class="level-row">
         {levels.map(({ code, label }) => (
-          <a href={`/level/${code}`} class="level-tile">
-            <span class={`level-tile__code level-${code}`} style="background: transparent; border: none; padding: 0;">{code}</span>
+          <a href={`/level/${code}`} class={`level-tile level-tile--${code}`}>
+            <span class="level-tile__code">{code}</span>
             <span class="level-tile__label">{label}</span>
+            <span class="level-tile__count">{levelCounts.get(code)} games</span>
           </a>
         ))}
       </div>
@@ -97,10 +79,13 @@ const gameTypes = [
     <div class="container">
       <div class="section-head">
         <h2>Browse by game type</h2>
+        <a href="/types">All types →</a>
       </div>
       <div class="type-row">
-        {gameTypes.map(t => (
-          <a href={`/type/${t}`} class="pill">{t}</a>
+        {types.map(t => (
+          <a href={`/type/${typeSlug(t)}`} class="pill pill--type">
+            <TypeIcon type={t} size={16} />{t}<span class="pill__count">{typeCounts.get(t)}</span>
+          </a>
         ))}
       </div>
     </div>
@@ -115,14 +100,8 @@ const gameTypes = [
         </div>
         <div class="games-grid">
           {recent.map(game => (
-            <GameCard
-              slug={game.id}
-              title={game.data.title}
-              level={game.data.level}
-              type={game.data.type}
-              topic={game.data.topic}
-              duration={game.data.duration}
-            />
+            <GameCard slug={game.id} title={game.data.title} level={game.data.level} levels={gameLevels(game)}
+              type={game.data.type} topic={game.data.topic} duration={game.data.duration} />
           ))}
         </div>
       </div>
