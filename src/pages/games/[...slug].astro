@@ -1,18 +1,30 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import GameCard from '../../components/GameCard.astro';
+import TypeIcon from '../../components/TypeIcon.astro';
+import { gameLevels, levelRange, typeSlug, byNewest } from '../../data/taxonomy';
 
 export async function getStaticPaths() {
   const games = await getCollection('games');
   return games.map(game => ({
     params: { slug: game.id },
-    props: { game },
+    props: { game, all: games },
   }));
 }
 
-const { game } = Astro.props;
+const { game, all } = Astro.props;
 const { Content } = await render(game);
 const data = game.data;
+const levels = gameLevels(game);
+
+// Related: same type and a shared level first, then same type, then a shared level.
+const shares = (g: typeof game) => gameLevels(g).some(l => levels.includes(l));
+const score = (g: typeof game) => (g.data.type === data.type ? 2 : 0) + (shares(g) ? 1 : 0);
+const related = all
+  .filter(g => g.id !== game.id && score(g) > 0)
+  .sort((a, b) => score(b) - score(a) || byNewest(a, b))
+  .slice(0, 4);
 ---
 <BaseLayout
   title={`${data.title} — JAC's Class`}
@@ -27,17 +39,22 @@ const data = game.data;
       </nav>
 
       <div class="game-page-meta">
-        <span class={`pill pill--level level-${data.level}`}>{data.level}</span>
-        <a href={`/type/${data.type}`} class="pill">{data.type}</a>
+        <span class={`pill pill--level level-${data.level}`}>{levelRange(levels)}</span>
+        <a href={`/type/${typeSlug(data.type)}`} class="pill pill--type"><TypeIcon type={data.type} size={15} />{data.type}</a>
         <span class="pill">{data.topic}</span>
         <span class="pill">{data.duration} min</span>
         <span class="pill">{data.ageGroup}</span>
       </div>
 
       <h1>{data.title}</h1>
-      <p style="font-size: 1.05rem; color: var(--color-ink-soft); max-width: 680px; margin: 0.5rem 0 0;">
-        {data.description}
-      </p>
+      <p class="game-page-lede">{data.description}</p>
+
+      <div class="game-actions">
+        <a href={`/games/${data.gameFile}`} target="_blank" rel="noopener" class="btn btn--primary">
+          Open in full screen ↗
+        </a>
+        <span class="game-actions__hint">Best for projecting in class</span>
+      </div>
     </div>
 
     <div class="game-frame-wrap">
@@ -46,27 +63,59 @@ const data = game.data;
         class="game-frame"
         title={data.title}
         loading="lazy"
-        sandbox="allow-scripts allow-same-origin"
+        sandbox="allow-scripts allow-same-origin allow-modals"
       ></iframe>
     </div>
 
-    <div class="game-actions">
-      <a href={`/games/${data.gameFile}`} target="_blank" rel="noopener" class="btn btn--primary">
-        Open in full screen ↗
-      </a>
-      <a href={`/level/${data.level}`} class="btn btn--ghost">More {data.level} games</a>
-      <a href={`/type/${data.type}`} class="btn btn--ghost">More {data.type} games</a>
-    </div>
+    <div class="game-notes">
+      {data.instructions && (
+        <div class="classroom-tip">
+          <h2>How to use this in class</h2>
+          <p>{data.instructions}</p>
+        </div>
+      )}
 
-    {data.instructions && (
-      <div class="classroom-tip">
-        <h3>How to use this in class</h3>
-        <p>{data.instructions}</p>
+      <div class="prose prose--left">
+        <Content />
       </div>
-    )}
-
-    <div class="prose" style="margin-top: 2rem;">
-      <Content />
     </div>
   </section>
+
+  {related.length > 0 && (
+    <section class="section related">
+      <div class="container">
+        <div class="section-head">
+          <h2>More games like this</h2>
+          <a href={`/type/${typeSlug(data.type)}`}>More {data.type} games →</a>
+        </div>
+        <div class="games-grid">
+          {related.map(g => (
+            <GameCard slug={g.id} title={g.data.title} level={g.data.level} levels={gameLevels(g)}
+              type={g.data.type} topic={g.data.topic} duration={g.data.duration} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 </BaseLayout>
+
+<script>
+  // Grow the game window to fit the game, so it doesn't scroll inside the page.
+  const frame = document.querySelector<HTMLIFrameElement>('.game-frame');
+  function fit() {
+    try {
+      const doc = frame?.contentDocument;
+      if (!frame || !doc?.body) return;
+      const h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
+      const target = Math.min(Math.max(h, 520), 1800);
+      if (Math.abs(target - frame.offsetHeight) > 8) frame.style.height = `${target}px`;
+    } catch { /* cross-origin: keep the default height */ }
+  }
+  frame?.addEventListener('load', () => {
+    fit();
+    try {
+      const ro = new ResizeObserver(() => fit());
+      ro.observe(frame.contentDocument!.body);
+    } catch { /* ignore */ }
+  });
+</script>
