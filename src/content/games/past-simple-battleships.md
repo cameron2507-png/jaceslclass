@@ -2,7 +2,7 @@
 title: "Past Simple Grammar Game: Battleships for Teens (A2)"
 description: "Teens answer past simple questions on regular and irregular verbs, negatives and questions to sink the fleet. An A2 ESL battleships grammar game."
 level: A2
-type: Quizzes
+type: "Battleships"
 topic: "Past simple"
 duration: 20
 ageGroup: "Teens"
