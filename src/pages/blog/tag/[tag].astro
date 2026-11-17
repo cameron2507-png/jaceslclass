@@ -36,10 +36,10 @@ const formatDate = (date: Date) =>
 ---
 
 <BaseLayout
-  title={`${tagName} | Blog | jacesclass`}
+  title={`${tagName} | Blog — JAC's Class`}
   description={`All blog posts tagged "${tagName}" — teaching tips and ESL methodology from jacesclass.com.`}
 >
-  <main class="tag-page">
+  <div class="tag-page">
     <nav class="breadcrumb">
       <a href="/blog">← All posts</a>
     </nav>
@@ -70,7 +70,7 @@ const formatDate = (date: Date) =>
         </li>
       ))}
     </ul>
-  </main>
+  </div>
 </BaseLayout>
 
 <style>
