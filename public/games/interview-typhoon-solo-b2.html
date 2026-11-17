@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Interview Typhoon Solo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf6ec; --surface:#FFFFFF; --ink:#15263a; --muted:#5b6472;
+  --sea:#15263a; --tile:#15263a; --tile-hover:#c84a2c; --tile-ink:#faf6ec;
+  --line:#d5cfb8; --amber:#c84a2c; --red:#a8321f; --ok:#0e7c66;
+  --shadow:0 1px 0 rgba(21,38,58,.12);
+  color-scheme:light;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.05rem;line-height:1.5}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:1rem clamp(1rem,3vw,2rem) 2rem}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+h1{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:clamp(2.2rem,5vw,3.4rem);line-height:1;letter-spacing:-.03em;margin:0;display:flex;align-items:center;gap:.6rem}
+h1 .swirl{display:inline-block;width:.9em;height:.9em}
+.tools{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn{border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:.5rem .9rem;font-weight:700;box-shadow:var(--shadow)}
+.btn:hover{border-color:var(--muted)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--sea);border-color:var(--sea);color:#F3F9FB}
+.btn.big{font-size:1.15rem;padding:.75rem 1.4rem}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.bad{background:var(--red);border-color:var(--red);color:#fff}
+[hidden]{display:none!important}
+
+/* Setup */
+.setup{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:2rem;align-items:start}
+@media (max-width:860px){.setup{grid-template-columns:1fr}}
+.setup h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:1.4rem;margin:0 0 .6rem}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:1.25rem}
+.seg{display:flex;gap:.4rem;margin-bottom:1rem}
+.seg button{flex:1;border:2px solid var(--line);background:var(--bg);border-radius:10px;padding:.55rem 0;font-weight:700;font-size:1.1rem}
+.seg button[aria-pressed="true"]{background:var(--sea);border-color:var(--sea);color:#F3F9FB}
+.names{display:grid;gap:.5rem}
+.names label{display:flex;align-items:center;gap:.6rem}
+.names input{flex:1;min-width:0;border:2px solid var(--line);background:var(--bg);border-radius:8px;padding:.45rem .6rem}
+.swatch{width:1.1rem;height:1.1rem;border-radius:50%;background:var(--c);flex:none}
+.check{display:flex;gap:.6rem;align-items:center;margin:.2rem 0 .8rem}
+.check input{width:1.2rem;height:1.2rem}
+textarea{width:100%;min-height:340px;border:2px solid var(--line);background:var(--bg);border-radius:8px;padding:.6rem;font-size:.92rem;line-height:1.45;resize:vertical}
+.hint{color:var(--muted);font-size:.92rem;margin:.2rem 0 .6rem}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:.8rem}
+.rules{margin:1rem 0 0;padding:0;list-style:none;display:grid;grid-template-columns:auto 1fr;gap:.3rem .7rem;font-size:.95rem}
+.rules dt{font-size:1.2rem;text-align:center}
+.rules dd{margin:0;color:var(--muted)}
+.rules dd b{color:var(--ink)}
+
+/* Game */
+.game{display:grid;grid-template-columns:260px minmax(0,1fr);gap:1.5rem;align-items:start}
+@media (max-width:900px){.game{grid-template-columns:1fr}}
+.scores{display:grid;gap:.6rem}
+@media (max-width:900px){.scores{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
+.team{background:var(--surface);border:2px solid var(--line);border-left:8px solid var(--c);border-radius:12px;padding:.6rem .8rem;position:relative}
+.team[aria-current="true"]{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 35%,transparent)}
+.team .nm{font-weight:700;display:flex;justify-content:space-between;gap:.4rem;align-items:baseline}
+.team .turn{font-size:.8rem;color:var(--c);font-weight:700;white-space:nowrap}
+.team .sc{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:2.4rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.team .foot{display:flex;justify-content:space-between;align-items:center;gap:.4rem}
+.team .shield{font-size:.9rem;color:var(--muted)}
+.adj{display:flex;gap:.25rem}
+.adj button{width:2rem;height:2rem;border-radius:8px;border:2px solid var(--line);background:var(--bg);font-weight:700;line-height:1;padding:0}
+.log{margin-top:.4rem;font-size:.9rem;color:var(--muted);min-height:1.4em}
+
+.board-wrap{display:flex;justify-content:center}
+.board{display:grid;grid-template-columns:1.8rem repeat(6,1fr);grid-template-rows:1.8rem repeat(6,1fr);gap:clamp(4px,.8vw,8px);width:min(100%,calc(100dvh - 8.5rem));min-width:300px;padding:clamp(6px,1.2vw,14px);background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px}
+.ax{display:grid;place-items:center;color:var(--muted);font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(.9rem,1.6vw,1.2rem)}
+.tile{aspect-ratio:1;border:none;border-radius:10px;background:var(--tile);color:var(--tile-ink);font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:clamp(1rem,3vw,2rem);display:grid;place-items:center;padding:0;transition:background .15s,transform .15s;box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}
+.tile:hover:not(.done){background:var(--tile-hover);transform:translateY(-2px)}
+.tile.done{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 4px var(--c);cursor:default;display:flex;flex-direction:column;justify-content:center;gap:.1em}
+.tile .ic{font-size:clamp(1.1rem,3vw,2rem);line-height:1}
+.tile .lb{font-family:"Hanken Grotesk",sans-serif;font-weight:700;font-size:clamp(.55rem,1.1vw,.8rem);color:var(--muted)}
+.tile.just{animation:spin .7s cubic-bezier(.3,1.4,.5,1)}
+@keyframes spin{from{transform:rotate(-200deg) scale(.3);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.tile.just{animation:none}.tile{transition:none}}
+
+/* Dialogs */
+.resp-l{display:block;font-weight:700;margin:0 0 .3rem}
+.resp{width:100%;min-height:8rem;border:2px solid var(--line);background:var(--bg);border-radius:10px;padding:.7rem;font-size:1.05rem;line-height:1.5;resize:vertical}
+.fb{border-radius:8px;padding:.6rem .8rem;margin:0 0 .6rem;background:var(--bg);border-left:5px solid var(--line)}
+.fb p{margin:.2rem 0 0}
+.fb.model{border-left-color:var(--ok)}
+.fb.why{border-left-color:var(--amber)}
+dialog{border:none;border-radius:16px;background:var(--surface);color:var(--ink);width:min(760px,calc(100% - 2rem));max-height:calc(100dvh - 2rem);overflow:auto;padding:clamp(1.2rem,3vw,2rem);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(9,32,47,.65)}
+.p-meta{display:flex;align-items:center;gap:.5rem;color:var(--muted);font-weight:700;margin:0 0 .6rem}
+.p-q{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(1.4rem,3.2vw,2.1rem);line-height:1.2;margin:0 0 1rem;letter-spacing:-.01em}
+.p-a{background:var(--bg);border-left:5px solid var(--amber);border-radius:6px;padding:.6rem .8rem;margin:0 0 1rem}
+.p-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:flex-end;margin-top:1rem}
+.p-actions .spacer{flex:1}
+.reveal{text-align:center;padding:.5rem 0}
+.reveal .ic{font-size:clamp(3.5rem,10vw,5.5rem);line-height:1.1;font-family:"Fraunces",Georgia,serif;font-weight:800}
+.reveal .ttl{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);margin:.2rem 0}
+.reveal .msg{font-size:1.15rem;margin:.4rem 0 0}
+.targets{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:1rem}
+.targets button{border:2px solid var(--c);border-left-width:8px;background:var(--bg);border-radius:10px;padding:.6rem 1rem;font-weight:700}
+.targets button small{display:block;font-weight:400;color:var(--muted)}
+.rank{list-style:none;padding:0;margin:1rem 0;display:grid;gap:.4rem}
+.rank li{display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;border-radius:10px;background:var(--bg);border-left:8px solid var(--c);font-weight:700}
+.rank li:first-child{font-size:1.3rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><svg class="swirl" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4c-9 0-16 6-16 14 0 6 5 10 10 10 4 0 7-3 7-6s-2-5-4-5" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M20 36c9 0 16-6 16-14 0-6-5-10-10-10-4 0-7 3-7 6s2 5 4 5" fill="none" stroke="var(--amber)" stroke-width="4" stroke-linecap="round"/></svg>Typhoon</h1>
+    <div class="tools" id="gameTools" hidden>
+      <button class="btn" id="undoBtn" disabled>Undo</button>
+      <button class="btn" id="endBtn">End game</button>
+      <button class="btn" id="newBtn">New game</button>
+    </div>
+  </header>
+
+  <!-- Setup -->
+  <section class="setup" id="setup">
+    <div class="card">
+      <h2>Solo game</h2>
+      <p class="hint">Pick a square, write your answer, then compare it with the model answer and explanation. Clear all 36 squares with the highest score you can. A wrong answer gives that square a new question.</p>
+      <div class="seg" id="teamCount" hidden role="group" aria-label="Number of teams"></div>
+      <div class="names" id="teamNames" hidden></div>
+      <input type="checkbox" id="showQ" checked hidden>
+      <button class="btn primary big" id="startBtn">Start game</button>
+      <dl class="rules">
+        <dt>+10</dt><dd><b>Points.</b> Most squares hide 5 to 50 points.</dd>
+        <dt>💰</dt><dd><b>Jackpot.</b> Win 100 points.</dd>
+        <dt>×2</dt><dd><b>Double.</b> Double your score.</dd>
+        <dt>🛡️</dt><dd><b>Shield.</b> Blocks the next typhoon or bomb.</dd>
+        <dt>🌀</dt><dd><b>Typhoon.</b> Lose half your points.</dd>
+        <dt>💣</dt><dd><b>Bomb.</b> Lose all your points.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h2>Questions</h2>
+      <p class="hint">B2 job interview practice: project assistant, international projects. One question per line, as: question | model answer | explanation. Questions are shuffled across the 36 squares. Extra questions are kept in reserve: a wrong answer swaps in a new one.</p>
+      <textarea id="qText" spellcheck="false" aria-label="Question bank"></textarea>
+      <div class="row">
+        <button class="btn" id="resetQ">Restore interview questions</button>
+        <span class="hint" id="qCount"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Game -->
+  <section class="game" id="game" hidden>
+    <aside>
+      <div class="scores" id="scores"></div>
+      <p class="log" id="log" aria-live="polite"></p>
+    </aside>
+    <div class="board-wrap"><div class="board" id="board" aria-label="Game board"></div></div>
+  </section>
+</div>
+
+<dialog id="panel"></dialog>
+<dialog id="endDlg"></dialog>
+
+<script>
+const DEFAULT_Q = `Tell me about yourself in one minute. | I’m currently working as an administrative assistant at [company], where I support a team of six engineers. Before that, I spent three years in customer service. I’m now looking for a project assistant role in an international environment, which is why this position really interests me. | Go present → past → future: present simple or continuous for now, past simple for finished jobs, then link it to this job.
+Why do you want to work for our company? | I’m attracted by the variety of projects you work on and by the international side of the job. I’d like to use my organisational skills and my English in a company where I can keep learning. | Show you’ve researched the company, then link what they do to what you can bring. Don’t only talk about what you want.
+What are your main strengths? Give an example for one of them. | I’m very organised. For example, in my current job I set up a shared file to track all our deadlines, and we haven’t missed one since. | Name one or two strengths, then prove them with a real example. “For example” + past simple makes it believable.
+What is your biggest weakness, and what are you doing about it? | I sometimes find it hard to delegate, because I like things done a certain way. I’m working on it by sharing tasks earlier and agreeing clear deadlines with colleagues. | Choose a real but manageable weakness and always show how you’re improving. Use the present continuous: “I’m working on…”.
+Describe a time you had to manage several deadlines at once. | Last spring, I had three reports due in the same week. I had to collect input from five people. I made a shared schedule and sent reminders two days before each deadline. All three reports were delivered on time. | Use STAR: Situation, Task, Action, Result. Tell the story in the past simple and finish with a clear result.
+Tell me about a problem with a colleague or client and how you solved it. | A client was unhappy because a document was late. I called him, apologised, explained the reason and gave him a new date, which we met. He later thanked us for keeping him informed. | Use STAR again. Focus on what you did and on a positive result. Useful verbs: called, apologised, explained, agreed.
+Where do you see yourself in five years? | In five years, I’d like to have more responsibility, perhaps coordinating small projects myself, and to know the sector much better. | Use “I’d like to” or “I hope to” + infinitive. Show ambition that fits the company.
+Why are you leaving your current job? | I’ve learned a lot in my current job, but I’m looking for a more international role with more variety, and this position offers exactly that. | Stay positive and never criticise your current employer. Talk about what you’re moving towards.
+What does a project assistant do? | A project assistant supports the project manager: they update the schedule, organise meetings, take minutes, manage documents, follow up on actions and help with invoicing. | Use the present simple for duties and routines. Strong verbs: support, update, organise, manage, follow up.
+How do you organise your working week? | On Monday morning, I check my emails and the project schedule, then I list my priorities for the week. I block time in my diary for important tasks, and I review my progress every Friday. | Present simple for habits. Sequence words (first, then, every Friday) make the answer easy to follow.
+What software and tools do you use, and what for? | I use Excel every day for tracking and reporting, Outlook and Teams to communicate, and SharePoint to manage documents. I’ve also used MS Project. | Say what you use each tool for. Present perfect (“I’ve also used”) for experience with no date.
+Have you ever worked with international teams? Tell me about it. | Yes. In my last job I worked with colleagues in Spain and Germany. We had a weekly video call in English, and I learned to write clear, simple emails to avoid misunderstandings. | Past simple for a finished job. Adding one thing you learned shows you can reflect on your experience.
+A project manager asks you to do two urgent tasks at the same time. What do you do? | I would ask the project manager which task is the priority, explain how long each one will take and suggest a plan. If necessary, I’d ask a colleague for help. | It’s a hypothetical situation, so use “would”. Show that you communicate instead of guessing.
+Do you have any questions for us? Write two good ones. | What does a typical week look like for a project assistant here? How is the project team organised? | Always ask at least one question: it shows real interest. You can also use indirect questions: “Could you tell me how…?”.
+What salary are you expecting? Answer diplomatically. | I’m looking for a salary in line with the market for this kind of role, but I’m open to discussion depending on the whole package. | Diplomatic phrases: “in line with”, “open to discussion”, “the whole package”. Research the market range before the interview.
+Explain these words: “deliverable”, “milestone”, “stakeholder”. | A deliverable is something you must produce for the client, like a report. A milestone is an important stage or date in a project. A stakeholder is anyone with an interest in the project, such as the client or the local authorities. | “A … is something that…” or “someone who…” is a clear way to define words.
+What’s a “kick-off meeting”? | It’s the first meeting at the start of a project, where the team agrees on objectives, roles and the schedule. | “Kick-off” comes from football: the start of the match.
+Translate: “un appel d’offres”, “un devis”, “une facture”. | a tender (or a call for tenders), a quote, an invoice | “To respond to a tender” = répondre à un appel d’offres. Use “invoice” in business; “bill” is more for restaurants and homes.
+Translate: “le compte rendu”, “l’ordre du jour”, “le maître d’ouvrage”. | the minutes, the agenda, the client (or the project owner) | “Minutes” is always plural: “I’ll send the minutes.” An “agenda” is the list of topics, not your diary.
+Translate: “un chantier”, “un bureau d’études”, “un sous-traitant”. | a construction site, an engineering consultancy (or design office), a subcontractor | “Site” alone works in context: “I’ll be on site tomorrow.”
+What’s the difference between “schedule” and “planning”? | A schedule is the timetable of dates and tasks (FR “le planning”). Planning is the activity of making plans. | False friend: say “Can you update the schedule?”, not “the planning”.
+Correct the mistake: “I have worked there during five years.” | I worked there for five years. | “For” + a length of time. “During” + an event or period: “during the meeting”. Past simple because the job is finished.
+Correct the mistake: “I am responsible of the planning.” | I am responsible for the schedule. | It’s “responsible for”, not “of”. And “planning” → “schedule” (false friend).
+Correct the mistake: “I have a lot of experiences in this domain.” | I have a lot of experience in this field. | “Experience” meaning skills and knowledge is uncountable: no “s”. “Domain” → “field” or “area”.
+Correct the mistake: “Since two years, I work for an engineering company.” | I have been working for an engineering company for two years. | French uses the present with “depuis”; English uses the present perfect (continuous). “For” + duration, “since” + starting point.
+Correct the mistake: “I’m agree with your proposition.” | I agree with your proposal. | “Agree” is a verb, so no “am”. In business, “proposition” → “proposal”.
+Make this more polite: “Send me the documents tomorrow.” | Could you send me the documents by tomorrow, please? | “Could you…?” softens a request. “By tomorrow” means no later than tomorrow.
+Make it indirect: “When is the deadline?” → “Could you tell me…?” | Could you tell me when the deadline is? | In indirect questions the word order is like a statement: “when the deadline is”, not “when is the deadline”.
+Complete: “If I ___ (get) the job, I ___ (move) to Grenoble.” | If I get the job, I will move to Grenoble. | First conditional: if + present, will + infinitive. Never use “will” right after “if” here.
+Complete: “By the time I left, we ___ (deliver) the project.” | By the time I left, we had delivered the project. | Past perfect (had + past participle): the delivery happened before I left.
+Complete: “I’m used to ___ (work) under pressure.” | I’m used to working under pressure. | “Be used to” + -ing = be accustomed to. Different from “I used to work”, which is a past habit.
+Complete: “I look forward ___ (hear) from you.” | I look forward to hearing from you. | Here “to” is a preposition, so it’s followed by -ing.
+Write five strong verbs to describe what you did in your last job. | managed, coordinated, organised, implemented, improved (also: set up, handled, prepared) | Action verbs in the past simple sound confident and precise. Avoid vague verbs like “do” and “make”.
+Write the opening and closing of a formal email to a client. | Dear Mr Smith, … Kind regards, [your name] | If you don’t know the name, use “Dear Sir or Madam”. “Kind regards” or “Best regards” is standard; avoid “Cordially”.
+Write a voicemail: a meeting with a client has moved to Thursday. | Hello, this is [name] from [company]. I’m calling about our meeting on Tuesday: it has been moved to Thursday at 10 am. Please call me back if that’s a problem. Thank you, goodbye. | Structure: who you are, why you’re calling, the key information, what you want them to do.
+Open a meeting: welcome people, give the objective and the agenda. | Good morning everyone, thanks for coming. The aim of today’s meeting is to review the schedule. We have three points on the agenda: progress, budget and next steps. | Welcome, objective (“The aim of… is to…”), then the agenda. Keep it short and clear.
+Sum up the action points at the end of a meeting. | So, to sum up: Paul will update the drawings, I’ll send the minutes by Friday, and our next meeting is on the 3rd. | “To sum up” signals the end. Use “will” for decisions and promises made now.
+Tell a client politely that a deliverable will be late. | I’m afraid the report will be a few days late, because we’re still waiting for data from the surveyor. We expect to send it by Wednesday. I apologise for the inconvenience. | “I’m afraid…” softens bad news. Give the reason, a new date and an apology.
+Chase a colleague who hasn’t sent you their report. | Hi Marc, just a quick reminder about the report. Could you send it to me by Friday? Thanks a lot. | Friendly but clear: “just a quick reminder” + a specific deadline.
+Ask for clarification in a meeting in two different ways. | Sorry, could you clarify what you mean by…? / Just to check I understand, are you saying that…? | Asking for clarification is professional, not a weakness. “Just to check” is polite and natural.
+What do “follow up”, “set up” and “put off” mean? | follow up = contact someone again or take further action; set up = organise or establish; put off = postpone | Examples: “I’ll follow up with an email.” / “Can you set up a meeting?” / “They put off the decision.”
+What do “carry out”, “bring forward” and “deal with” mean? | carry out = do or perform; bring forward = move to an earlier date; deal with = handle | Examples: “We carried out a survey.” / “The meeting was brought forward.” / “I’ll deal with it.”
+What’s the difference between “actually” and “currently”? | Actually = in fact. Currently = at the moment. | False friend: “actuellement” = currently. “Actually” corrects or adds information: “Actually, it’s on Thursday.”
+What’s the English for “une formation”? | training (or a training course) | False friend: in English, “formation” means a shape or arrangement. Say “I did a training course in…”.
+Write these in words: €3.5 million, 15%, 2027, ¼. | three point five million euros, fifteen per cent, twenty twenty-seven, a quarter | English uses a point for decimals, not a comma, and says the currency after the number.
+Describe your previous job in four sentences using the past simple. | I worked as an assistant at [company] for three years. I managed the director’s diary and organised meetings. I also prepared monthly reports. I left in 2025 to look for a new challenge. | Past simple for a finished job. Vary your verbs and add numbers where you can.
+What do “on track” and “behind schedule” mean? | On track = progressing as planned. Behind schedule = late. | The opposite of “behind schedule” is “ahead of schedule”. Example: “The project is on track for delivery in June.”
+What’s a “cost overrun”? | When a project costs more than planned. | Related verb: “The project overran its budget.” For time, say “a delay”.
+Write two ways to agree and two ways to disagree politely in a meeting. | Agree: “That’s a good point.” / “I completely agree.” Disagree: “I see what you mean, but…” / “I’m not sure about that.” | Polite disagreement first acknowledges the other view, then adds “but”.
+Describe a project you are proud of: the goal, your role and the result. | I helped organise our office move to a new building. My role was to coordinate the suppliers and plan the schedule. We moved in one weekend with no interruption to work. | Goal, role, result. “My role was to…” is a useful phrase. Finish with a measurable result.
+How would you deal with a client who is unhappy with the progress of a project? | I would listen to the client, acknowledge the problem, explain the situation honestly and agree on clear next steps with the project manager. Then I’d follow up regularly. | “Would” for a hypothetical situation. Key steps: listen, acknowledge, explain, agree, follow up.
+What are the challenges of working in a multicultural team? | The main challenges are different communication styles and language. To avoid misunderstandings, I write clear emails, check that people have understood and confirm decisions in writing. | Name the challenge, then show how you deal with it. Stay positive and practical.
+How do you keep track of documents and versions on a project? | I use a clear naming system with dates and version numbers, keep everything on a shared platform like SharePoint, and keep a document register up to date. | “Version control” and “document register” are key project terms.
+Close the interview: thank the interviewers and say why you’re a good fit. | Thank you very much for your time. I really enjoyed learning more about the role, and I think my organisational skills and my experience with international teams would make me a good fit. I look forward to hearing from you. | Thank them, give one or two key reasons you fit, and end with “I look forward to hearing from you”.`;
+
+const COLORS = ['#15263a','#c84a2c','#0e7c66','#8a6d3b','#5b6472','#a8321f'];
+const NAMES = ['Candidate','Trainer','Monsoons','Tornadoes','Blizzards','Thunderstorms'];
+const COLS = 'ABCDEF';
+const KEY = 'typhoon-artelia-solo-v2';
+
+let settings = { count: 2, names: NAMES.slice(), showQ: true, qText: DEFAULT_Q };
+let state = null;
+let history = [];
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const coord = i => COLS[i % 6] + (Math.floor(i / 6) + 1);
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({ settings, state, history: history.slice(-30) })); } catch(e){} }
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.settings) settings = Object.assign(settings, d.settings);
+    if (d.state) { state = d.state; history = d.history || []; }
+  } catch(e){}
+}
+
+/* ---------- Setup ---------- */
+function renderSetup(){
+  const seg = $('teamCount');
+  seg.innerHTML = [2,3,4,5,6].map(n => `<button type="button" data-n="${n}" aria-pressed="${n === settings.count}">${n}</button>`).join('');
+  $('teamNames').innerHTML = Array.from({length: settings.count}, (_, i) =>
+    `<label><span class="swatch" style="--c:${COLORS[i]}"></span><input data-i="${i}" value="${esc(settings.names[i] || NAMES[i])}" aria-label="Team ${i+1} name" maxlength="24"></label>`).join('');
+  $('showQ').checked = settings.showQ;
+  $('qText').value = settings.qText;
+  updateQCount();
+}
+function parseQs(text){
+  return text.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+    const [q, a = '', e = ''] = l.split('|').map(x => x.trim());
+    return { q, a, e };
+  });
+}
+function updateQCount(){
+  const n = parseQs($('qText').value).length;
+  $('qCount').textContent = n === 0 ? 'No questions: you’ll ask your own.' : `${n} question${n === 1 ? '' : 's'}${n < 36 ? ' (some will repeat)' : ''}`;
+}
+$('teamCount').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  settings.count = +b.dataset.n; renderSetup(); save();
+});
+$('teamNames').addEventListener('input', e => { settings.names[+e.target.dataset.i] = e.target.value; save(); });
+$('showQ').addEventListener('change', e => { settings.showQ = e.target.checked; save(); });
+$('qText').addEventListener('input', e => { settings.qText = e.target.value; updateQCount(); save(); });
+$('resetQ').addEventListener('click', () => { settings.qText = DEFAULT_Q; $('qText').value = DEFAULT_Q; updateQCount(); save(); });
+$('startBtn').addEventListener('click', startGame);
+
+function buildOutcomes(){
+  const pts = [5,5,5,5,10,10,10,10,10,15,15,15,15,20,20,20,20,25,25,25,30,30,40,50].map(v => ({ t: 'pts', v }));
+  const sp = ['jackpot','double','double','double','shield','shield','typhoon','typhoon','typhoon','typhoon','bomb','bomb'].map(t => ({ t }));
+  return shuffle(pts.concat(sp));
+}
+function startGame(){
+  const qs = shuffle(parseQs(settings.qText));
+  const outs = buildOutcomes();
+  state = {
+    teams: Array.from({length: settings.count}, (_, i) => ({ name: (settings.names[i] || '').trim() || NAMES[i], color: COLORS[i], score: 0, shield: 0 })),
+    turn: 0,
+    showQ: settings.showQ,
+    tiles: outs.map((o, i) => { const x = qs.length ? qs[i % qs.length] : { q: '', a: '', e: '' }; return { q: x.q, a: x.a, e: x.e, o, done: false, by: null }; }),
+    reserve: qs.slice(36),
+    used: qs.slice(0, 36),
+    log: 'Pick a square to start.'
+  };
+  history = [];
+  save(); showGame();
+}
+
+/* ---------- Game ---------- */
+function showGame(){
+  $('setup').hidden = true; $('game').hidden = false; $('gameTools').hidden = false;
+  renderGame();
+}
+function showSetup(){
+  $('setup').hidden = false; $('game').hidden = true; $('gameTools').hidden = true;
+  renderSetup();
+}
+function info(o){
+  switch (o.t) {
+    case 'pts': return { ic: '+' + o.v, ttl: o.v + ' points', lb: 'points' };
+    case 'jackpot': return { ic: '💰', ttl: 'Jackpot!', lb: 'Jackpot' };
+    case 'typhoon': return { ic: '🌀', ttl: 'Typhoon!', lb: 'Typhoon' };
+    case 'swap': return { ic: '⇄', ttl: 'Swap', lb: 'Swap' };
+    case 'steal': return { ic: '🧲', ttl: 'Steal', lb: 'Steal' };
+    case 'double': return { ic: '×2', ttl: 'Double', lb: 'Double' };
+    case 'shield': return { ic: '🛡️', ttl: 'Shield', lb: 'Shield' };
+    case 'bomb': return { ic: '💣', ttl: 'Bomb!', lb: 'Bomb' };
+  }
+}
+function renderGame(justIdx){
+  const s = state;
+  $('scores').innerHTML = s.teams.map((t, i) => `
+    <div class="team" style="--c:${t.color}" aria-current="${i === s.turn}">
+      <div class="nm"><span>${esc(t.name)}</span><span class="turn">${s.tiles.filter(x => !x.done).length} squares left</span></div>
+      <div class="sc">${t.score}</div>
+      <div class="foot">
+        <span class="shield">${t.shield ? '🛡️ ×' + t.shield + ' ' : ''}${s.wrong ? s.wrong + ' wrong' : ''}</span>
+        <span class="adj"><button data-adj="${i}" data-d="-5" aria-label="Take 5 points from ${esc(t.name)}">−</button><button data-adj="${i}" data-d="5" aria-label="Give 5 points to ${esc(t.name)}">+</button></span>
+      </div>
+    </div>`).join('');
+  let h = '<div></div>' + [...COLS].map(c => `<div class="ax">${c}</div>`).join('');
+  for (let r = 0; r < 6; r++) {
+    h += `<div class="ax">${r + 1}</div>`;
+    for (let c = 0; c < 6; c++) {
+      const i = r * 6 + c, t = s.tiles[i];
+      if (t.done) {
+        const f = info(t.o);
+        h += `<button class="tile done${i === justIdx ? ' just' : ''}" style="--c:${s.teams[t.by].color}" aria-label="${coord(i)}: ${f.ttl}, taken by ${esc(s.teams[t.by].name)}" disabled><span class="ic">${f.ic}</span><span class="lb">${coord(i)}</span></button>`;
+      } else {
+        h += `<button class="tile" data-tile="${i}" aria-label="Square ${coord(i)}">${coord(i)}</button>`;
+      }
+    }
+  }
+  $('board').innerHTML = h;
+  $('log').textContent = s.log || '';
+  $('undoBtn').disabled = history.length === 0;
+}
+function snapshot(){ history.push(JSON.stringify(state)); if (history.length > 30) history.shift(); }
+function advance(){ state.turn = (state.turn + 1) % state.teams.length; }
+
+$('board').addEventListener('click', e => { const b = e.target.closest('[data-tile]'); if (b) openTile(+b.dataset.tile); });
+$('scores').addEventListener('click', e => {
+  const b = e.target.closest('[data-adj]'); if (!b) return;
+  snapshot();
+  const t = state.teams[+b.dataset.adj];
+  t.score = Math.max(0, t.score + (+b.dataset.d));
+  state.log = `Score adjusted for ${t.name}.`;
+  save(); renderGame();
+});
+$('undoBtn').addEventListener('click', () => {
+  if (!history.length) return;
+  state = JSON.parse(history.pop());
+  state.log = 'Last move undone.';
+  save(); renderGame();
+});
+$('newBtn').addEventListener('click', () => {
+  if (state && state.tiles.some(t => t.done) && !confirm('Start a new game? This game’s scores will be lost.')) return;
+  state = null; history = []; save(); showSetup();
+});
+$('endBtn').addEventListener('click', showEnd);
+
+/* ---------- Panel ---------- */
+const panel = $('panel');
+let cur = null; // { i, phase }
+panel.addEventListener('cancel', e => { if (cur && cur.phase !== 'ask') e.preventDefault(); });
+
+function openTile(i){
+  const t = state.tiles[i];
+  cur = { i, phase: 'ask' };
+  panel.innerHTML = `
+    <p class="p-meta">Square ${coord(i)}</p>
+    <h2 class="p-q">${esc(t.q || 'Answer your trainer’s question.')}</h2>
+    <label class="resp-l" for="resp">Your answer</label>
+    <textarea id="resp" class="resp" rows="5" placeholder="Write your answer in English…"></textarea>
+    <div class="p-actions">
+      <button class="btn" data-act="close">Cancel</button><span class="spacer"></span>
+      <button class="btn primary big" data-act="check">Check my answer</button>
+    </div>`;
+  panel.showModal();
+  $('resp').focus();
+}
+function showFeedback(){
+  const t = state.tiles[cur.i], mine = $('resp').value.trim();
+  cur.phase = 'mark';
+  panel.innerHTML = `
+    <p class="p-meta">Square ${coord(cur.i)}</p>
+    <h2 class="p-q">${esc(t.q)}</h2>
+    <div class="fb mine"><b>Your answer</b><p>${mine ? esc(mine).replace(/\n/g, '<br>') : '<i>No answer written.</i>'}</p></div>
+    <div class="fb model"><b>Model answer</b><p>${esc(t.a || 'Ask your trainer.')}</p></div>
+    <div class="fb why"><b>Why</b><p>${esc(t.e || 'Discuss with your trainer.')}</p></div>
+    <p class="hint">Compare your answer with the model. Was it right?</p>
+    <div class="p-actions">
+      <span class="spacer"></span>
+      <button class="btn bad big" data-act="wrong">Not yet</button>
+      <button class="btn ok big" data-act="right">I got it right</button>
+    </div>`;
+}
+panel.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.dataset.act;
+  if (act === 'ans') { const a = $('ans'); a.hidden = !a.hidden; b.textContent = a.hidden ? 'Show answer' : 'Hide answer'; }
+  else if (act === 'close') { cur = null; panel.close(); }
+  else if (act === 'check') showFeedback();
+  else if (act === 'wrong') {
+    snapshot();
+    newQuestion(cur.i);
+    state.wrong = (state.wrong || 0) + 1;
+    state.log = `Not quite. ${coord(cur.i)} has a new question.`;
+    advance(); cur = null; panel.close(); save(); renderGame();
+  }
+  else if (act === 'right') reveal();
+  else if (act === 'target') finish(applyTargeted(+b.dataset.i));
+  else if (act === 'next') {
+    const i = cur.i; cur = null; panel.close(); advance(); save(); renderGame(i);
+    if (state.tiles.every(t => t.done)) setTimeout(showEnd, 700);
+  }
+});
+
+function newQuestion(i){
+  const t = state.tiles[i];
+  if (!state.reserve || !state.reserve.length) {
+    // Refill from questions not currently on an open square
+    const open = new Set(state.tiles.filter(x => !x.done).map(x => x.q));
+    const all = parseQs(settings.qText);
+    state.reserve = shuffle(all.filter(x => !open.has(x.q)));
+  }
+  if (!state.reserve.length) return;
+  const n = state.reserve.shift();
+  state.reserve.push({ q: t.q, a: t.a, e: t.e });
+  t.q = n.q; t.a = n.a; t.e = n.e;
+}
+function reveal(){
+  snapshot();
+  const t = state.tiles[cur.i]; t.done = true; t.by = 0;
+  const me = state.teams[0], o = t.o; let msg;
+  if (o.t === 'pts') { me.score += o.v; msg = `You win ${o.v} points.`; }
+  else if (o.t === 'jackpot') { me.score += 100; msg = 'You win 100 points.'; }
+  else if (o.t === 'double') { me.score *= 2; msg = `Your score doubles to ${me.score}.`; }
+  else if (o.t === 'shield') { me.shield++; msg = 'You’re protected from the next typhoon or bomb.'; }
+  else if (o.t === 'typhoon') {
+    if (me.shield) { me.shield--; msg = 'Your shield blocks the typhoon!'; }
+    else { const l = Math.ceil(me.score / 2); me.score -= l; msg = `The typhoon blows away half your points. You lose ${l}.`; }
+  }
+  else if (o.t === 'bomb') {
+    if (me.shield) { me.shield--; msg = 'Your shield blocks the bomb!'; }
+    else { msg = `Boom! You lose all ${me.score} points.`; me.score = 0; }
+  }
+  finish(msg);
+}
+function applyTargeted(k){
+  const me = state.teams[state.turn], tg = state.teams[k], o = state.tiles[cur.i].o;
+  if (tg.shield) { tg.shield--; return `${tg.name}’s shield blocks the ${info(o).lb.toLowerCase()}!`; }
+  if (o.t === 'typhoon') { const lost = tg.score; tg.score = 0; return `The typhoon hits ${tg.name}. They lose ${lost} points.`; }
+  if (o.t === 'swap') { [me.score, tg.score] = [tg.score, me.score]; return `${me.name} and ${tg.name} swap scores.`; }
+  if (o.t === 'steal') { const n = Math.floor(tg.score / 2); tg.score -= n; me.score += n; return `${me.name} steal ${n} points from ${tg.name}.`; }
+}
+function finish(msg){
+  cur.phase = 'done';
+  const o = state.tiles[cur.i].o, f = info(o);
+  state.log = `${coord(cur.i)}: ${msg}`;
+  save();
+  panel.innerHTML = `
+    <div class="reveal"><div class="ic">${f.ic}</div><div class="ttl">${f.ttl}</div><p class="msg">${esc(msg)}</p></div>
+    <div class="p-actions"><button class="btn primary big" data-act="next" autofocus>Next square</button></div>`;
+  panel.querySelector('[data-act="next"]').focus();
+}
+
+/* ---------- End ---------- */
+function showEnd(){
+  const sc = state.teams[0].score, done = state.tiles.every(t => t.done);
+  const prev = settings.best || 0;
+  if (done && sc > prev) { settings.best = sc; save(); }
+  const best = Math.max(prev, done ? sc : 0);
+  const d = $('endDlg');
+  d.innerHTML = `
+    <div class="reveal"><div class="ic">🏆</div><div class="ttl">${sc} points</div>
+    <p class="msg">${done && sc > prev && prev ? 'New best score!' : 'Best score: ' + best}</p>
+    <p class="msg">Wrong answers: ${state.wrong || 0}</p></div>
+    <div class="p-actions"><button class="btn" data-x="close">Back to the board</button><button class="btn primary" data-x="again">Play again</button></div>`;
+  d.showModal();
+}
+$('endDlg').addEventListener('click', e => {
+  const b = e.target.closest('[data-x]'); if (!b) return;
+  $('endDlg').close();
+  if (b.dataset.x === 'again') { state = null; history = []; save(); showSetup(); }
+});
+
+/* ---------- Init ---------- */
+load();
+settings.count = 1; settings.names[0] = 'You';
+if (state) showGame(); else showSetup();
+</script>
+</body>
+</html>
