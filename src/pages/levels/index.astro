@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LEVELS, gameLevels, countBy } from '../../data/taxonomy';
+
+const games = await getCollection('games');
+const counts = countBy(games, g => gameLevels(g));
+const levels = LEVELS.filter(l => counts.get(l.code));
+
+const about: Record<string, string> = {
+  A1: 'First words and phrases: numbers, times, introductions and everyday basics.',
+  A2: 'Simple routines, past simple, work and travel vocabulary.',
+  B1: 'Present perfect, conditionals, phrasal verbs and longer speaking turns.',
+  B2: 'Business English, tense review, false friends and fluent discussion.',
+  C1: 'Advanced vocabulary, nuance and debate.',
+};
+---
+<BaseLayout
+  title="ESL games by CEFR level — JAC's Class"
+  description="Free interactive ESL games sorted by CEFR level, from A1 beginners to B2 upper intermediate."
+>
+  <section class="section">
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> › Levels</nav>
+      <h1>Games by level</h1>
+      <p class="page-lede">Every game has a CEFR level. Games marked with a range, like A1/A2, appear on both levels.</p>
+      <div class="index-grid">
+        {levels.map(l => (
+          <a href={`/level/${l.code}`} class={`index-card level-tile--${l.code}`}>
+            <span class="index-card__code">{l.code}</span>
+            <span class="index-card__title">{l.label}</span>
+            <span class="index-card__text">{about[l.code]}</span>
+            <span class="index-card__count">{counts.get(l.code)} games →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
