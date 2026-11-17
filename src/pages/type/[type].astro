@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GameCard from '../../components/GameCard.astro';
 import TypeIcon from '../../components/TypeIcon.astro';
-import { TYPE_NAMES, typeSlug, typeBlurb, gameLevels, countBy, byNewest } from '../../data/taxonomy';
+import { TYPE_NAMES, typeSlug, typeBlurb, typeLabel, gameLevels, countBy, byNewest } from '../../data/taxonomy';
 
 export async function getStaticPaths() {
   const all = await getCollection('games');
@@ -24,15 +24,15 @@ const { type, games, others } = Astro.props;
 const blurb = typeBlurb(type);
 ---
 <BaseLayout
-  title={`${type} games for ESL — JAC's Class`}
-  description={`Free ${type} games for English teachers. ${blurb}`}
+  title={`${typeLabel(type)} for ESL — JAC's Class`}
+  description={`Free ${typeLabel(type)} for English teachers. ${blurb}`}
 >
   <section class="section">
     <div class="container">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="/">Home</a> › <a href="/types">Game types</a> › {type}
       </nav>
-      <h1 class="page-title-with-icon"><TypeIcon type={type} size={34} />{type} games</h1>
+      <h1 class="page-title-with-icon"><TypeIcon type={type} size={34} />{typeLabel(type)}</h1>
       <p class="page-lede">{blurb} {games.length} {games.length === 1 ? 'game' : 'games'}.</p>
 
       <div class="games-grid">
